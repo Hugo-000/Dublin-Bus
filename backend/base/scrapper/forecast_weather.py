@@ -27,7 +27,8 @@ response = requests.get(forecast_weather_link)
 print("status code: ", response.status_code)
 
 forecast_weather = response.json()
-
+#delete object model and create a new one
+#ForecastWeather.objects.all().delete()
 for each in forecast_weather['list']:
     try:
         w = ForecastWeather()

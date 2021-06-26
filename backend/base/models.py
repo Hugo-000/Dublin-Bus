@@ -19,19 +19,19 @@ class CurrentWeather(models.Model):
 
     def __str__(self):
         result = (
-            f"{self.dt}",
-            f"{self.temp}",
-            f"{self.feels_like}",
-            f"{self.temp_min}",
-            f"{self.temp_max}",
-            f"{self.pressure}",
-            f"{self.humidity}",
-            f"{self.wind_speed}",
-            f"{self.wind_deg}",
-            f"{self.clouds_all}",
-            f"{self.weather_main}",
-            f"{self.weather_description}",
-            f"{self.weather_icon}",
+            f"{self.dt},"
+            f"{self.temp},"
+            f"{self.feels_like},"
+            f"{self.temp_min},"
+            f"{self.temp_max},"
+            f"{self.pressure},"
+            f"{self.humidity},"
+            f"{self.wind_speed},"
+            f"{self.wind_deg},"
+            f"{self.clouds_all},"
+            f"{self.weather_main},"
+            f"{self.weather_description},"
+            f"{self.weather_icon},"
         )
         return result
 

@@ -5,9 +5,10 @@ import os
 import django
 import sys
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
-print(BASE_DIR)
+print("current_weather base", BASE_DIR)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'backend.settings'
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
@@ -17,7 +18,7 @@ from base.models import CurrentWeather
 #Add API info
 
 apiKey = 'ac8d0dd5f40c8d6da60fd0785a3f75c4'
-q = 'dublin'
+q = 'london'
 curr_weather_link = "https://api.openweathermap.org/data/2.5/weather?q="+q+"&appid="+apiKey
 
 #get response
@@ -26,7 +27,7 @@ print("status code: ", response.status_code)
 
 curr_weather = response.json()
 print(curr_weather['dt'])
-#delete object
+#delete object model and create a new one
 #CurrentWeather.objects.all().delete()
 
 #create instance

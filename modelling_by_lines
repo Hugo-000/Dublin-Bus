@@ -1,4 +1,4 @@
-def label_enocder(data, list_cat_cols):
+def label_encoder(data, list_cat_cols):
     '''
     Apply Label encoder to the categorical columns  in data
     
@@ -56,7 +56,7 @@ def open_csv_create_models(path):
             df = df.drop(["Dates"], axis = 1)
             df=sklearn.utils.shuffle(df)
             cols_to_encode=['weather_main','DelayedArr','DelayedDep','Weekday']
-            df =  label_enocder(df, cols_to_encode)
+            df =  label_encoder(df, cols_to_encode)
 
             df_modelling = df.drop(['DelayedArr','DelayedDep','Weekday','weather_main'],axis=1)
 

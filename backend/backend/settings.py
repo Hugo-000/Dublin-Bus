@@ -85,8 +85,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Dubin_Bus_Static',
+        'USER': 'admin',
+        'PASSWORD': 'Ucd-rp-2021',
+        'HOST': 'dublin-bus-g1-ucd.cy0cy93b2vsn.eu-west-1.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 

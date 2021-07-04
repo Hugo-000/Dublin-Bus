@@ -33,15 +33,6 @@
         {% load static %}
 
         <link rel="stylesheet" type="text/css" href="{% static 'dublinBusHybrid/style.css' %}"/>
-
-        <!-- JSX support -->
-        <script type='text/javascript' src="{% static 'babel-standalone/babel.min.js' %}"></script>
-
-        <!-- Reactjs dependencies -->
-        <script type='text/babel' src="{% static 'react/umd/react.production.min.js' %}"></script>
-        <script type='text/babel' src="{% static 'react-dom/umd/react-dom.production.min.js' %}"></script>
-
-        <script type='text/babel' src="{% static 'dublinBusHybrid/test.js' %}"></script>
     </head>
 
     <body>
@@ -50,9 +41,6 @@
         The header file includes the link to the navbar
         -->
         {% include 'partials/header.html' %}
-
-        <div id="like_button_container"></div>
-
 
         <!--This section includes the jinja blocks where web page information will go.
             i.e. paragraphs, headings, images etc.-->

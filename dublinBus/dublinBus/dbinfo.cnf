@@ -1,0 +1,13 @@
+# # my.cnf
+# [client]
+# database = "dbus"
+# user = "admin"
+# password = "Ucd-rp-2021"
+
+HOST="dublin-bus-g1-ucd.cy0cy93b2vsn.eu-west-1.rds.amazonaws.com"
+PORT="3306"
+NAME="dbus"
+USER="admin"
+PASSWORD="Ucd-rp-2021"
+
+# connector = f"mysql+mysqlconnector://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"

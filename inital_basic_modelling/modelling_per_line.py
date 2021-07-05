@@ -113,7 +113,6 @@ def open_csv_create_models(path):
                 pickle.dump(model, f)
             print(bus_line, "Done.")
 
-            
-path = '/home/groupone/data/Route_Trips_csv'
+
 
 open_csv_create_models(path)

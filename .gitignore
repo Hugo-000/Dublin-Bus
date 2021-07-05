@@ -2,3 +2,4 @@
 **/__pycache__/**
 **/static/bundles**
 **.swp
+**/webpack-stats.json

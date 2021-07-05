@@ -7,18 +7,14 @@
 </h1>
 
 {% load render_bundle from webpack_loader %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Example</title>
-</head>
+
     <body>
         <div id="component-one"></div>
         <div id="component-two"></div>
+        <div id="my-component"></div>
         {% render_bundle 'main' %}
     </body>
-</html>
+
 
 
 {% endblock %}

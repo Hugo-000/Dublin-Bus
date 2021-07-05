@@ -1,0 +1,64 @@
+<html lang="en">
+    <head>
+        <!--This section contains the meta data for the website. 
+            Nothing in this section will be displayed.
+            Insert links to the css and JS files in this section and they will
+            by included on all of the pages.
+        -->
+        <meta charset="utf-8">
+        <title>Dublin Bus Journey Planner</title>
+        <meta name="description" content="FirstIndex.html">
+        <meta name="authors" content="Jennifer, Cho, Ellen, and Shihau">
+
+
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap"
+            rel="stylesheet"
+        />
+
+        <link 
+            rel="preconnect" href="https://fonts.googleapis.com"
+        />
+        <link 
+            rel="preconnect" href="https://fonts.gstatic.com" crossorigin
+        />
+        <link 
+            href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"
+        />
+
+        <script
+            src="https://kit.fontawesome.com/b21397b3b4.js"
+            crossorigin="anonymous"
+        ></script>
+
+        {% load static %}
+
+        <link rel="stylesheet" type="text/css" href="{% static 'dublinBusHybrid/style.css' %}"/>
+    </head>
+
+    <body>
+        <!--
+        The jinja below inserts the header html file into the web page template
+        The header file includes the link to the navbar
+        -->
+        {% include 'partials/header.html' %}
+
+
+        <!--This section includes the jinja blocks where web page information will go.
+            i.e. paragraphs, headings, images etc.-->
+        {% block content %}{% endblock %}
+
+        <!--Like the header the below code inserts the footer file into the page template-->
+        {% include 'partials/footer.html' %}
+    </body>
+</html>

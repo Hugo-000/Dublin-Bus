@@ -1,0 +1,17 @@
+#floating-panel {
+    position: absolute;
+    top: 30px;
+    left: 25%;
+    width:50%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: "Roboto", "sans-serif";
+    line-height: 30px;
+    padding-left: 10px;
+}
+#map {
+    height: 70%;
+}

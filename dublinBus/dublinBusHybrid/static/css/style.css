@@ -1,0 +1,33 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+header{
+    height: 30px;
+    width:100%;
+    clear:both;
+    text-align: center;
+    background-color: rgb(70, 65, 57) !important;
+    color: white !important;
+}
+footer{
+    
+    bottom:0;
+    height: 80px;
+    width:100%;
+    clear:both;
+    text-align: center;
+    background-color: rgb(70, 65, 57) !important;
+    color: white !important;
+}
+a{color:#00F}
+a:hover{color:#F00}
+.diva{color:#090} 
+.diva:hover{color:#090}
+ 
+.container{
+    width:100%;
+    text-align: center
+}

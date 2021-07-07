@@ -1,9 +1,11 @@
 function initMap() {
-    
+  /*Build the map, currently no transit layer*/
   const map = new google.maps.Map(document.getElementById("map"), {
       zoom: 14,
       center: { lat: 53.349804, lng: -6.260310 },
+      /*Disable the default map ui*/
       disableDefaultUI: true,
+      /*restrict the boundary of map*/
       restriction: {
           latLngBounds: {
               north: 54,
@@ -13,6 +15,7 @@ function initMap() {
           },
           strictBounds: false
       },
+      /*Change the map into Nightmode*/
       styles: [
           {elementType: "geometry", stylers: [{ color: "#242f3e" }]},
           {elementType: "labels.text.stroke",stylers: [{ color: "#242f3e" }]},
@@ -88,6 +91,7 @@ function initMap() {
                    return response.json();
   }).then(stops => {
       stops.forEach(stop => {
+          //markers of the stops, needs to find a way to limit the number of markers displayed at the same time
           const marker = new google.maps.Marker({
               position: {lat: stop.lat, lng: stop.lng},
               map: map,
@@ -99,6 +103,7 @@ function initMap() {
               stationWindow.close();
               marker.addListener("click", () => {
                   stationWindow.close();
+                  //Currently the set as destination desn't work
                   var station_info='<h1>Station ' + stops[i].stopNumber + '</h1><h2>' + stops[i].stop_name
                               + '</h2><button>Set as Destination</button>';
                   stationWindow.setContent(station_info);
@@ -111,7 +116,7 @@ function initMap() {
   });
   */
 
-
+  /*Build the move to current location function with Geolocation*/
   const locationWindow = new google.maps.InfoWindow();
   const locationButton = document.createElement("button");
   locationButton.textContent = "Current Location";
@@ -143,7 +148,8 @@ function initMap() {
               handleLocationError("type3", locationWindow, map.getCenter());
           }
       });
-  
+    
+  /*handle Location Error*/
   function handleLocationError(browserProblem, locationWindow, pos) {
       locationWindow.setPosition(pos);
       if (browserProblem=="type1"){
@@ -161,7 +167,7 @@ function initMap() {
   
   
   
-  
+  /*Direction from two selected stop position*/
   const directionsRenderer = new google.maps.DirectionsRenderer();
   const directionsService = new google.maps.DirectionsService();
   directionsRenderer.setMap(map);
@@ -188,7 +194,7 @@ function initMap() {
       });
   }
 
-
+  /*Search for a stop with Geocoder, this function needs to be merged into Routes part*/ 
   const geocoder = new google.maps.Geocoder();
   const searchwindow = new google.maps.InfoWindow();
   document.getElementById("submit").addEventListener("click", () => {

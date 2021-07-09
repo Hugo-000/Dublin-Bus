@@ -125,12 +125,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+#changed from en-us to en-GB in order to get the is_valid for the dates working for dd/mm/year
+LANGUAGE_CODE = 'en-GB'
 
 TIME_ZONE = 'Europe/Dublin'
 
 USE_I18N = True
 
+# By setting this to true it allows our date formats instead of looking at us
 USE_L10N = True
 
 USE_TZ = True
@@ -145,3 +147,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

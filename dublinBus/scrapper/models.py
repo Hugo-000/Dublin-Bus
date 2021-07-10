@@ -71,7 +71,7 @@ class ForecastWeather(models.Model):
         return result
 class Routes(models.Model):
     route_name = models.CharField(max_length=45, null=True)
-    route_description = models.CharField(max_length=60, null=True)
+    route_description = models.CharField(max_length=200, null=True)
     route_direction = models.CharField(max_length=45, null=True)
 
 class Stops(models.Model):
@@ -84,12 +84,8 @@ class Stops(models.Model):
 class AllStopsWithRoute(models.Model):
     id = models.CharField(max_length=45, primary_key=True)
     stop_sequence = models.CharField(max_length=45, null=True)
-    route_number = models.ForeignKey(Routes, on_delete=models.SET_NULL, null=True)
-    stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
     stop_headsign = models.CharField(max_length=45, null=True)
-
-
-
-
+    route_number = models.CharField(max_length=45, null=True)
+    stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
 
 

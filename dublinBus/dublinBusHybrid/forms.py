@@ -49,5 +49,4 @@ class JourneyPlannerForm(forms.Form):
         if travel_time and travel_time > bus_finish_time and travel_time < bus_start_time:
             self.add_error('travel_date', 'Invalid time - last bus at 00:00')
 
-
         return cd

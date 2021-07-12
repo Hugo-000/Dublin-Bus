@@ -41,26 +41,9 @@
             crossorigin="anonymous"
         ></script>
 
-        <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
-            async
-        ></script>
-
-        
-        
-        
-        
-        
-
         {% load static %}
+
         <link rel="stylesheet" type="text/css" href="{% static 'dublinBusHybrid/style.css' %}"/>
-        <script src= {% static 'js/map.js' %}></script>
-        <link rel="stylesheet" type="text/css" href={% static 'css/style.css' %}/>
-        <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.css' %}/>
-        <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.min.css' %}/>
-        <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <script src= {% static 'js/jquery.min.js' %}></script>
-        
     </head>
 
     <body>
@@ -73,9 +56,7 @@
 
         <!--This section includes the jinja blocks where web page information will go.
             i.e. paragraphs, headings, images etc.-->
-        <div class='container'>
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
 
         <!--Like the header the below code inserts the footer file into the page template-->
         {% include 'partials/footer.html' %}

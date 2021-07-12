@@ -1,12 +1,8 @@
 {% extends 'journeyPlanner.html' %}
 
 {% block subcontent %}
-<h1 class="heading">
-    <!--ipsum to be changed to the current slogan -->
-    Welcome to the map
-</h1>
 
-<h1>Journey Information:</h1>
+<h1 class="heading">Journey Information:</h1>
     <ul>
         <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
         <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
@@ -20,9 +16,12 @@
     <div >
         <div >
             <!-- This section needs to get the weather data for the station selected and return it to the screen -->
-            <img src="http://openweathermap.org/img/wn/{{forecast_weather.weather_icon}}@4x.png">
+            
             <div>
-                {{forecast_weather.weather_main}}, {{forecast_weather.temp}}&deg;C, Dublin, Ireland
+                <img src="http://openweathermap.org/img/wn/{{forecast_weather.weather_icon}}@2x.png">
+                {{forecast_weather.weather_main}},
+                {{forecast_weather.temp}}&deg;C,
+                Dublin, Ireland
             </div>
         </div>
         <div>

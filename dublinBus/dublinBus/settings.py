@@ -14,7 +14,11 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+print("setting py path: ",BASE_DIR)
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'dublinBusHybrid.apps.DublinbushybridConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webpack_loader'
+    'webpack_loader',
+    'scrapper',
+
+]
+#Automated scripting for every 3 hours and 10 mins
+CRONJOBS = [
+    ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
+    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
+
 ]
 
 WEBPACK_LOADER = {
@@ -83,25 +96,15 @@ WSGI_APPLICATION = 'dublinBus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
-# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Dubin_Bus_Static',
+        'NAME': 'Dublin_Bus',
         'USER': 'admin',
         'PASSWORD': 'Ucd-rp-2021',
         'HOST': 'dublin-bus-g1-ucd.cy0cy93b2vsn.eu-west-1.rds.amazonaws.com',
         'PORT': '3306',
-        # 'OPTIONS': {
-        #     'read_default_file': './dbinfo.cnf',
-        # },
     }
 }
 
@@ -127,12 +130,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+#changed from en-us to en-GB in order to get the is_valid for the dates working for dd/mm/year
+LANGUAGE_CODE = 'en-GB'
 
 TIME_ZONE = 'Europe/Dublin'
 
 USE_I18N = True
 
+# By setting this to true it allows our date formats instead of looking at us
 USE_L10N = True
 
 USE_TZ = True

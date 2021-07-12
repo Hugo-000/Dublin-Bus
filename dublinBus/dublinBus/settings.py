@@ -17,6 +17,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 print("setting py path: ",BASE_DIR)
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -44,11 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'scrapper',
+
 ]
 #Automated scripting for every 3 hours and 10 mins
 CRONJOBS = [
     ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
+
 ]
 
 WEBPACK_LOADER = {
@@ -92,6 +96,7 @@ WSGI_APPLICATION = 'dublinBus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -125,12 +130,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-uk'
+#changed from en-us to en-GB in order to get the is_valid for the dates working for dd/mm/year
+LANGUAGE_CODE = 'en-GB'
 
 TIME_ZONE = 'Europe/Dublin'
 
 USE_I18N = True
 
+# By setting this to true it allows our date formats instead of looking at us
 USE_L10N = True
 
 USE_TZ = True

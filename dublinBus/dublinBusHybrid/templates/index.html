@@ -1,20 +1,103 @@
 {% extends 'layouts/base.html' %}
-
 {% block content %}
-<h1 class="heading">
-    <!--ipsum to be changed to the current slogan -->
-    Where will YOU go?
-</h1>
 
-{% load render_bundle from webpack_loader %}
-
-    <body>
-        <div id="component-one"></div>
-        <div id="component-two"></div>
-        <div id="my-component"></div>
-        {% render_bundle 'main' %}
-    </body>
-
-
-
+{% load static %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="carousel slide" id="myCarousel">
+				<ol class="carousel-indicators">
+					<li data-slide-to="0" data-target="#myCarousel" class="active">
+					</li>
+					<li data-slide-to="1" data-target="#myCarousel">
+					</li>
+					<li data-slide-to="2" data-target="#myCarousel">
+					</li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="item activate">				
+						<img src={% static 'images/background.jpg' %} style="height:49%;width:100%"/>
+					</div>	
+				</div> 	
+			</div>
+			<hr/>
+			
+			<div class="jumbotron well" >
+				<h1 style="text-align:center">Dublin Bus</h1>
+				<p style="text-align:center">One of your best choices to travel around Dublin</p>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="col">
+					<div class="thumbnail">
+						<img alt="300x200" src={% static 'images/default4.jpg' %} />
+						<div class="caption">
+							<h3>
+								Want to plan a journey?
+							</h3>
+							<p>
+								We predict the time cost and fare for you!
+							</p>
+							<p>
+								<a class="btn btn-primary" href="../journeyPlanner/">Get Start Here</a>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="thumbnail">
+						<img alt="300x200" src={% static 'images/default5.jpg' %} />
+						<div class="caption">
+							<h3>
+								Want to view all routes around Dublin?
+							</h3>
+							<p>
+								We provide information about specific station distribution!
+							</p>
+							<p>
+								<a class="btn btn-primary" href="../Routes/">Get Start Here</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="row clearfix">
+				<div class="col-md-4 column">
+					<h2>
+						Leap card
+					</h2>
+					<p>
+						We can help you check your leap card balance!
+					</p>
+					<p>
+						<a class="btn" href="#">View details »</a>
+					</p>
+				</div>
+				<div class="col-md-4 column">
+					<h2>
+						Bookmarks
+					</h2>
+					<p>
+						We can help you add the routes or bus stops to BookMarks
+					</p>
+					<p>
+						<a class="btn" href="#">View details »</a>
+					</p>
+				</div>
+				<div class="col-md-4 column">
+					<h2>
+						Covid Info
+					</h2>
+					<p>
+						We can provide the latest Covid Info for you!
+					</p>
+					<p>
+						<a class="btn" href="#">View details »</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

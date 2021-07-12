@@ -1,0 +1,24 @@
+{% extends 'journeyPlanner.html' %}
+
+{% block subcontent %}
+<h1 class="heading">
+    <!--ipsum to be changed to the current slogan -->
+    Welcome to the map
+</h1>
+
+<h1>Journey Information:</h1>
+    <ul>
+        <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
+        <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
+        <li><strong>Starting Stop:</strong> {{ start }}</li>
+        <li><strong>Destination:</strong> {{ destination }}</li>
+        <li><strong>Travel Date:</strong> {{ travel_date }}</li>
+        <li><strong>Travel time:</strong> {{ travel_time }}</li>
+        <li><strong>Forecast Datetime:</strong>{{user_forecast_datetime}}</li>
+        <li><strong>Current Weather:</strong>{{current_weather}}</li>
+        <li><strong>Forecast Weather:</strong>{{forecast_weather}}</li>
+    </ul>
+    {{userUnix | json_script:"userUnixDate" }}
+
+
+{% endblock %}

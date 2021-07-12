@@ -3,11 +3,7 @@ from django.template import loader, Context, Template
 from django.views.generic import View
 from django.forms.models import model_to_dict
 
-
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import Http404
-
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from .forms import JourneyPlannerForm
 
@@ -116,3 +112,16 @@ class JourneyPlanner(View):
         user_unix_time = datetime.datetime.timestamp(user_datetime)
 
         return user_unix_time
+
+class Routes(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'routes.html')
+
+class CovidInfo(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'covidInfo.html')
+
+class LeapCard(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'leapCard.html')
+

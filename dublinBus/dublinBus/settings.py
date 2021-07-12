@@ -17,6 +17,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 print("setting py path: ",BASE_DIR)
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
 CRONJOBS = [
     ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
+
 ]
 
 WEBPACK_LOADER = {
@@ -92,6 +95,7 @@ WSGI_APPLICATION = 'dublinBus.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
 
 DATABASES = {
     'default': {

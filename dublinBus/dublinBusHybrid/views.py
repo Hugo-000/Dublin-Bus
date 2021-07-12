@@ -32,7 +32,7 @@ class JourneyPlanner(View):
         if form.is_valid():
             context = self.info(form)
             print('Context', context)
-            return render(request, 'journeyPlanner/map.html', context= context)
+            return render(request, 'journeyPlanner/showRoute.html', context= context)
         else:
             return render(request, 'journeyPlanner.html', { 'form': form })
 
@@ -41,15 +41,17 @@ class JourneyPlanner(View):
         num_stops = Stops.objects.all().count()
         num_routes = Routes.objects.all().count()
         fd = form.cleaned_data
-        start = fd.get('start_point')
-        destination = fd.get('destination_point')
+        start = fd.get('origin_location')
+        destination = fd.get('destination_location')
+        # start = fd.get('start_point')
+        # destination = fd.get('destination_point')
         travel_date = fd.get('travel_date')
         travel_time = fd.get('travel_time')
 
         user_forecast_datetime = self.forecastDatetime(form)
 
-        forecast_dt_iso = self.varchar_to_datetime(user_forecast_datetime)
-        
+        userDates = 1
+        user_unix_time = self.toUnix(form)
 
         current_weather = CurrentWeather.objects.all().last()
         print('CURRENT WEATHER', current_weather)
@@ -65,9 +67,9 @@ class JourneyPlanner(View):
             'travel_time': travel_time,
             'form': form,
             'user_forecast_datetime': user_forecast_datetime,
-            'forecast_dt_iso': forecast_dt_iso,
             'current_weather' : model_to_dict(current_weather),
-            'forecast_weather' : model_to_dict(forecast_weather)
+            'forecast_weather' : model_to_dict(forecast_weather),
+            'userUnix': user_unix_time
         }
         return context
 
@@ -104,9 +106,13 @@ class JourneyPlanner(View):
 
         return user_forecast_datetime
 
-    def varchar_to_datetime(self, user_forecast_datetime):
-        user_forecast_datetime = user_forecast_datetime.strftime("%Y-%m-%d %H:%M:%S")
-        print('user_forecast_datetime', user_forecast_datetime, type(user_forecast_datetime))
-        dt_iso = ForecastWeather.objects.filter(dt_iso="")
-        
-        return dt_iso
+    def toUnix(self, form):
+        fd = form.cleaned_data
+        travel_date = fd.get('travel_date')
+        travel_time = fd.get('travel_time')
+
+        user_datetime = datetime.datetime.combine(travel_date, travel_time)
+
+        user_unix_time = datetime.datetime.timestamp(user_datetime)
+
+        return user_unix_time

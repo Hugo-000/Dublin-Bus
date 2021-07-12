@@ -41,9 +41,15 @@
             crossorigin="anonymous"
         ></script>
 
-        {% load static %}
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
+            async
+        ></script>
 
+        {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'dublinBusHybrid/style.css' %}"/>
+        <script src= {% static 'js/map.js' %}></script>
+        
     </head>
 
     <body>

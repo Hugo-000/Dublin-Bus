@@ -4,19 +4,36 @@ import datetime
 from scrapper.models import Stops
 
 class JourneyPlannerForm(forms.Form):
-    start_point = forms.CharField(
-        label='Starting Point', 
-        max_length=100
-        )
-    destination_point = forms.CharField(
-        label='Destination Point', 
-        max_length=100
-        )
+    origin_location = forms.CharField(
+        # label = 'Origin',
+        label = "",
+        max_length = 150,
+        widget=forms.TextInput(attrs={'placeholder': 'Origin', 'style': 'width: 300px;', 'class': 'form-control'})
+    )
+
+    destination_location = forms.CharField(
+        # label = 'Destination',
+        label = "",
+        max_length = 150,
+        widget=forms.TextInput(attrs={'placeholder': 'Destination', 'style': 'width: 300px;', 'class': 'form-control'})
+    )
+    # start_point = forms.CharField(
+    #     label='Starting Point', 
+    #     max_length=100
+    #     )
+    # destination_point = forms.CharField(
+    #     label='Destination Point', 
+    #     max_length=100
+    #     )
     travel_date = forms.DateField(
-        label='Please choose a date within the next 7 days'
-        ) #, widget=forms.DateInput(format = '%d/%m/%Y'), input_formats=settings.DATE_INPUT_FORMATS)
+        # label='Date',
+        label = "",
+        widget=forms.TextInput(attrs={'placeholder': 'Date', 'style': 'width: 300px;', 'class': 'form-control'})
+        ) 
     travel_time = forms.TimeField(
-        label='Please choose a time betwenn 05:00am till 00:00'
+        # label='Time',
+        label = "",
+        widget=forms.TextInput(attrs={'placeholder': 'Time', 'style': 'width: 300px;', 'class': 'form-control'})
     )
     
 
@@ -25,11 +42,11 @@ class JourneyPlannerForm(forms.Form):
         start = cd.get('start_point')
         destination = cd.get('destination_point')
 
-        if len(Stops.objects.filter(stop_name=start)) == 0:
-            self.add_error('start_point', 'No starting stop with this name')
+        # if len(Stops.objects.filter(stop_name=start)) == 0:
+        #     self.add_error('start_point', 'No starting stop with this name')
 
-        if len(Stops.objects.filter(stop_name=destination)) == 0:
-            self.add_error('destination_point', 'No destination stop with this name')
+        # if len(Stops.objects.filter(stop_name=destination)) == 0:
+        #     self.add_error('destination_point', 'No destination stop with this name')
 
         travel_date = cd.get('travel_date')
         today = datetime.date.today()
@@ -38,7 +55,7 @@ class JourneyPlannerForm(forms.Form):
             self.add_error('travel_date', 'Invalid date - date of travl is in past')
 
         # Check if a date is in the allowed range (+4 weeks from today).
-        if travel_date and travel_date > today + datetime.timedelta(days=7):
+        if travel_date and travel_date > today + datetime.timedelta(days=4):
             self.add_error('travel_date', 'Invalid date - date of travel is too far in the future')
         
         travel_time = cd.get('travel_time')

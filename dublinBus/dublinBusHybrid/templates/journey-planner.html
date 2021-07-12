@@ -1,0 +1,87 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<h1 class="heading">
+    <!--ipsum to be changed to the current slogan -->
+    Welcome to the journey planner
+</h1>
+
+<div class="background-light-gray flex my-3 mx-auto justify-center rounded px-3 min-w-24">
+    <form class="flex flex-col text-cente mx-auto" id="stationsForm" action="/dublinBusHybrid/journeyPlanner/" method="POST">
+        {% csrf_token %}
+        <label class="text-2xl border-bottom p-2 text-center" for="stations">Choose a station</label>
+        <select class="no-outline text-lg mt-2 py-1 rounded" name="stations" onchange="submitForm()">
+            <option value="" disabled selected hidden>Please select a start position</option>
+                <option value="O'Connell Street">O'Connell Street</option>
+                <option value="Stephens Green">Stephens Green</option>
+                <option value="Rathmines">Rathmines</option>
+                <option value="Swords">Swords</option>
+        </select>
+    </form>
+</div>
+
+<div class="background-light-gray flex my-3 mx-auto justify-center rounded px-3 min-w-24">
+    <form class="flex flex-col text-cente mx-auto" id="stationsForm" action="/stations" method="POST">
+        <label class="text-2xl border-bottom p-2 text-center" for="stations">Choose a station</label>
+        <select class="no-outline text-lg mt-2 py-1 rounded" name="stations" onchange="submitForm()">
+            <option value="" disabled selected hidden>Please select a destination</option>
+                <option value="O'Connell Street">O'Connell Street</option>
+                <option value="Stephens Green">Stephens Green</option>
+                <option value="Rathmines">Rathmines</option>
+                <option value="Swords">Swords</option>
+        </select>
+    </form>
+</div>
+
+<div class="background-light-gray flex my-3 mx-auto justify-center rounded px-3 min-w-24">
+    <form class="flex flex-col text-cente mx-auto" id="stationsForm" action="/stations" method="POST">
+        <label class="text-2xl border-bottom p-2 text-center" for="stations">Choose a station</label>
+        <select class="no-outline text-lg mt-2 py-1 rounded" name="stations" onchange="submitForm()">
+            <option value="" disabled selected hidden>Please select day of week</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Satday">Satday</option>
+                <option value="Sunday">Sunday</option>
+        </select>
+    </form>
+</div>
+
+<div class="background-light-gray flex my-3 mx-auto justify-center rounded px-3 min-w-24">
+    <form class="flex flex-col text-cente mx-auto" id="stationsForm" action="/stations" method="POST">
+        <label class="text-2xl border-bottom p-2 text-center" for="stations">Choose a station</label>
+        <select class="no-outline text-lg mt-2 py-1 rounded" name="stations" onchange="submitForm()">
+            <option value="" disabled selected hidden>Please select a time</option>
+                <option value="07:00">07:00</option>
+                <option value="08:00">08:00</option>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+                <option value="18:00">18:00</option>
+                <option value="19:00">19:00</option>
+                <option value="20:00">20:00</option>
+                <option value="21:00">21:00</option>
+
+        </select>
+    </form>
+</div>
+
+
+<script>
+    function submitForm() {
+        document.querySelector('#stationsForm').submit();
+    }
+</script>
+
+{% block subcontent %}{% endblock %}
+
+
+{% endblock %}

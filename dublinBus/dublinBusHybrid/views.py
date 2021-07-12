@@ -113,7 +113,7 @@ class JourneyPlanner(View):
 
         return user_unix_time
 
-class Routes(View):
+class BusRoutes(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'routes.html')
 

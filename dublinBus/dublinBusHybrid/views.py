@@ -75,8 +75,8 @@ class JourneyPlanner(View):
 
     def iconMatching(self,key):
         dict = {
-            "01n":"images/01n.png",
-            "01d":"images/01d.png",
+            "01n":"images/01d.png",
+            "01d":"images/01n.png",
             "02n":"images/02.png",
             "02d": "images/02.png",
             "03d": "images/03.png",

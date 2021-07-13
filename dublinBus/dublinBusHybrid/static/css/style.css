@@ -1,20 +1,32 @@
-.foot-wrap{
-	background-color: #2d363f;
-    width: 100%;
-    position: absolute;
-    bottom: 0；
+html{
+    height:100%;
+}
+body{
+    min-height:100%;
+    margin:0;
+    padding:0;
+    position:relative;
+}
+
+.container_main{
+    padding-bottom:210px !important;
+}
+footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    background-color: #082a44;
 }
 
 .row-content li{
     list-style:none; 
 }
 .row-content a{
-    color:#878B91;
+    color:white;
 }
 .row-content a:hover{
     text-decoration:none;
-    c
-    olor:#c1ba62;
+    color:#c1ba62;
 }
 		    
 

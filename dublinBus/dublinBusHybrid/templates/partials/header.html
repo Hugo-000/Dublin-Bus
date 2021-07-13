@@ -1,74 +1,46 @@
-<!--
-<header>
-    <div class="flex flex-align-center">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-static-top">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="../home">DublinBus</a>
+        <button  class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+            <a class="nav-link active" href="../home">Home
+                <span class="visually-hidden">(current)</span>
+            </a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="../journeyPlanner/">JourneyPlanner</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="../Routes/">Routes</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="../CovidInfo/">Covid Info</a>
+            </li>
+
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">LoginIn</a>
+                <div class="dropdown-menu" data-bs-popper="none" id="dropdown-menu">
+                    <a class="dropdown-item" href="#"></a>
+                    <a class="dropdown-item" href="../LeapCard/">LeapCard</a>
+                    <a class="dropdown-item" href="#">Log Out</a>
+                    <a class="dropdown-item" href="#">BookMarks</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Sign Up</a>
+                </div>
+            </li>
+        </ul>
+
         
-    </div>
-    {# include 'partials/nav.html' #}
-</header>
--->
-
-<script>
-    function nav_dropdown(){
-        var Ele= document.getElementById('dropdown-menu');
-        if (Ele.className=="dropdown-menu show"){
-            Ele.className="dropdown-menu"
-        }else{
-            Ele.className="dropdown-menu show"
-        }
-    }
-
-    function nav_expand(){
-        var Ele1= document.getElementById('dropdown-button');
-        var Ele2= document.getElementById("navbarColor02" );
-        if (Ele1.className=="navbar-toggler collapsed"){
-            Ele1.className="navbar-toggler";
-            Ele2.className="navbar-collapse collapse show"
-        }else{
-            Ele1.className="navbar-toggler collapsed";
-            Ele2.className="navbar-collapse collapse"
-        }
-    }
-</script>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-static-top">
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="../home">DublinBus</a>
-            <button  class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../home">Home
-                            <span class="visually-hidden">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../journeyPlanner/">JourneyPlanner</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../Routes/">Routes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../CovidInfo/">Covid Info</a>
-                    </li>
-
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">LoginIn</a>
-                        <div class="dropdown-menu" data-bs-popper="none" id="dropdown-menu">
-                            <a class="dropdown-item" href="#"></a>
-                            <a class="dropdown-item" href="../LeapCard/">LeapCard</a>
-                            <a class="dropdown-item" href="#">Log Out</a>
-                            <a class="dropdown-item" href="#">BookMarks</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Sign Up</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
         </div>
-    </nav>
-</header>
+    </div>
+</nav>
+
+

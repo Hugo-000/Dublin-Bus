@@ -6,9 +6,10 @@
             by included on all of the pages.
         -->
         <meta charset="utf-8">
-        <title>Dublin Bus Journey Planner</title>
-        <meta name="description" content="FirstIndex.html">
-        <meta name="authors" content="Jennifer, Cho, Ellen, and Shihau">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <meta name="description" content="base.html">
+        <meta name="authors" content="Jennifer, Cho, Ellen, and Shihao">
 
 
         <link
@@ -53,13 +54,15 @@
         
 
         {% load static %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dublinBusHybrid/style.css' %}"/>
+        <link rel="icon" href={% static 'images/favicon.ico' %} />
         <script src= {% static 'js/map.js' %}></script>
+        <script src= {% static 'js/jquery.min.js' %}></script>
+        <script src= {% static 'js/bootstrap.bundle.min.js' %}></script>
         <link rel="stylesheet" type="text/css" href={% static 'css/style.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.min.css' %}/>
-        <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <script src= {% static 'js/jquery.min.js' %}></script>
+        
+        
         
     </head>
 
@@ -73,7 +76,7 @@
 
         <!--This section includes the jinja blocks where web page information will go.
             i.e. paragraphs, headings, images etc.-->
-        <div class='container'>
+        <div class='container_main'>
             {% block content %}{% endblock %}
         </div>
 

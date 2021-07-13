@@ -87,5 +87,7 @@ class AllStopsWithRoute(models.Model):
     stop_headsign = models.CharField(max_length=45, null=True)
     route_number = models.CharField(max_length=45, null=True)
     stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
+    direction = models.CharField(max_length=10, null=True)
+
 
 

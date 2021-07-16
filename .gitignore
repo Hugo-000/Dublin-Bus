@@ -3,3 +3,5 @@
 **/static/bundles**
 **.swp
 **/webpack-stats.json
+routes/
+*.xml

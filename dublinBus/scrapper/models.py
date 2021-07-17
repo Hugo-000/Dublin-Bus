@@ -93,4 +93,14 @@ class AllStopsWithRoute(models.Model):
     stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
     direction = models.CharField(max_length=10, null=True)
 
+class Covid(models.Model):
+    dt = models.CharField(max_length=45, primary_key=True)
+    icu = models.CharField(max_length=45, default="0", null=True)
+    totalConfirmedCases = models.CharField(max_length=45, default="0", null=True)
+    totalDeaths = models.CharField(max_length=45, default="0", null=True)
+    confirmedCases = models.CharField(max_length=45, default="0", null=True)
+    confirmedDeaths = models.CharField(max_length=45, default="0",null=True)
+    statisticsProfileDt = models.CharField(max_length=45, default="0", null=True)
+    fid = models.CharField(max_length=45, default="0", null=False)
+    hospitalisedCases = models.CharField(max_length=45,default="0", null=True)
 

@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.template import loader, Context, Template
 from django.views.generic import View
 from django.forms.models import model_to_dict
-
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from .forms import JourneyPlannerForm
 
 from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather
+
+#from G1_RP_Dublin-Bus-App.initial_basic_modelling.modelling_per_line.py import open_csv_create_models
 
 import datetime
 
@@ -125,3 +127,20 @@ class LeapCard(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'leapCard.html')
 
+
+class PickleTest(View):
+    def get(self, request):
+        return render(request, 'pickleTest.html', {'form': JourneyPlannerForm()})
+
+    def post(self, request, *args, **kwargs):
+        form = JourneyPlannerForm(request.POST)
+
+        if form.is_valid():
+            context = self.information(form)
+            print('Context', context)
+            return render(request, 'pickleTest.html', context= context)
+        else:
+            return render(request, 'pickleTest.html', { 'form': form })
+
+    def information(self, form):
+        fd = form.cleaned_data

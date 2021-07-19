@@ -9,10 +9,12 @@ from users.forms import CustomUserCreationForm
 def dashboard(request):
     return render(request, "users/dashboard.html")
 
+
 def register(request):
     if request.method == "GET":
         return render(
-            request, "users/register.html",
+            request, 
+            "users/register.html",
             {"form": CustomUserCreationForm}
         )
     elif request.method == "POST":
@@ -23,3 +25,10 @@ def register(request):
             user.save()
             login(request, user)
             return redirect(reverse("dashboard"))
+    else:
+        form = CustomUserCreationForm()
+    return render(
+        request, 
+        "users/register.html",
+        {"form":form}
+    )

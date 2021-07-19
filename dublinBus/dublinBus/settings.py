@@ -35,7 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'scrapper',
     'users',
-    "social_django",
+    'social_django',
     'dublinBusHybrid.apps.DublinbushybridConfig',
     'django_crontab',
     'django.contrib.admin',
@@ -44,9 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webpack_loader',
-    
+    'webpack_loader',    
 ]
+
 #Automated scripting for every 3 hours and 10 mins
 CRONJOBS = [
     ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
@@ -142,6 +142,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR + "/static"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

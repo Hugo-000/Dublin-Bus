@@ -10,6 +10,7 @@
     <div class="content-body">
         <div class="content" style="height:585px ;overflow:auto">
             <p>Last 14 days statistics of covid data as at {{covid.dt}}</p>
+            <div>Due to the current disruption of HSE IT systems, some indicators might not be provided.</div>
             <section class="header">
                 <style>
                                             .overall-data{
@@ -19,7 +20,6 @@
                                             }
                                             .font{
                                                 color: white;
-                                                font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
                                                 font-size: large;
                                             }
                 </style>
@@ -56,14 +56,6 @@
                 borderWidth: 2,
                 pointRadius: 1,
                 pointhitRadius:1},
-                {
-                label: 'Daily Confirmed Deaths',
-                data: [{% for item in covid_chart %}'{{item.confirmedDeaths}}',{% endfor %}],
-                borderColor: ['rgb(34, 43, 201)'],
-                pointBackgroundColor: 'rgb(34, 43, 201)',
-                borderWidth: 2,
-                pointRadius: 1,
-                pointhitRadius:1}
                 ]
         },
         options: {

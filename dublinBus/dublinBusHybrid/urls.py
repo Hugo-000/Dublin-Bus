@@ -8,5 +8,4 @@ urlpatterns = [
     path('Routes/', views.BusRoutes.as_view(), name='Routes'),
     path('CovidInfo/', views.CovidInfo.as_view(), name='CovidInfo'),
     path('LeapCard/', views.LeapCard.as_view(), name='LeapCard'),
-    path('pickleTest/', views.PickleTest.as_view(), name='pickleTest'),
 ]

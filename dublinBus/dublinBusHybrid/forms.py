@@ -42,6 +42,12 @@ class JourneyPlannerForm(forms.Form):
         start = cd.get('start_point')
         destination = cd.get('destination_point')
 
+        # is the origin in the database under User:
+        #     if yes then retrun that address
+
+        # if destiantion is the database under user:
+        #     return that address
+
         # if len(Stops.objects.filter(stop_name=start)) == 0:
         #     self.add_error('start_point', 'No starting stop with this name')
 
@@ -55,7 +61,7 @@ class JourneyPlannerForm(forms.Form):
             self.add_error('travel_date', 'Invalid date - date of travl is in past')
 
         # Check if a date is in the allowed range (+4 weeks from today).
-        if travel_date and travel_date > today + datetime.timedelta(days=4):
+        if travel_date and travel_date > today + datetime.timedelta(days=5):
             self.add_error('travel_date', 'Invalid date - date of travel is too far in the future')
         
         travel_time = cd.get('travel_time')

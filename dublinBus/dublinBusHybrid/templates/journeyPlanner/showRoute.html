@@ -18,7 +18,10 @@
             <!-- This section needs to get the weather data for the station selected and return it to the screen -->
             
             <div>
-                <img src="http://openweathermap.org/img/wn/{{forecast_weather.weather_icon}}@2x.png">
+                {% load static %}
+                {% with ''|add:weather_icon as image_static %}
+                <img style="width:80px;height:80px" src={% static image_static %} />
+                {% endwith %}
                 {{forecast_weather.weather_main}},
                 {{forecast_weather.temp}}&deg;C,
                 Dublin, Ireland

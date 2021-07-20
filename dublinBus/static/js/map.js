@@ -39,7 +39,6 @@ function addControls(map) {
         navigator.geolocation.getCurrentPosition(
             // set the latitude and longitude of the map restrictions
             ({ coords: { latitude, longitude } }) => {
-
             //Due to the area of the map is restricted, there needs to check if the user is near the staions
             if (latitude > 53.365 || latitude < 53.325 || longitude > -6.2307 || longitude < -6.3101) {
                 // if user not within the coordinates fro restriction produce an error
@@ -141,6 +140,7 @@ function getRoute(map) {
         console.log(userUnixDate)
         console.log(new Date(1626081706 * 1000))
         const requestOpts = {
+
             origin,
             destination,
             travelMode: google.maps.DirectionsTravelMode.TRANSIT,
@@ -172,6 +172,7 @@ function handleRouteResponse(directionsDisplay, response, status) {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'X-CSRFToken': getCSRFToken()
             },
+
             body: JSON.stringify({
                 'temp':1, 
                 'feels_like':15, 

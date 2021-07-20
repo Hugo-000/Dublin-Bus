@@ -39,6 +39,7 @@ class ForecastWeather(models.Model):
     dt = models.CharField(max_length=45, primary_key=True)
     dt_iso = models.CharField(max_length=45, null=True)
     temp = models.CharField(max_length=45, null=True)
+    feels_like = models.CharField(max_length=45, null=True)
     temp_min = models.CharField(max_length=45, null=True)
     temp_max = models.CharField(max_length=45, null=True)
     pressure = models.CharField(max_length=45, null=True)
@@ -50,6 +51,9 @@ class ForecastWeather(models.Model):
     weather_main = models.CharField(max_length=45, null=True)
     weather_description = models.CharField(max_length=45, null=True)
     weather_icon = models.CharField(max_length=45, null=True)
+    rain_1h = models.CharField(max_length=45, default="0", null=True)
+    weekday = models.CharField(max_length=10, null=True)
+    month = models.CharField(max_length=10, null=True)
 
     def __str__(self):
         result = (
@@ -87,5 +91,16 @@ class AllStopsWithRoute(models.Model):
     stop_headsign = models.CharField(max_length=45, null=True)
     route_number = models.CharField(max_length=45, null=True)
     stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
+    direction = models.CharField(max_length=10, null=True)
 
+class Covid(models.Model):
+    dt = models.CharField(max_length=45, primary_key=True)
+    icu = models.CharField(max_length=45, default="0", null=True)
+    totalConfirmedCases = models.CharField(max_length=45, default="0", null=True)
+    totalDeaths = models.CharField(max_length=45, default="0", null=True)
+    confirmedCases = models.CharField(max_length=45, default="0", null=True)
+    confirmedDeaths = models.CharField(max_length=45, default="0",null=True)
+    statisticsProfileDt = models.CharField(max_length=45, default="0", null=True)
+    fid = models.CharField(max_length=45, default="0", null=False)
+    hospitalisedCases = models.CharField(max_length=45,default="0", null=True)
 

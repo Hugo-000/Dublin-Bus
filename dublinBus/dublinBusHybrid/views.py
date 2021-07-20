@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from .forms import JourneyPlannerForm
 
-from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather
+from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid
 
 import datetime
 
@@ -118,8 +118,14 @@ class BusRoutes(View):
         return render(request, 'routes.html')
 
 class CovidInfo(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'covidInfo.html')
+    def get(self, request):
+        try:
+            covid_stat = Covid.objects.all().order_by('-dt')[0]
+            #Get the last 14 dates records in DB
+            covid_chart = Covid.objects.all().order_by('-dt')[:14][::-1]
+        except Covid.DoesNotExist:
+            raise Http404("Covid data does not exist")
+        return render(request, 'covidInfo.html', {'covid': covid_stat,'covid_chart':covid_chart})
 
 class LeapCard(View):
     def get(self, request, *args, **kwargs):

@@ -28,7 +28,7 @@ def open_csv_create_models(path):
     #declare continous and cat cols
     cat_cols = ['DelayedArr', 'DelayedDep', 'weather_main']
     numeric = ['JourneyTime','temp','humidity','wind_speed','rain_1h','clouds_all','DIRECTION']
-   
+
 
     
     #open each file
@@ -46,7 +46,7 @@ def open_csv_create_models(path):
                 df[column]= df[column].astype('float32')
 
             for column in cat_cols:   
-                 df[column]= df[column].astype('category')
+                df[column]= df[column].astype('category')
 
             #create new cols for modelling
             df['Dates']=df['Dates'].apply(pd.to_datetime)
@@ -54,7 +54,7 @@ def open_csv_create_models(path):
             df['Hour']= df['Dates'].dt.hour
             df['Month']= df['Dates'].dt.month
             
-           
+        
 
             df = df.drop(["Dates"], axis = 1)
             
@@ -66,7 +66,7 @@ def open_csv_create_models(path):
             df["weather_main"].replace(
                 {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}, inplace=True)
             
-           
+        
 
             df_modelling = df.drop(['DelayedArr','DelayedDep','Weekday','weather_main'],axis=1)
 
@@ -74,7 +74,7 @@ def open_csv_create_models(path):
             for column in cols:
                 df_modelling[column]= df_modelling[column].astype('int32')
 
-           
+        
             y = df_modelling["JourneyTime"]            
             X = df_modelling.drop(["JourneyTime"],1)
             
@@ -91,7 +91,7 @@ def open_csv_create_models(path):
                 
                 
             model = XGBRegressor().fit(X_train, y_train)
-           
+        
             xgb_train_predictions = model.predict(X_train)
             #get predictions on test set
             XGB_predictions_test = model.predict(X_test)
@@ -108,7 +108,7 @@ def open_csv_create_models(path):
             with open('initial_basic_models.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([bus_line, mae_train, mae, mse, rmse, r2, mpe])
-          
+
             with open( bus_line, "wb") as f:
                 pickle.dump(model, f)
             print(bus_line, "Done.")

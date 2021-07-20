@@ -1,22 +1,23 @@
-html{
+html {
     height:100%;
 }
-body{
+body {
     min-height:100%;
     margin:0;
     padding:0;
     position:relative;
 }
 
-.container_main{
-    padding-bottom:250px !important;
-}
-footer{
+footer {
     position:absolute;
     bottom:0;
     height: 230px;
     width:100%;
     background-color: #082a44;
+}
+
+.container_main {
+    padding-bottom:250px !important;
 }
 
 .row-content li{

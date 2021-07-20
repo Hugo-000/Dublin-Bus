@@ -9,7 +9,7 @@ from .forms import JourneyPlannerForm,LeapCradForm
 
 from .leap_card import leap_info
 
-from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather
+from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid
 
 import datetime
 
@@ -55,7 +55,10 @@ class JourneyPlanner(View):
         print('CURRENT WEATHER', current_weather)
         
         forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
+        weather = model_to_dict(forecast_weather)
+        iconFromDB = weather.get("weather_icon")
 
+        iconToHTML = self.iconMatching(iconFromDB)
         context = {
             'num_stops': num_stops,
             'num_routes': num_routes,
@@ -67,9 +70,36 @@ class JourneyPlanner(View):
             'user_forecast_datetime': user_forecast_datetime,
             'current_weather' : model_to_dict(current_weather),
             'forecast_weather' : model_to_dict(forecast_weather),
+            'weather_icon': iconToHTML,
             'userUnix': user_unix_time
         }
         return context
+
+    def iconMatching(self,key):
+        dict = {
+            "01n":"images/01d.png",
+            "01d":"images/01n.png",
+            "02n":"images/02.png",
+            "02d": "images/02.png",
+            "03d": "images/03.png",
+            "03n": "images/03.png",
+            "04d": "images/04.png",
+            "04n": "images/04.png",
+            "09d": "images/09.png",
+            "09n": "images/09.png",
+            "10d": "images/10.png",
+            "10n": "images/10.png",
+            "11d": "images/11.png",
+            "11n": "images/11.png",
+            "13d": "images/13.png",
+            "13n": "images/13.png",
+            "50d": "images/50.png",
+            "50n": "images/50.png",
+        }
+        icon = dict.get(key)
+        return icon
+
+
 
     def forecastDatetime(self, form):
         fd = form.cleaned_data
@@ -151,8 +181,14 @@ class BusRoutes(View):
         
 
 class CovidInfo(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'covidInfo.html')
+    def get(self, request):
+        try:
+            covid_stat = Covid.objects.all().order_by('-dt')[0]
+            #Get the last 14 dates records in DB
+            covid_chart = Covid.objects.all().order_by('-dt')[:14][::-1]
+        except Covid.DoesNotExist:
+            raise Http404("Covid data does not exist")
+        return render(request, 'covidInfo.html', {'covid': covid_stat,'covid_chart':covid_chart})
 
 class LeapCard(View):
 

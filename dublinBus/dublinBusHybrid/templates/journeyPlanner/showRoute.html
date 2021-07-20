@@ -2,18 +2,48 @@
 
 {% block subcontent %}
 
-<h1>Journey Information:</h1>
+<h1 class="heading">Journey Information:</h1>
     <ul>
         <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
         <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
-        <li><strong>Starting Stop:</strong> {{ start }}</li>
+        <li><strong>Starting:</strong> {{ start }}</li>
         <li><strong>Destination:</strong> {{ destination }}</li>
         <li><strong>Travel Date:</strong> {{ travel_date }}</li>
-        <li><strong>Travel time:</strong> {{ travel_time }}</li>
-        <li><strong>Forecast Datetime:</strong>{{user_forecast_datetime}}</li>
-        <li><strong>Current Weather:</strong>{{current_weather}}</li>
-        <li><strong>Forecast Weather:</strong>{{forecast_weather}}</li>
+        <li><strong>Departure time:</strong> {{ travel_time }}</li>
     </ul>
+
+    <!-- Section to show the current weather data -->
+    <div >
+        <div >
+            <!-- This section needs to get the weather data for the station selected and return it to the screen -->
+            
+            <div>
+                {% load static %}
+                {% with ''|add:weather_icon as image_static %}
+                <img style="width:80px;height:80px" src={% static image_static %} />
+                {% endwith %}
+                {{forecast_weather.weather_main}},
+                {{forecast_weather.temp}}&deg;C,
+                Dublin, Ireland
+            </div>
+        </div>
+        <div>
+            <div>
+                <span>Description:</span>
+                <span>{{forecast_weather.weather_description}}</span>
+            </div>
+            <div>
+                <span>Humidity:</span>
+                <span>{{forecast_weather.humidity}}&#37;</span>
+            </div>
+            <div>
+                <span>Wind:</span>
+                <span>{{forecast_weather.wind_speed}} km/hr</span>
+            </div>
+
+        </div>
+    </div> 
+
     {{userUnix | json_script:"userUnixDate" }}
 
 

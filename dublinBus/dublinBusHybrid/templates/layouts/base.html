@@ -7,7 +7,7 @@
         -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+	      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
         <meta name="description" content="base.html">
         <meta name="authors" content="Jennifer, Cho, Ellen, and Shihao">
 
@@ -46,15 +46,11 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
             async
         ></script>
-
-        
-        
-        
-        
         
 
         {% load static %}
         <link rel="icon" href={% static 'images/favicon.ico' %} />
+
         <script src= {% static 'js/map.js' %}></script>
         <script src= {% static 'js/jquery.min.js' %}></script>
         <script src= {% static 'js/bootstrap.bundle.min.js' %}></script>
@@ -83,6 +79,7 @@
         </div>
 
         <!--Like the header the below code inserts the footer file into the page template-->
+    
         {% include 'partials/footer.html' %}
     </body>
 </html>

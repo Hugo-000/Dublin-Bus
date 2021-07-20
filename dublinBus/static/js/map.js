@@ -4,6 +4,9 @@ function initMap() {
     // Creates the map //
     const map = createMap();
 
+    // If there is no map created then do nothing
+    if (!map) return;
+
     // prints the information pertaining to the map in the console //
     console.log(map);
 
@@ -59,9 +62,13 @@ function addControls(map) {
     });
 }
 function createMap() {
+    const element = document.getElementById("map");
+
+    if (!element) return;
+    
     // build a map in night time mode
     // assign the map to the element identified as map
-    return new google.maps.Map(document.getElementById("map"), {
+    return new google.maps.Map(element, {
         zoom: 14,
         center: { lat: 53.349804, lng: -6.260310 },
         /*Disable the default map ui*/

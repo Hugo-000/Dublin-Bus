@@ -35,18 +35,18 @@ class JourneyPlanner(View):
     def post(self, request, *args, **kwargs):
         if request.content_type == "application/json":
             request_body = self.fetchJSON(request.body)
-            # print('request_body', request_body)
+            print('request_body', request_body)
 
             inputValues = self.getInputValues(request_body)
 
-            # print('*************************')
-            # print()
-            # print('inputValues', type(inputValues), inputValues)
-            # print()
-            # print('*************************')
+            print('*************************')
+            print()
+            print('inputValues', type(inputValues), inputValues)
+            print()
+            print('*************************')
             
             predicted_data = self.getPredictedEstimatedTime("130", "IB", inputValues)
-            # print("PREDICTED DATA", predicted_data)
+            print("PREDICTED DATA", predicted_data)
             return JsonResponse({})
         
         else:
@@ -55,11 +55,11 @@ class JourneyPlanner(View):
             if form.is_valid():
                 context = self.info(form)
 
-                # print('*************************')
-                # print()
-                # print('Context', context)
-                # print()
-                # print('*************************')
+                print('*************************')
+                print()
+                print('Context', context)
+                print()
+                print('*************************')
                 return render(request, 'journeyPlanner/showRoute.html', context= context)
             else:
                 return render(request, 'journeyPlanner.html', { 'form': form })
@@ -71,13 +71,13 @@ class JourneyPlanner(View):
         travel_date = fd.get('travel_date')
         travel_time = fd.get('travel_time')
 
-        # print('*************************')
-        # print()
-        # print('type info treavel_date', type(travel_date))
-        # print()
-        # print('type info travel_time', type(travel_time))
-        # print()
-        # print('*************************')
+        print('*************************')
+        print()
+        print('type info treavel_date', type(travel_date))
+        print()
+        print('type info travel_time', type(travel_time))
+        print()
+        print('*************************')
 
         user_unix_time = self.toUnix(form)
 
@@ -85,11 +85,20 @@ class JourneyPlanner(View):
             weather = self.getCurrentWeather()
         else:
             weather = self.getForecastWeather(travel_date, travel_time)
-        
-        forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
-        weather = model_to_dict(forecast_weather)
-        iconFromDB = weather.get("weather_icon")
 
+        weather = model_to_dict(weather)
+
+        print('*************************')
+        print()
+        print('Weather Dictionary', type(weather), weather)
+        print('Weather icon', weather['weather_icon'])
+        print()
+        print('*************************')        
+        
+        # user_forecast_datetime = self.forecastDatetime(travel_date, travel_time)
+        # forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
+        # weather = model_to_dict(forecast_weather)
+        iconFromDB = weather["weather_icon"]
         iconToHTML = self.iconMatching(iconFromDB)
 
         context = {
@@ -98,10 +107,8 @@ class JourneyPlanner(View):
             'travel_date': travel_date,
             'travel_time': travel_time,
             'form': form,
-            'weather' : model_to_dict(weather),
-            'user_forecast_datetime': user_forecast_datetime,
-            'current_weather' : model_to_dict(current_weather),
-            'forecast_weather' : model_to_dict(forecast_weather),
+            'weather' : weather,
+            # 'user_forecast_datetime': user_forecast_datetime,
             'weather_icon': iconToHTML,
             'userUnix': user_unix_time
         }
@@ -122,15 +129,15 @@ class JourneyPlanner(View):
         travel_time = request_body['travel_time']
         travel_datetime = datetime.datetime.combine(travel_date, travel_time)
 
-        # print('*************************')
-        # print()
-        # print('type getInputValues treavel_date', type(travel_date))
-        # print()
-        # print('type getInputValues travel_time', type(travel_time))
-        # print()
-        # print('type getInputValues travel_datetime', type(travel_datetime), travel_datetime)
-        # print()
-        # print('*************************')
+        print('*************************')
+        print()
+        print('type getInputValues treavel_date', type(travel_date))
+        print()
+        print('type getInputValues travel_time', type(travel_time))
+        print()
+        print('type getInputValues travel_datetime', type(travel_datetime), travel_datetime)
+        print()
+        print('*************************')
 
         if travel_date == '' and travel_time == '':
             weather = self.getCurrentWeather()
@@ -144,25 +151,25 @@ class JourneyPlanner(View):
         weekday = travel_datetime.strftime('%w')
         if weekday == '0':
             weekday = '7'
-        # weekdayName = travel_datetime.strftime('%a')
-        # print('*************************')
-        # print()
-        # print('Month', month)
-        # print('Hour', hour)
-        # print('weekday', type(weekday), weekday)
-        # print('weekday name', weekdayName)
-        # print()
-        # print('*************************')
+        weekdayName = travel_datetime.strftime('%a')
+        print('*************************')
+        print()
+        print('Month', month)
+        print('Hour', hour)
+        print('weekday', type(weekday), weekday)
+        print('weekday name', weekdayName)
+        print()
+        print('*************************')
 
         weatherMainDict = {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}
 
         weather['weather_main'] = weatherMainDict[weather['weather_main']]
 
-        # print('*************************')
-        # print()
-        # print('weather main', weather['weather_main'])
-        # print()
-        # print('*************************')
+        print('*************************')
+        print()
+        print('weather main', weather['weather_main'])
+        print()
+        print('*************************')
 
 
         InputValues = [int(weather["temp"]), 
@@ -246,25 +253,25 @@ class JourneyPlanner(View):
     def fetchJSON(self, request_body):
         info = json.loads(request_body)
 
-        # print('*************************')
-        # print()
-        # print('type of info', type(info))
-        # print()
-        # print('*************************')
-        # print()
-        # print('Type Travel Date before strf', type(info['travel_date']), info['travel_date'] )
-        # print('Type Travel Time before strf', type(info['travel_time']), info['travel_time'] )
-        # print()
-        # print('*************************')
+        print('*************************')
+        print()
+        print('type of info', type(info))
+        print()
+        print('*************************')
+        print()
+        print('Type Travel Date before strf', type(info['travel_date']), info['travel_date'] )
+        print('Type Travel Time before strf', type(info['travel_time']), info['travel_time'] )
+        print()
+        print('*************************')
 
         info['travel_time'] = datetime.datetime.strptime(info['travel_time'], '%H:%M:%S').time()
         info['travel_date'] = datetime.datetime.strptime(info['travel_date'], '%d/%m/%Y').date()
 
-        # print()
-        # print('Type Travel Date after strf', type(info['travel_date']), info['travel_date'] )
-        # print('Type Travel Time after strf', type(info['travel_time']), info['travel_time'] )
-        # print()
-        # print('*************************')
+        print()
+        print('Type Travel Date after strf', type(info['travel_date']), info['travel_date'] )
+        print('Type Travel Time after strf', type(info['travel_time']), info['travel_time'] )
+        print()
+        print('*************************')
 
         # print(info)
         print(info)
@@ -272,11 +279,11 @@ class JourneyPlanner(View):
 
     def getPredictedEstimatedTime(self, route, direction, inputValues):
 
-        # print('*************************')
-        # print()
-        # print('inputValues', type(inputValues), inputValues)
-        # print()
-        # print('*************************')
+        print('*************************')
+        print()
+        print('inputValues', type(inputValues), inputValues)
+        print()
+        print('*************************')
         
         filename = str(route) + "_" + str(direction)
         path = "../modelsNew/"+filename

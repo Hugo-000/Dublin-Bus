@@ -9,15 +9,16 @@ body{
 }
 
 .container_main{
-    padding-bottom:10px !important;
+    padding-bottom:250px !important;
 }
 footer{
     position:absolute;
     bottom:0;
+    height: 230px;
     width:100%;
-    height:200px;
-    background-color: #2d363f;
+    background-color: #082a44;
 }
+
 
 .row-content li{
     list-style:none; 

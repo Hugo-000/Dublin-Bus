@@ -39,6 +39,7 @@ function addControls(map) {
         navigator.geolocation.getCurrentPosition(
             // set the latitude and longitude of the map restrictions
             ({ coords: { latitude, longitude } }) => {
+
             //Due to the area of the map is restricted, there needs to check if the user is near the staions
             if (latitude > 53.365 || latitude < 53.325 || longitude > -6.2307 || longitude < -6.3101) {
                 // if user not within the coordinates fro restriction produce an error
@@ -139,7 +140,7 @@ function getRoute(map) {
         console.log(document.getElementById("userUnixDate").textContent)
         console.log(userUnixDate)
         console.log(new Date(1626081706 * 1000))
-        const request = {
+        const requestOpts = {
             origin,
             destination,
             travelMode: google.maps.DirectionsTravelMode.TRANSIT,
@@ -155,14 +156,13 @@ function getRoute(map) {
 
         console.log('directions', directionsDisplay)
 
-        directionsService.route(request, handleRouteResponse);
+        directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
     } catch(e) {
         console.log('e', e);
     }
-
 }
 
-function handleRouteResponse(response, status) {
+function handleRouteResponse(directionsDisplay, response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
         fetch('/dublinBusHybrid/journeyPlanner/', {
             method: 'POST',
@@ -172,7 +172,22 @@ function handleRouteResponse(response, status) {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'X-CSRFToken': getCSRFToken()
             },
-            body: JSON.stringify({test: 'hello'})
+            body: JSON.stringify({
+                'temp':1, 
+                'feels_like':15, 
+                'humidity':18, 
+                'wind_speed':50, 
+                'rain_1h':20, 
+                'clouds_all':0,
+                'weather_main':0,
+                'weekday':2, 
+                'Hour':12, 
+                'Month':7,
+                'Origin': 'UCD',
+                'Destination': 'O\'Connell Street',
+                'travel_date': document.querySelector('#id_travel_date').value,
+                'travel_time': document.querySelector('#id_travel_time').value + ':00'
+            })
         }).then(r => console.log('r', r));
 
         directionsDisplay.setDirections(response);

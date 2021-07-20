@@ -82,5 +82,5 @@ for each in forecast_weather['list']:
     except Exception as e:
         print(e)
         continue
-
+        
 print("Finished")

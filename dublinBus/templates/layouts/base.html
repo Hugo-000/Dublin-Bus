@@ -7,21 +7,23 @@
         -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
         <meta name="description" content="base.html">
         <meta name="authors" content="Jennifer, Cho, Ellen, and Shihao">
-
 
         <link
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
             rel="stylesheet"
         />
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" 
+        />
+        
         <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap"
             rel="stylesheet"
         />
+        
         <link
             href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap"
             rel="stylesheet"
@@ -30,9 +32,11 @@
         <link 
             rel="preconnect" href="https://fonts.googleapis.com"
         />
+        
         <link 
             rel="preconnect" href="https://fonts.gstatic.com" crossorigin
         />
+        
         <link 
             href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"
         />
@@ -47,19 +51,15 @@
             async
         ></script>
 
-
         {% load static %}
         <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <script src= {% static 'js/map.js' %}></script>
         <script src= {% static 'js/jquery.min.js' %}></script>
         <script src= {% static 'js/bootstrap.bundle.min.js' %}></script>
+        <script defer src= {% static 'js/map.js' %}></script>
         
         <link rel="stylesheet" type="text/css" href={% static 'css/style.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.min.css' %}/>
-        
-        
-        
     </head>
 
     <body>
@@ -68,7 +68,6 @@
         The header file includes the link to the navbar
         -->
         {% include 'partials/header.html' %}
-
 
         <!--This section includes the jinja blocks where web page information will go.
             i.e. paragraphs, headings, images etc.-->

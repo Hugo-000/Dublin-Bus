@@ -129,8 +129,7 @@
             //document.getElementById("sidebar").innerHTML ="<b>Polyline:   " + response.routes[0].overview_polyline  + "</b> <hr/> Path:"+response.routes[0].overview_path;
             //directionsRenderer.setDirections(response);
             //showSteps(response, markerArray, stepDisplay, map);
-        })
-        .catch((e) => window.alert("Directions request failed  " + status));
+        });
     }
     function showSteps(directionResult, markerArray, stepDisplay, map) {
 
@@ -164,10 +163,42 @@
     <strong style="color:black">Routes:</strong>
     <input list="routes" id="route" class="input">
         <datalist  id="routes">
-            {% for route in routes.keys() %}
-                <!--data-value route start position   data-id route end position-->
-                <option value={{route}} data-value='53.3699364344031,-6.25410694084961' data-id='53.3884303639479,-6.28048792293041'>
+            {% for route_name,route in routes.items %}
+                <option value= {{ route_name }}
+                    {% for stop_sequence,stop in route.items %}
+                        {% if forloop.first %} 
+                            {% for stop_index,stop_info in stop.items %}
+                                {% if forloop.last %}
+                                    data-value={{stop_info}}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        
+                        {% if forloop.last %} 
+                            {% for stop_index,stop_info in stop.items %}
+                                {% if forloop.last %}
+                                    data-id={{stop_info}}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                >
             {% endfor %}
+
+
+
+            
+                <!--
+                    
+                    
+                    data-value route start position   data-id route end position
+                   
+                   
+                -->
+                <option value="route" 
+                        data-value='53.3699364344031,-6.25410694084961' 
+                        data-id='53.3884303639479,-6.28048792293041'>
+            
             `Select your route`
         </datalist>
     <input id="search_route" type="button" value="Display It" />
@@ -175,7 +206,8 @@
 </div>
 
 <div id="map"></div>
-<div id="sidebar" style="color:black"></div>
+<div id="sidebar" style="color:black,background-color:white"></div>
+
     
 
 <script

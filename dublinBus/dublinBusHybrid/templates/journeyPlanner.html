@@ -1,9 +1,9 @@
-{% extends 'layoutsDB/base.html' %}
+{% extends 'layouts/base.html' %}
 
 {% block content %}
 
 {% load static %}
-<script src= {% static 'js/map.js' %}></script>
+<!-- <script src= {#% static 'js/map.js' %#}></script> -->
 
 
 <div class="container-fluid" >
@@ -22,7 +22,7 @@
 
 
         <div class="col-md-8">
-            {% include 'partialsDB/map.html'%}
+            {% include 'partials/map.html'%}
         </div>
     </div>
 </div>

@@ -92,6 +92,7 @@ class AllStopsWithRoute(models.Model):
     route_number = models.CharField(max_length=45, null=True)
     stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
     direction = models.CharField(max_length=10, null=True)
+    subRoute = models.CharField(max_length=10, null=True)
 
 class Covid(models.Model):
     dt = models.CharField(max_length=45, primary_key=True)

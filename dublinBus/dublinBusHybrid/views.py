@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
 import json
 
-from .forms import JourneyPlannerForm,LeapCradForm
+from .forms import JourneyPlannerForm
 
 from .leap_card import leap_info
 
@@ -316,41 +316,40 @@ class BusRoutes(View):
     def get(self, request, *args, **kwargs):
         routes=Routes.objects.all()
         route_number_set=set(())
-        #all_route_Info=[]
-        all_route_Info={}
-
         for route in routes:
             route_number_set.add(route.route_name)
-
-        for route_number_chosed in route_number_set:
+        #all_route_Info=[]
+        #all_route_Info={}
+        #for route_number_chosed in route_number_set:
             #route_chosed = AllStopsWithRoute.objects.raw('SELECT * FROM Dublin_Bus.scrapper_allstopswithroute inner join Dublin_Bus.scrapper_stops where scrapper_allstopswithroute.stop_id = scrapper_stops.stop_id and route_number = "'+route_number_chosed+'";')
-            route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed)
+            #route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed)
             #route_info=[]
-            route_info={}
-            for stop_chosed in route_chosed:
-                stop_coordinate=str(stop_chosed.stop.lat)+","+str(stop_chosed.stop.lng)
+            #route_info={}
+            #for stop_chosed in route_chosed:
+                #stop_coordinate=str(stop_chosed.stop.lat)+","+str(stop_chosed.stop.lng)
                 #route_info.append(stop_of_chosed_route.stop.stop_name)
                 #route_info.append(stop_coordinate)
-                route_info[stop_chosed.stop_sequence]={
-                    "stop_name":stop_chosed.stop.stop_name,
-                    "stop_coordinate":stop_coordinate,
-                    
-                    
-                }
-            all_route_Info[route_number_chosed]=route_info
+                #route_info[stop_chosed.stop_sequence]={
+                    #"stop_name":stop_chosed.stop.stop_name,
+                    #"stop_coordinate":stop_coordinate,
+                #}
+            #all_route_Info[route_number_chosed]=route_info
             #all_route_Info.append(route_info)
 
-        return render(request, 'routes.html',{ 'routes': all_route_Info,"routes_id":route_number_set})
-    #def post(self, request, *args, **kwargs):
-        allStopsWithRoute=AllStopsWithRoute.objects.all()
-        stops=Stops.objects.all()
-        form = searchRoute(request.POST)
-        if form.is_valid():
-            context = self.info(form)
-            print('Context', context)
-            return render(request, 'routes.html', context= context)
-        else:
-            return render(request, 'routes.html',{"form":form})
+        return render(request, 'routes.html',{"routes_name":route_number_set})
+    def post(self, request, *args, **kwargs):
+        routes=Routes.objects.all()
+        route_number_set=set(())
+        for route in routes:
+            route_number_set.add(route.route_name)
+        route_number_chosed = request.POST.get('route_name')
+        #route_direction=request.POST.get('direction')
+        route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed)
+        #serializers.serialize("json",route_chosed)
+        return render(request, 'routes.html',{"routes_name":route_number_set,"route_Info":route_chosed})
+
+
+
         
         
 
@@ -366,35 +365,31 @@ class CovidInfo(View):
 
 class LeapCard(View):
     def get(self, request):
-        return render(request, 'leapCard.html', {'form': LeapCradForm()})
+        return render(request, 'leapCard.html')
 
-    def post(self, request, *args, **kwargs):
-        form = LeapCradForm(request.POST)
-        if form.is_valid():
-            fd = form.cleaned_data
-            leap_username = fd.get('leap_username')
-            leap_password = fd.get('leap_password')
-            #balance=dir(leap_info(leap_username,leap_password))
-            #context = {
-                #"leap_balance" : balance["balance"],
-                #"leap_card_number" : balance["card_num"],
-                #"leap_card_status" : balance["card_status"],
-                #"leap_card_type" : balance["card_type"],
-                #"leap_credit_status" : balance["credit_status"],
-                #"leap_expiry_date" : balance["expiry_date"],
-                #"leap_issue_date" : balance["issue_date"],
-                #"leap_auto_topup" : balance["auto_topup"],
-            #}
-            context_hard = {
-                "leap_balance" : "11",
-                "leap_card_number" : "11",
-                "leap_card_status" : "11",
-                "leap_card_type" : "11",
-                "leap_credit_status" : "11",
-                "leap_expiry_date" : "11",
-                "leap_issue_date" : "11",
-                "leap_auto_topup" : "11",
-            }
-            return render(request, 'leapCard/showLeap.html', context= context_hard)
-        else:
-            return render(request, 'leapCard.html', { 'form': form })
+    def post(self, request, *args, **kwargs): 
+        leap_username = request.POST.get('leap_username')
+        leap_password = request.POST.get('leap_password')
+        #balance=dir(leap_info(leap_username,leap_password))
+        #context = {
+            #"leap_balance" : balance["balance"],
+            #"leap_card_number" : balance["card_num"],
+            #"leap_card_status" : balance["card_status"],
+            #"leap_card_type" : balance["card_type"],
+            #"leap_credit_status" : balance["credit_status"],
+            #"leap_expiry_date" : balance["expiry_date"],
+            #"leap_issue_date" : balance["issue_date"],
+            #"leap_auto_topup" : balance["auto_topup"],
+        #}
+        context_hard = {
+            "leap_balance" : "11",
+            "leap_card_number" : leap_username,
+            "leap_card_status" : "11",
+            "leap_card_type" : "11",
+            "leap_credit_status" : "11",
+            "leap_expiry_date" : "11",
+            "leap_issue_date" : "11",
+            "leap_auto_topup" : "11",
+        }
+        return render(request, 'leapCard.html', context= context_hard)
+        

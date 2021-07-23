@@ -2,68 +2,10 @@
 
 {% block content %}
 
-<style>
-    #sidebar {
-    flex-basis: 15rem;
-    flex-grow: 1;
-    padding: 1rem;
-    max-width: 30rem;
-    height: 100%;
-    box-sizing: border-box;
-    overflow: auto;
-    }
 
-    #map {
-    flex-basis: 0;
-    flex-grow: 4;
-    height: 100%;
-    }
-
-    #floating-panel {
-    position: absolute;
-    top: 10px;
-    left: 25%;
-    z-index: 5;
-    background-color: #fff;
-    padding: 5px;
-    border: 1px solid #999;
-    text-align: center;
-    font-family: "Roboto", "sans-serif";
-    line-height: 30px;
-    padding-left: 10px;
-    }
-
-    #floating-panel {
-    background-color: #fff;
-    border: 0;
-    border-radius: 2px;
-    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
-    margin: 10px;
-    padding: 0 0.5em;
-    font: 400 18px Roboto, Arial, sans-serif;
-    overflow: hidden;
-    padding: 5px;
-    font-size: 14px;
-    text-align: center;
-    line-height: 30px;
-    height: auto;
-    }
-
-    #map {
-    flex: auto;
-    }
-
-    #sidebar {
-    flex: 0 1 auto;
-    padding: 0;
-    }
-    #sidebar > div {
-    padding: 0.5rem;
-    }
-</style>
 <script>
     function initMap() {
-        //const markerArray = [];
+        const markerArray = [];
         const directionsService = new google.maps.DirectionsService();
         const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 14,
@@ -71,26 +13,49 @@
                 disableDefaultUI: true,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
         });
-        //const directionsRenderer = new google.maps.DirectionsRenderer();
-        //directionsRenderer.setMap(map); 
-        //directionsRenderer.setPanel(document.getElementById("sidebar"));
-        //const stepDisplay = new google.maps.InfoWindow();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map); 
+        directionsRenderer.setPanel(document.getElementById("sidebar"));
+        const stepDisplay = new google.maps.InfoWindow();
         const control =  document.getElementById("floating-panel");
-        const search_result=document.getElementById("sidebar");
+        //const search_result=document.getElementById("sidebar");
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(search_result);
-        let route_history = [];
-        document.getElementById("search_route").addEventListener("click", () => {
-            calculateAndDisplayRoute(directionsService, map,route_history);
-        });
+        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(search_result);
+        //let route_history = [];
+        //document.getElementById("search_route").addEventListener("click", () => {
+            //calculateAndDisplayRoute(directionsService,directionsRenderer, map,route_history);
+        //});
+        var i=0;
+        "{% for stop in route_Info %}"
+            var stop_position={
+                lat:Number("{{stop.stop.lat}}"),
+                lng:Number("{{stop.stop.lng}}"),
+            };
 
+            markerArray[i] = new google.maps.Marker({
+                position: stop_position,
+                map: map,
+                title:"{{stop.stop.stop_name}}",
+                label:"{{stop.stop_sequence}}",
+            });
+                   
+            markerArray[i].addListener("click", () => {
+                stepDisplay.setContent(
+                    '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
+                );
+                stepDisplay.open(map, marker);
+            });
+            
+            i++;
+        "{% endfor %}" 
+            
         //const onChangeHandler = function () {
         //calculateAndDisplayRoute(directionsService,map);};
         //document.getElementById("start").addEventListener("change", onChangeHandler);
         //document.getElementById("end").addEventListener("change", onChangeHandler);
-    }
-
-    function calculateAndDisplayRoute(directionsService,map,route_history) {
+    };
+/*
+    function calculateAndDisplayRoute(directionsService,directionsRenderer,map,route_history) {
         //for (let i = 0; i < markerArray.length; i++) {
             //markerArray[i].setMap(null);
         //};
@@ -125,58 +90,104 @@
                 lng: parseFloat(latlngStr[1]),
             };
             map.setCenter(latlng);
-            
-            //document.getElementById("sidebar").innerHTML ="<b>Polyline:   " + response.routes[0].overview_polyline  + "</b> <hr/> Path:"+response.routes[0].overview_path;
+            directionsRenderer.setDirections(response);
+            //document.getElementById("sidebar").innerHTML ="" + response.routes[0].overview_polyline;  
+            //+ "</b> <hr/> Path:"+response.routes[0].overview_path;
             //directionsRenderer.setDirections(response);
             //showSteps(response, markerArray, stepDisplay, map);
-        })
-        .catch((e) => window.alert("Directions request failed  " + status));
+        });
     }
     function showSteps(directionResult, markerArray, stepDisplay, map) {
-
         const myRoute = directionResult.routes[0].legs[0];
-
-            for (let i = 0; i < myRoute.steps.length; i++) {
-                const marker = (markerArray[i] =
-                markerArray[i] || new google.maps.Marker());
-                marker.setMap(map);
-                marker.setPosition(myRoute.steps[i].start_location);
-                attachInstructionText(
-                stepDisplay,
-                marker,
-                myRoute.steps[i].instructions,
-                map
-                );
-            }
+        for (let i = 0; i < myRoute.steps.length; i++) {
+            const marker = (markerArray[i] =
+            markerArray[i] || new google.maps.Marker());
+            marker.setMap(map);
+            marker.setPosition(myRoute.steps[i].start_location);
+            attachInstructionText(
+            stepDisplay,
+            marker,
+            myRoute.steps[i].instructions,
+            map
+            );
+        }
     }
+
 
     function attachInstructionText(stepDisplay, marker, text, map) {
         google.maps.event.addListener(marker, "click", () => {
-        // Open an info window when the marker is clicked on, containing the text
-        // of the step.
-        stepDisplay.setContent(text);
-        stepDisplay.open(map, marker);
-    });
-    }      
+            stepDisplay.setContent(text);
+            stepDisplay.open(map, marker);
+        });
+    };  
+*/    
 </script>
-<!--{% block subcontent %}{% endblock %}-->
+
 <div id="floating-panel">
-    <strong style="color:black">Routes:</strong>
-    <input list="routes" id="route" class="input">
-        <datalist  id="routes">
-            {% for route in routes.keys() %}
-                <!--data-value route start position   data-id route end position-->
-                <option value={{route}} data-value='53.3699364344031,-6.25410694084961' data-id='53.3884303639479,-6.28048792293041'>
-            {% endfor %}
-            `Select your route`
-        </datalist>
-    <input id="search_route" type="button" value="Display It" />
+    <form action="" method="post">
+        {% csrf_token %}
+        <strong style="color:black;background-color:white">Routes:</strong>
+        <input list="routes" id="route" class="input" name="route_name">
+            <datalist  id="routes">
+                {% for route_name in routes_name %}
+                    <option value= {{ route_name }}>
+                {% endfor %}
+                <!--
+                    { for route_name,route in routes.items }
+                        <option value= {{ route_name }}
+                            { for stop_sequence,stop in route.items }
+                                { if forloop.first } 
+                                    { for stop_index,stop_info in stop.items }
+                                        { if forloop.last }
+                                            data-value={{stop_info}}
+                                        { endif }
+                                    { endfor }
+                                { endif }
+                                
+                                { if forloop.last } 
+                                    { for stop_index,stop_info in stop.items }
+                                        { if forloop.last } 
+                                            data-id={{stop_info}}
+                                        { endif }
+                                    { endfor }
+                                { endif }
+                            { endfor }
+                        >
+                    { endfor }
+                    data-value route start position   data-id route end position   
+                -->
+                `Select your route`
+            </datalist>
+        <select name="direction">
+            <option value ="0">inbound</option>
+            <option value ="1">outbound</option>
+        </select>
+        <input id="search_route" type="submit" value="Display It" />
+    </form>
     <br/>
 </div>
 
-<div id="map"></div>
-<div id="sidebar" style="color:black"></div>
-    
+<div class="container-fluid" >
+    <div class="row"> 
+        <!--{% block subcontent %}{% endblock %}-->     
+        <div class="col-md-3" id="sidebar" style="overflow:auto;color:black;background-color:white;height:500px">
+        {% if route_Info %}
+            {% for stop in route_Info %}
+                Sequence:{{stop.stop_sequence}} &nbsp Name: {{stop.stop.stop_name}}
+                <hr>
+            {% endfor %}
+        {%else%}
+            Route Detail Here
+        {% endif%}
+        </div>
+
+        <div class="col-md-9">
+            
+            <div  id="map" style="width:100%; height:100%">map</div>
+        </div>
+    </div>
+</div>
+
 
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"

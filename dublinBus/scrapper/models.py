@@ -92,6 +92,7 @@ class AllStopsWithRoute(models.Model):
     route_number = models.CharField(max_length=45, null=True)
     stop = models.ForeignKey(Stops, on_delete=models.SET_NULL, null=True)
     direction = models.CharField(max_length=10, null=True)
+    subRoute = models.CharField(max_length=10, null=True)
 
 class Covid(models.Model):
     dt = models.CharField(max_length=45, primary_key=True)
@@ -104,3 +105,10 @@ class Covid(models.Model):
     fid = models.CharField(max_length=45, default="0", null=False)
     hospitalisedCases = models.CharField(max_length=45,default="0", null=True)
 
+class RoutePrediction(models.Model):
+    Route = models.CharField(max_length=10, null=True)
+    Direction = models.CharField(max_length=10, null=True)
+    StopOrder = models.CharField(max_length=10, null=True)
+    StopID = models.CharField(max_length=10, null=True)
+    PercentDone = models.CharField(max_length=10, null=True)
+    ID = models.CharField(max_length=45, primary_key=True)

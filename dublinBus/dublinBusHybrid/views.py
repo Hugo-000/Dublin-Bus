@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render
 from django.template import loader, Context, Template
 from django.views.generic import View
@@ -34,20 +35,15 @@ class JourneyPlanner(View):
 
     def post(self, request, *args, **kwargs):
         if request.content_type == "application/json":
-            request_body = self.fetchJSON(request.body)
-            print('request_body', request_body)
-
-            inputValues = self.getInputValues(request_body)
-
+            request_body = self.fetchJSON(request.body)            
+            estimatedTimes = self.getJourneyEstimatedRouteTimes(request_body)
+            totalBusTime = sum(estimatedTimes)
             print('*************************')
             print()
-            print('inputValues', type(inputValues), inputValues)
+            print('Total Bus Time', totalBusTime)
             print()
             print('*************************')
-            
-            predicted_data = self.getPredictedEstimatedTime("130", "IB", inputValues)
-            print("PREDICTED DATA", predicted_data)
-            return JsonResponse({})
+            return JsonResponse({'estimatedTime': totalBusTime})
         
         else:
             form = JourneyPlannerForm(request.POST)
@@ -63,6 +59,66 @@ class JourneyPlanner(View):
                 return render(request, 'journeyPlanner/showRoute.html', context= context)
             else:
                 return render(request, 'journeyPlanner.html', { 'form': form })
+
+    def getJourneyEstimatedRouteTimes(self, request_body):
+        inputValues = self.getInputValues(request_body)
+        print('*************************')
+        print()
+        print('inputValues', type(inputValues), inputValues)
+        print()
+        print('*************************')
+
+        busSteps = self.getbusInformation(request_body)
+
+        print('*************************')
+        print()
+        print('Bus Info', type(busSteps), busSteps)
+        print()
+        print('*************************')
+        
+        estimatedTimes = []
+        
+        for i in range(len(busSteps)):
+            routeNumber = busSteps[i]['routeNumber']
+            headsign = busSteps[i]['headsign']
+            direction = self.getRouteDirection(routeNumber, headsign)
+            busSteps[i]['direction'] = direction
+            print('*************************')
+            print()
+            print('direction I/O', busSteps[i]['direction']['direction'])
+            print()
+            print('*************************')
+            estimatedTimes.append(self.getPredictedEstimatedTime(routeNumber, busSteps[i]['direction']['direction'], inputValues))
+
+        print('*************************')
+        print()
+        print('Estimated Times', estimatedTimes)
+        print()
+        print('*************************')
+
+        return estimatedTimes
+    
+    
+    def getRouteDirection(self, routeNumber, headsign):
+        print('Headsign', headsign)
+        print('route number', routeNumber)
+        try:
+            direction = AllStopsWithRoute.objects.filter(route_number=routeNumber,stop_headsign=" " + headsign).first()
+            direction = model_to_dict(direction)
+            print('*************************')
+            print()
+            print('direction', direction)
+            print()
+            print('*************************')
+
+            return direction
+        except AllStopsWithRoute.DoesNotExist:
+            print('*************************')
+            print()
+            print('direction', 'did not work')
+            print()
+            print('*************************')
+            return None
 
     def info(self, form):
         fd = form.cleaned_data
@@ -119,9 +175,13 @@ class JourneyPlanner(View):
         return current_weather
 
     def getForecastWeather(self, travel_date, travel_time):
-        user_forecast_datetime = self.forecastDatetime(travel_date, travel_time)
-        forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
-        return forecast_weather
+        try:
+            user_forecast_datetime = self.forecastDatetime(travel_date, travel_time)
+            print(user_forecast_datetime)
+            forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
+            return forecast_weather
+        except ForecastWeather.DoesNotExist:
+            return None
     
     def getInputValues(self, request_body):
         # info = self.fetchJSON(request_body)
@@ -171,7 +231,6 @@ class JourneyPlanner(View):
         print()
         print('*************************')
 
-
         InputValues = [int(weather["temp"]), 
                         int(weather['feels_like']), 
                         int(weather['humidity']),  
@@ -185,6 +244,32 @@ class JourneyPlanner(View):
         ]
 
         return InputValues
+
+    def getbusInformation(self, request_body):
+        journeySteps = request_body['Steps']
+        j = 0
+        busSteps = {}
+        for i in range(len(journeySteps)):
+            temp = journeySteps[i]
+            if 'transit' in temp:
+                transit = temp['transit']
+                routeNumber = (transit['line']['short_name'])
+                headsign = (transit['headsign'])
+                numStop = (transit['num_stops'])
+                busNumber = (j)
+                busSteps[busNumber] = {'routeNumber':routeNumber, 'headsign':headsign, 'numStop':numStop}
+                j += 1
+            else:
+                print('transit not in step', i)
+            i+=1
+                
+        print('*************************')
+        print()
+        print('Bus Steps', busSteps)
+        print()
+        print('*************************')
+
+        return busSteps
 
     def iconMatching(self,key):
         dict = {
@@ -281,11 +366,19 @@ class JourneyPlanner(View):
 
         print('*************************')
         print()
-        print('inputValues', type(inputValues), inputValues)
+        print('getPredictedEstimatedTime')
+        print()
+        print('*************************')
+        print()
+        print('inputValues', inputValues)
+        print()
+        print('Route', route)
+        print()
+        print('Direction', direction)
         print()
         print('*************************')
         
-        filename = str(route) + "_" + str(direction)
+        filename = str(route) + "_" + str(direction) + "B"
         path = "../modelsNew/"+filename
 
         cwd = os.getcwd()
@@ -294,6 +387,8 @@ class JourneyPlanner(View):
         if os.path.isfile(path):
             print("success")
             with open(path, 'rb') as file:  
+                # arguments used to train the model
+                #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month'
                 busRoutePickleModel = pickle.load(file)
 
                 input_vals = np.array(inputValues)
@@ -303,8 +398,6 @@ class JourneyPlanner(View):
                 print(prediction, "mins")
 
                 return prediction
-                # arguments used to train the model
-                #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month'
 
             print(busRoutePickleModel)
         else:

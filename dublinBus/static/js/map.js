@@ -147,21 +147,50 @@ function getRoute(map) {
         console.log(userUnixDate)
         console.log(new Date(1626081706 * 1000))
         const requestOpts = {
-
             origin,
             destination,
             travelMode: google.maps.DirectionsTravelMode.TRANSIT,
             transitOptions: {
                 departureTime: new Date(userUnixDate  * 1000),
                 modes: ['BUS'],
-                routingPreference: 'FEWER_TRANSFERS'
+                routingPreference: 'FEWER_TRANSFERS'    //LESS_WALKING is the alternative
             },
+            //provideRouteAlternatives: false,            //When True provides alternative routes
         };
 
         directionsDisplay.setMap(map);
         directionsDisplay.setPanel(document.getElementById('panel'));
 
         console.log('directions', directionsDisplay)
+
+        const directionsResult = directionsService.route(requestOpts);
+        console.log('Results', directionsResult)
+
+        // directionsResult.then(response => {
+        //     let legs = [];
+            
+        //     response.routes.forEach(route => {
+        //         legs = legs.concat(route.legs);
+        //     });
+
+        //     let steps = legs[0]['steps'];
+        //     let travel_modes = [];
+
+        //     steps.forEach(element => travel_modes.concat(element['travel_mode']))
+
+        //     // for (let step = 0; step < length(); step++) {
+        //     //     console.log('Walking east one step');
+        //     // }
+
+        //     console.log('legs', legs[0]);
+        //     console.log('======');
+        //     console.log('steps', steps);
+        //     console.log('======');
+            
+
+        //     const l = response.routes.reduce((accumulator, route) => [...accumulator, ...route.legs], []);
+        //     console.log('Legs', l);
+        // })  
 
         directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
     } catch(e) {
@@ -171,6 +200,20 @@ function getRoute(map) {
 
 function handleRouteResponse(directionsDisplay, response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
+
+        // response.then(result => {           
+            const s = response.routes
+                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
+                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
+
+            console.log('steps Jen', s);
+
+            const l = response.routes
+                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
+                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
+                .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
+            console.log('steps Jen', l);
+
         fetch('/dublinBusHybrid/journeyPlanner/', {
             method: 'POST',
             credentials: 'include',     
@@ -181,20 +224,9 @@ function handleRouteResponse(directionsDisplay, response, status) {
             },
 
             body: JSON.stringify({
-                'temp':1, 
-                'feels_like':15, 
-                'humidity':18, 
-                'wind_speed':50, 
-                'rain_1h':20, 
-                'clouds_all':0,
-                'weather_main':0,
-                'weekday':2, 
-                'Hour':12, 
-                'Month':7,
-                'Origin': 'UCD',
-                'Destination': 'O\'Connell Street',
                 'travel_date': document.querySelector('#id_travel_date').value,
-                'travel_time': document.querySelector('#id_travel_time').value + ':00'
+                'travel_time': document.querySelector('#id_travel_time').value + ':00',
+                'Steps': l,
             })
         }).then(r => console.log('r', r));
 

@@ -11,7 +11,7 @@ from .forms import JourneyPlannerForm
 
 from .leap_card import leap_info
 
-from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid
+from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid, RoutePrediction
 
 #from G1_RP_Dublin-Bus-App.initial_basic_modelling.modelling_per_line.py import open_csv_create_models
 
@@ -37,13 +37,17 @@ class JourneyPlanner(View):
         if request.content_type == "application/json":
             request_body = self.fetchJSON(request.body)            
             estimatedTimes = self.getJourneyEstimatedRouteTimes(request_body)
-            totalBusTime = sum(estimatedTimes)
+
             print('*************************')
             print()
-            print('Total Bus Time', totalBusTime)
+            print('Estimated Bus Time', estimatedTimes)
             print()
-            print('*************************')
-            return JsonResponse({'estimatedTime': totalBusTime})
+            # totalBusTime = sum(estimatedTimes)
+            # print('Total Bus Time', totalBusTime)
+            # print()
+            # print('*************************')
+
+            return JsonResponse({'estimatedTime': estimatedTimes})
         
         else:
             form = JourneyPlannerForm(request.POST)
@@ -76,11 +80,14 @@ class JourneyPlanner(View):
         print()
         print('*************************')
         
+        estimatedRouteTimes = []
         estimatedTimes = []
         
         for i in range(len(busSteps)):
             routeNumber = busSteps[i]['routeNumber']
+            intRouteNumber = int(routeNumber)
             headsign = busSteps[i]['headsign']
+            # arrivalStop =
             direction = self.getRouteDirection(routeNumber, headsign)
             busSteps[i]['direction'] = direction
             print('*************************')
@@ -88,7 +95,59 @@ class JourneyPlanner(View):
             print('direction I/O', busSteps[i]['direction']['direction'])
             print()
             print('*************************')
-            estimatedTimes.append(self.getPredictedEstimatedTime(routeNumber, busSteps[i]['direction']['direction'], inputValues))
+            temp = self.getPredictedEstimatedTime(routeNumber, busSteps[i]['direction']['direction'], inputValues)
+            estimatedRouteTimes.append(int(temp))
+            arrivalStopName = busSteps[i]['arrivalStop']
+            departureStopName = busSteps[i]['departureStop']
+
+            arrivalStopID = [int(character) for character in arrivalStopName.split() if character.isdigit()]
+            departureStopID = [int(character) for character in departureStopName.split() if character.isdigit()]
+
+            print('*************************')
+            print()
+            print('Arrival Stop Name', arrivalStopName)
+            print('Arrival Stop ID', arrivalStopID)
+            print('Departure Stop Name', departureStopName)
+            print('Departure Stop ID', departureStopID)
+            print()
+            print('Route Number type', type(intRouteNumber))
+            print()
+            print('*************************')
+
+            try: 
+                arrivalDone = model_to_dict(RoutePrediction.objects.get(StopID = arrivalStopID[-1], Route=routeNumber))
+            
+            except RoutePrediction.DoesNotExist:
+                return 'Stop does not exist'
+            
+            try:
+                departureDone = model_to_dict(RoutePrediction.objects.get(StopID=departureStopID[-1], Route=routeNumber))
+
+            except RoutePrediction.DoesNotExist:
+                return 'Stop does not exist'
+            print('*************************')
+            print()
+            print('Arrival Stop Name', arrivalStopName)
+            print('Arrival Stop ID info Done', arrivalDone)
+            print('Departure Stop Name', departureStopName)
+            print('Departure Stop ID info Done', departureDone)
+            print()
+            print('*************************')
+
+            arrivalPercentDone = temp * (float(arrivalDone['PercentDone']) / 100 )
+            departurePercentDone = temp * (float(departureDone['PercentDone']) / 100)
+
+            print('*************************')
+            print()
+            print('Arrival Stop Name', arrivalStopName)
+            print('Arrival Stop ID Percent time', arrivalPercentDone)
+            print('Departure Stop Name', departureStopName)
+            print('Departure Stop ID Percent time', departurePercentDone)
+            print()
+            print('*************************')
+
+            estimatedLegTime = arrivalPercentDone - departurePercentDone
+            estimatedTimes.append(round(estimatedLegTime, 2))
 
         print('*************************')
         print()
@@ -129,9 +188,11 @@ class JourneyPlanner(View):
 
         print('*************************')
         print()
-        print('type info treavel_date', type(travel_date))
+        print('type info travel_date', type(travel_date))
+        print('type info travel_date', travel_date)
         print()
         print('type info travel_time', type(travel_time))
+        print('type info travel_time', travel_time)
         print()
         print('*************************')
 
@@ -256,8 +317,16 @@ class JourneyPlanner(View):
                 routeNumber = (transit['line']['short_name'])
                 headsign = (transit['headsign'])
                 numStop = (transit['num_stops'])
+                arrivalStop = (transit['arrival_stop']['name'])
+                departureStop = (transit['departure_stop']['name'])
                 busNumber = (j)
-                busSteps[busNumber] = {'routeNumber':routeNumber, 'headsign':headsign, 'numStop':numStop}
+                busSteps[busNumber] = {
+                    'routeNumber':routeNumber, 
+                    'headsign':headsign, 
+                    'numStop':numStop, 
+                    'arrivalStop':arrivalStop, 
+                    'departureStop':departureStop
+                    }
                 j += 1
             else:
                 print('transit not in step', i)

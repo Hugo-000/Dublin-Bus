@@ -228,7 +228,8 @@ function handleRouteResponse(directionsDisplay, response, status) {
                 'travel_time': document.querySelector('#id_travel_time').value + ':00',
                 'Steps': l,
             })
-        }).then(r => console.log('r', r));
+        }).then(r => r.json())
+        .then(result => console.log('result', result));
 
         directionsDisplay.setDirections(response);
 

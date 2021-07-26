@@ -94,19 +94,3 @@ class JourneyPlannerForm(forms.Form):
     #     fields = [
     #         "whatever"
     #     ]
-
-class LeapCradForm(forms.Form):
-    leap_username = forms.CharField(
-        label = "",
-        max_length = 150,
-        widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-control'})
-    )
-
-    leap_password = forms.CharField(
-        label = "",
-        max_length = 150,
-        widget=forms.TextInput(attrs={'placeholder': 'Password', 'class': 'form-control'})
-    )
-    def clean(self):
-        cd = self.cleaned_data
-        return cd

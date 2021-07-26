@@ -1,89 +1,91 @@
 {% extends 'layouts/base.html' %}
 
-{% block covid-content %}
-<div class="content-box" style="width:60vmax">
-    <div class="content-header" style="background-color: #252D5A">
-        <div class="content-title" style="color:#F8FAFB">
-            Covid-19 Info
-        </div>
-    </div>
-    <div class="content-body">
-        <div class="content" style="height:585px ;overflow:auto">
-            <p>Last 14 days statistics of covid data as at {{covid.dt}}</p>
-            <div>Due to the current disruption of HSE IT systems, some indicators might not be provided.</div>
-            <section class="header">
-                <style>
-                                            .overall-data{
-                                                text-align:center;
-                                                color: #252d5a;
-                                                padding: 4px 4px;
-                                            }
-                                            .font{
-                                                color: white;
-                                                font-size: large;
-                                            }
-                </style>
-                <div class="overall-data">
+{% block content %}
+ <style>
+    .overall-data{
+        text-align:center;
+        color: #252d5a;
+        padding: 4px 4px;
+    }
+    .font{
+        color: white;
+        font-size: large;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+            <div class="col-md-3" style="height:500px">
+                <div class="content-header" style="background-color: #252D5A">
+                    <div class="content-title" style="color:#F8FAFB;text-align:center;">
+                        <div style="text-align:center;">Last 14 days statistics of covid data as at {{covid.dt}}</div>
+                        <div style="text-align:center;">Due to the current disruption of HSE IT systems, some indicators might not be provided.</div>
+                    </div>
+                </div>
+                <section class="header">
+                    <div class="overall-data">
                         <div class="font">Total Confirmed Cases: {{covid.totalConfirmedCases}}</div>
                         <div class="font">Daily New Cases: {{covid.confirmedCases}}</div>
                         <div class="font">Total Death Cases: {{covid.totalDeaths}}</div>
                         <div class="font">Daily Death Cases: {{covid.confirmedDeaths}}</div>
                         <div class="font">Total Hospitalised Cases: {{covid.hospitalisedCases}}</div>
                         <div class="font">Total Cases Treated in ICU: {{covid.icu}}</div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-9">
+                <!--Chart info -->
+                <section class="main-content-row" style="background-color: white">
+                    <h2 style="text-align:center;">Last 14 days confirmed cases</h2>
+                    <div class="chart-container point-container" style="overflow-x:auto;width:800px;height:330px;">
+                        <canvas id="dailyconfirmedcases"></canvas>
+                    </div>
+                </section>
+                <div class="modal-footer">
+                    <a class="btn btn-default" href="https://www2.hse.ie/screening-and-vaccinations/covid-19-vaccine/"
+                    style="background-color:#FFC107" target="_blank">
+                        Click here for COVID-19 vaccination.
+                    </a>
                 </div>
-            </section>
-            <!--Chart info -->
-            <section class="main-content-row" style="background-color: white">
-                <h2>Last 14 days confirmed cases</h2>
-                <div class="chart-container point-container" style="width:800px;height:330px;overflow-x:auto">
-                    <canvas id="dailyconfirmedcases"></canvas>
-                </div>
-            </section>
+            </div>
             <script src="https://cdn.jsdelivr.net/npm/chart.js@3.4.1/dist/chart.min.js" integrity="sha256-GMN9UIJeUeOsn/Uq4xDheGItEeSpI5Hcfp/63GclDZk=" crossorigin="anonymous"></script>
             <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
             <script>
-    var ctx1 = document.getElementById('dailyconfirmedcases').getContext('2d');
-    var dailyconfirmedcases = new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: [ {% for item in covid_chart %}'{{item.dt}}',{% endfor %}],
-            datasets: [
-                {
-                label: 'Daily Confirmed Cases',
-                data: [{% for item in covid_chart %}'{{item.confirmedCases}}',{% endfor %}],
-                borderColor: ['rgb(212, 36, 36)'],
-                pointBackgroundColor: 'rgb(212, 36, 36)',
-                borderWidth: 2,
-                pointRadius: 1,
-                pointhitRadius:1},
-                ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        maxTicksLimit: 29,
-                        autoskip: true
+                var ctx1 = document.getElementById('dailyconfirmedcases').getContext('2d');
+                var dailyconfirmedcases = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: [ {% for item in covid_chart %}'{{item.dt}}',{% endfor %}],
+                        datasets: [
+                            {
+                            label: 'Daily Confirmed Cases',
+                            data: [{% for item in covid_chart %}'{{item.confirmedCases}}',{% endfor %}],
+                            borderColor: ['rgb(212, 36, 36)'],
+                            pointBackgroundColor: 'rgb(212, 36, 36)',
+                            borderWidth: 2,
+                            pointRadius: 1,
+                            pointhitRadius:1},
+                            ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    maxTicksLimit: 29,
+                                    autoskip: true
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
                     }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+                });
             </script>
-        </div>
     </div>
-    <div class="modal-footer">
-        <a class="btn btn-default" href="https://www2.hse.ie/screening-and-vaccinations/covid-19-vaccine/"
-           style="background-color:#FFC107" target="_blank">
-            Click here for COVID-19 vaccination.
-        </a>
-    </div>
+    
 </div>
 {% endblock %}

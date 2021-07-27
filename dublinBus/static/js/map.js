@@ -206,13 +206,13 @@ function handleRouteResponse(directionsDisplay, response, status) {
                 .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
                 .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
 
-            console.log('steps Jen', s);
+            console.log('steps Jen s', s);
 
             const l = response.routes
                 .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
                 .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
                 .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
-            console.log('steps Jen', l);
+            console.log('steps Jen l', l);
 
         fetch('/dublinBusHybrid/journeyPlanner/', {
             method: 'POST',
@@ -229,7 +229,10 @@ function handleRouteResponse(directionsDisplay, response, status) {
                 'Steps': l,
             })
         }).then(r => r.json())
-        .then(result => console.log('result', result));
+        .then(result => {
+            const estimatedTimeElement = document.querySelector('#estimated-time');
+            estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime)} mins`;
+        });
 
         directionsDisplay.setDirections(response);
 

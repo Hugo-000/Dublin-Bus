@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 
 #Automated scripting for every 3 hours and 10 mins
 CRONJOBS = [
-    ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
+    ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather'),
     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
 ]
 

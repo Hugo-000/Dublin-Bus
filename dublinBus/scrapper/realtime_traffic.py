@@ -5,6 +5,7 @@ import sys
 import requests
 import django
 from datetime import datetime
+import time
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 print("Real Time Traffic", BASE_DIR)
@@ -21,11 +22,18 @@ headers = {
   'x-api-key': 'ef3b82de8cfe4dc9a53bb9ee7580c071'
 }
 
-res = requests.request("GET", url, headers=headers)
-print("Status code: ", res.status_code)
-result = res.json()
-realtime_list = result['entity']
-#print(realtime_list)
+start_request = False
+
+while not start_request:
+  res = requests.request("GET", url, headers=headers)
+  print("Status code: ", res.status_code)
+  if res.status_code == 200:
+    start_request = True
+    result = res.json()
+    realtime_list = result['entity']
+  else:
+    print("sleep ofr 60 s")
+    time.sleep(60)
 
 RealTimeTraffic.objects.all().delete()
 for each_trip in realtime_list:

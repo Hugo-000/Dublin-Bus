@@ -214,6 +214,14 @@ function handleRouteResponse(directionsDisplay, response, status) {
                 .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
             console.log('steps Jen l', l);
 
+        var travel_time = document.querySelector('#id_travel_time').value
+
+        if (travel_time == "") {
+            var today = new Date();
+            travel_time = today.getHours() + ":" + today.getMinutes();
+        } 
+
+
         fetch('/dublinBusHybrid/journeyPlanner/', {
             method: 'POST',
             credentials: 'include',     
@@ -225,7 +233,7 @@ function handleRouteResponse(directionsDisplay, response, status) {
 
             body: JSON.stringify({
                 'travel_date': document.querySelector('#id_travel_date').value,
-                'travel_time': document.querySelector('#id_travel_time').value + ':00',
+                'travel_time': travel_time + ':00',
                 'Steps': l,
             })
         }).then(r => r.json())

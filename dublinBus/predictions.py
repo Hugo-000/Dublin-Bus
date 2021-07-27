@@ -55,7 +55,8 @@ def getTravelTime(request_body):
 
 #Function 4
 def getWeather(travel_date, travel_time):
-    if travel_date == '' and travel_time == '':
+    today = datetime.date.today()
+    if travel_date == today and travel_time == None:
         weather = getCurrentWeather()
     else:
         weather = getForecastWeather(travel_date, travel_time)

@@ -114,9 +114,9 @@ class JourneyPlanner(View):
         print('Type Travel Time before strf', type(info['travel_time']), info['travel_time'] )
         print()
         print('*************************')
-
+        
         info['travel_time'] = datetime.datetime.strptime(info['travel_time'], '%H:%M:%S').time()
-        info['travel_date'] = datetime.datetime.strptime(info['travel_date'], '%d/%m/%Y').date()
+        info['travel_date'] = datetime.datetime.strptime(info['travel_date'], '%Y-%m-%d').date()
 
         print()
         print('Type Travel Date after strf', type(info['travel_date']), info['travel_date'] )
@@ -132,14 +132,20 @@ class JourneyPlanner(View):
         fd = form.cleaned_data
         travel_date = fd.get('travel_date')
         travel_time = fd.get('travel_time')
+        today = datetime.date.today()
+        if travel_time != None:
+            print('Have time')
+            user_datetime = datetime.datetime.combine(travel_date, travel_time)
+            user_unix_time = datetime.datetime.timestamp(user_datetime)
+            return user_unix_time
+        if travel_date == today and travel_time == None:
+            print('have not time')
+            user_datetime = datetime.datetime.now()
+            user_unix_time = datetime.datetime.timestamp(user_datetime)
+            return user_unix_time
+        return "error"
 
-        user_datetime = datetime.datetime.combine(travel_date, travel_time)
-
-        user_unix_time = datetime.datetime.timestamp(user_datetime)
-
-        return user_unix_time
-
-    def iconMatching(self,key):
+    def iconMatching(self, key):
         dict = {
             "01n":"images/01d.png",
             "01d":"images/01n.png",

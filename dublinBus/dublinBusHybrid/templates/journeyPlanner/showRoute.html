@@ -1,50 +1,61 @@
 {% extends 'journeyPlanner.html' %}
 
 {% block subcontent %}
+<div id='form_panel'>
+    <!-- Form to be placed in here when this page is displayed-->
 
-<h1 class="heading">Journey Information:</h1>
-    <ul>
-        <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
-        <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
-        <li><strong>Starting:</strong> {{ origin }}</li>
-        <li><strong>Destination:</strong> {{ destination }}</li>
-        <li><strong>Travel Date:</strong> {{ travel_date }}</li>
-        <li><strong>Departure time:</strong> {{ travel_time }}</li>
-    </ul>
+</div>
 
-    <!-- Section to show the current weather data -->
-    <div >
+<div id='info_panel'>
+
+    <h1 class="heading">Journey Information:</h1>
+        <ul>
+            <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
+            <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
+            <li><strong>Travel Date:</strong> {{ travel_date }}</li>
+            <li><strong>Departure Time:</strong> {{ travel_time }}</li>
+            <li><strong>Estimated Journey Time:</strong> <span id="estimated-time">... calculatingdublin</span></li>
+        </ul>
+
+        <!-- Section to show the current weather data -->
         <div >
-            <!-- This section needs to get the weather data for the station selected and return it to the screen -->
-            
-            <div>
-                {% load static %}
-                {% with ''|add:weather_icon as image_static %}
-                <img style="width:80px;height:80px" src={% static image_static %} />
-                {% endwith %}
-                {{forecast_weather.weather_main}},
-                {{forecast_weather.temp}}&deg;C,
-                Dublin, Ireland
-            </div>
-        </div>
-        <div>
-            <div>
-                <span>Description:</span>
-                <span>{{forecast_weather.weather_description}}</span>
+            <div >
+                <!-- This section needs to get the weather data for the station selected and return it to the screen -->
+                
+                <div>
+                    {% load static %}
+                    {% with ''|add:weather_icon as image_static %}
+                    <img style="width:20px;height:20px" src={% static image_static %} />
+                    {% endwith %}
+                    {{weather.weather_main}},
+                    {{weather.temp}}&deg;C,
+                    Dublin, Ireland
+                </div>
             </div>
             <div>
-                <span>Humidity:</span>
-                <span>{{forecast_weather.humidity}}&#37;</span>
-            </div>
-            <div>
-                <span>Wind:</span>
-                <span>{{forecast_weather.wind_speed}} km/hr</span>
-            </div>
+                <div>
+                    <span>Description:</span>
+                    <span>{{weather.weather_description}}</span>
+                </div>
+                <div>
+                    <span>Humidity:</span>
+                    <span>{{weather.humidity}}&#37;</span>
+                </div>
+                <div>
+                    <span>Wind:</span>
+                    <span>{{weather.wind_speed}} km/hr</span>
+                </div>
 
-        </div>
-    </div> 
+            </div>
+        </div> 
 
-    {{userUnix | json_script:"userUnixDate" }}
+        {{userUnix | json_script:"userUnixDate" }}
+</div>
 
+<div id='live'>
+
+</div>
+
+<div id="panel" style="width: 300px; float: right;"></div>
 
 {% endblock %}

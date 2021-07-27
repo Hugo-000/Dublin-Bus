@@ -15,7 +15,7 @@ class JourneyPlannerForm(forms.Form):
         # label = 'Destination',
         label = "",
         max_length = 150,
-        widget=forms.TextInput(attrs={'placeholder': 'Destination', 'style': 'width: 300px;', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'Destination ', 'style': 'width: 300px;', 'class': 'form-control'})
     )
     # start_point = forms.CharField(
     #     label='Starting Point', 
@@ -28,12 +28,13 @@ class JourneyPlannerForm(forms.Form):
     travel_date = forms.DateField(
         # label='Date',
         label = "",
+        # widget=forms.SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")),
         widget=forms.TextInput(attrs={'placeholder': 'Date', 'style': 'width: 300px;', 'class': 'form-control'})
         ) 
     travel_time = forms.TimeField(
         # label='Time',
         label = "",
-        widget=forms.TextInput(attrs={'placeholder': 'Time', 'style': 'width: 300px;', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'Time: e.g. 14:00', 'style': 'width: 300px;', 'class': 'form-control'})
     )
     
 
@@ -67,6 +68,7 @@ class JourneyPlannerForm(forms.Form):
         travel_time = cd.get('travel_time')
         bus_start_time = datetime.time(5, 0)
         bus_finish_time = datetime.time(0,0)
+
         if travel_time and travel_time < bus_start_time:
             self.add_error('travel_date', 'Invalid time - the buses start at 05:00')
         if travel_time and travel_time > bus_finish_time and travel_time < bus_start_time:

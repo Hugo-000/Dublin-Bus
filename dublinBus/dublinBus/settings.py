@@ -129,11 +129,6 @@ AUTH_PASSWORD_VALIDATORS = [
 TIME_FORMAT= "H:i"
 
 DATE_FORMAT = "dS F Y"
-DATE_INPUT_FORMATS = [
-    "%d/%m/%Y",
-    "%d/%m/%y",
-    "%d %B %Y"
-]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

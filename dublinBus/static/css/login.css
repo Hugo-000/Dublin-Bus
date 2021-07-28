@@ -1,0 +1,51 @@
+.login-title{
+    margin-bottom:10px;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.bus-logo{
+   animation: 1s ease-out 0s 1 slideInFromLeft;
+   width:80px;
+   height:80px;
+   margin-top:90px;
+   margin-bottom:20px;
+}
+
+#register-main{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column
+}
+
+.form-control{
+border-radius:.25rem;
+width:300px;
+}
+
+.btn-reg{
+border-radius:.25rem
+}
+
+#register-content{
+display: grid;
+}
+
+.submit-btn{
+display:inline-block
+}
+
+/*Mobile responsive */
+@media only screen and (max-width: 900px) {
+
+#register-main {
+justify-content: center;
+
+}

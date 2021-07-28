@@ -112,3 +112,16 @@ class RoutePrediction(models.Model):
     StopID = models.CharField(max_length=10, null=True)
     PercentDone = models.CharField(max_length=10, null=True)
     ID = models.CharField(max_length=45, primary_key=True)
+
+class RealTimeTraffic(models.Model):
+    route_number = models.CharField(max_length=45, null=True)
+    direction = models.CharField(max_length=45, null=True)
+    start_time = models.CharField(max_length=45, null=True)
+    start_date = models.CharField(max_length=45, null=True)
+    trip_schedule = models.CharField(max_length=45, null=True)
+    stop_departure_delay = models.CharField(max_length=45, default="na", null=True)
+    stop_arrival_delay = models.CharField(max_length=45, default="na", null=True)
+    stop_id = models.CharField(max_length=45, null=True)
+    stop_schedule = models.CharField(max_length=45, null=True)
+
+

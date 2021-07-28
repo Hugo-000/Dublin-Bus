@@ -5,29 +5,22 @@
 {% load static %}
 <!-- <script src= {#% static 'js/map.js' %#}></script> -->
 
-
 <div class="container-fluid" >
     <div class="row">
         <div class="col-md-4">
-            {% block subcontent %}{% endblock %}
-
-            <form action="" method="post">
-                {% csrf_token %}
-                {{form}}
-                <input type="submit" value="Submit">
-            </form>
-
-
+            {% block subcontent %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <input type="submit" value="Submit">
+                </form>
+            {% endblock %}
         </div>
-
 
         <div class="col-md-8">
             {% include 'partials/map.html'%}
         </div>
     </div>
 </div>
-
-
-
 
 {% endblock %}

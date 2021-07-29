@@ -236,9 +236,9 @@ class JourneyPlanner(View):
 class BusRoutes(View):
     def get(self, request, *args, **kwargs):
         routes=Routes.objects.all()
-        route_number_set=set(())
-        for route in routes:
-            route_number_set.add(route.route_name)
+        #route_number_set=set(())
+        #for route in routes:
+            #route_number_set.add(route.route_name)
         #all_route_Info=[]
         #all_route_Info={}
         #for route_number_chosed in route_number_set:
@@ -257,17 +257,20 @@ class BusRoutes(View):
             #all_route_Info[route_number_chosed]=route_info
             #all_route_Info.append(route_info)
 
-        return render(request, 'routes.html',{"routes_name":route_number_set})
+        return render(request, 'routes.html',{"routes_name":routes})
     def post(self, request, *args, **kwargs):
         routes=Routes.objects.all()
         route_number_set=set(())
         for route in routes:
             route_number_set.add(route.route_name)
-        route_number_chosed = request.POST.get('route_name')
-        route_direction_chosed=request.POST.get('direction')
+        route_chosed = request.POST.get('route_name').split(",",1)
+        route_number_chosed=route_chosed[0]
+        route_direction_chosed="O" if route_chosed[1]=="0" else "I"
+        #route_direction_chosed=request.POST.get('direction')
+
         route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed).filter(direction=route_direction_chosed)
         #serializers.serialize("json",route_chosed)
-        return render(request, 'routes.html',{"routes_name":route_number_set,"route_Info":route_chosed})
+        return render(request, 'routes.html',{"routes_name":routes,"route_Info":route_chosed})
 
 
 

@@ -1,0 +1,47 @@
+.box-one{
+display: flex;
+justify-content:space-between;
+}
+
+.login-text{
+    font-size: 42px;
+}
+
+strong{
+font-size: 36px;
+}
+
+.login-text-title{
+    font-size: 20px;
+}
+
+.chart-con{
+    height: 400px;
+}
+
+.dock-container{
+ color:transparent;
+}
+
+.main-content-row{
+    background-color: white;
+    border-radius:5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    padding:25px;
+}
+
+.chart-title{
+    color:black
+}
+
+.alert-text{
+    background-color:#5C5F56;
+    color:#D1BC61;
+    padding: 5 5 5 10;
+    font-size:20px
+
+}
+
+.btn-custom{
+    border-radius: 2px !important;
+}

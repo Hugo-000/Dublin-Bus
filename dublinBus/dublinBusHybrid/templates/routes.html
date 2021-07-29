@@ -5,8 +5,7 @@
 
 <script>
     function initMap() {
-        const markerArray = [];
-        const stopArray=[];
+        
         const directionsService = new google.maps.DirectionsService();
         const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 14,
@@ -14,20 +13,25 @@
                 disableDefaultUI: true,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
         });
-        const directionsRenderer = new google.maps.DirectionsRenderer();
+        
+        //const control =  document.getElementById("floating-panel");
+        //map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+
+        //const stepDisplay = new google.maps.InfoWindow();
+        //const directionsRenderer = new google.maps.DirectionsRenderer();
         //directionsRenderer.setMap(map); 
         //directionsRenderer.setPanel(document.getElementById("sidebar"));
-        const stepDisplay = new google.maps.InfoWindow();
-        const control =  document.getElementById("floating-panel");
         //const search_result=document.getElementById("sidebar");
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(search_result);
-        let route_history = [];
+        //let route_history = [];
         //document.getElementById("search_route").addEventListener("click", () => {
             //calculateAndDisplayRoute(directionsService,directionsRenderer, map,route_history);
         //});
-        var delayFactor=0;
+
         var i=0;
+        const markerArray = [];
+        const stopArray=[];
+        const requestArray=[];
         "{% for stop in route_Info %}"
             var stop_position={
                 lat:Number("{{stop.stop.lat}}"),
@@ -42,20 +46,78 @@
                 title:"{{stop.stop.stop_name}}",
                 label:"{{stop.stop_sequence}}",
             });
-                   
+
+/* 
             markerArray[i].addListener("click", () => {
                 stepDisplay.setContent(
                     '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
                 );
                 stepDisplay.open(map, markerArray[i]);
             });
-            "{% if forloop.last %}" 
-            "{%else%}"
-                "{% if forloop.first %}"
-                "{%else%}"
-                    calculateAndDisplayRoute(directionsService,map,stopArray[i-1],stopArray[i],delayFactor);
-                "{% endif %}"
-            "{% endif %}"
+
+            
+            
+            if (i>0){
+                requestArray[i-1]={
+                    origin: stopArray[i-1],
+                    destination: stopArray[i],
+                    travelMode: google.maps.TravelMode.TRANSIT,
+                    transitOptions: {modes: ["BUS"],routingPreference:["FEWER_TRANSFERS"]}, 
+                };
+            }
+
+
+
+                setTimeout(
+                    directionsService.route(request, function(response, status) {
+                        var flightPath = new google.maps.Polyline({
+                            path: response.routes[0].overview_path,
+                            strokeColor: "#000000",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 3.5,
+                            map: map
+                        });
+                    })    
+                    //calculateAndDisplayRoute((directionsService,map,start_stop,end_stop,delayFactor));
+                , 2000);
+                
+                directionsService.route(request, function(response, status) {
+
+
+
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        var flightPath = new google.maps.Polyline({
+                            path: response.routes[0].overview_path,
+                            strokeColor: "#000000",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 3.5,
+                            map: map
+                        });
+                    }else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+                        //delayFactor++;
+                        
+                        setTimeout(function () {
+                            var flightPath = new google.maps.Polyline({
+                                path: response.routes[0].overview_path,
+                                strokeColor: "#000000",
+                                strokeOpacity: 0.8,
+                                strokeWeight: 3.5,
+                                map: map
+                            });
+                            //calculateAndDisplayRoute((directionsService,map,start_stop,end_stop,delayFactor));
+                        }, 2000);
+                        //delayFactor * 1000);
+                        //console.log(delayFactor);
+                    
+                    }
+
+
+
+                });
+
+
+                //calculateAndDisplayRoute(directionsService,map,stopArray[i-1],stopArray[i],delayFactor);
+*/
             i++;
         "{% endfor %}" 
         const latlngStr = stopArray[0].split(",", 2);
@@ -64,16 +126,47 @@
             lng: parseFloat(latlngStr[1]),
         };
         map.setCenter(latlng);
-        //console.log(route_history);
-        //calculateAndDisplayRoute(directionsService,directionsRenderer,map,stopArray[0],stopArray[i-1]);
-
-        //const onChangeHandler = function () {
-        //calculateAndDisplayRoute(directionsService,map);};
-        //document.getElementById("start").addEventListener("change", onChangeHandler);
-        //document.getElementById("end").addEventListener("change", onChangeHandler);
-        //calculateAndDisplayRoute(directionsService,directionsRenderer,map);
     };
 
+/*
+        
+        var delayFactor=100;
+        var nextPolyline=0;
+        function getPolyline(request, next) {
+            console.log(nextPolyline);
+            directionsService.route(request, function(response, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    var flightPath = new google.maps.Polyline({
+                        path: response.routes[0].overview_path,
+                        strokeColor: "#000000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3.5,
+                        map: map
+                    });
+                }else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+                    nextPolyline--;
+                    delayFactor++;
+                }else {
+                    var reason="Code "+status;
+                    console.log(reason);
+                };
+                next();
+            }); 
+        };
+        function theNext() {
+            if (nextPolyline < requestArray.length) {
+                setTimeout(function () {
+                    getPolyline(requestArray[nextPolyline-1],theNext);
+                },delayFactor);
+            };
+            nextPolyline++;
+        };
+        theNext();
+
+*/
+        
+    
+/*
     function calculateAndDisplayRoute(directionsService,map,start_stop,end_stop,delayFactor) {
         //for (let i = 0; i < markerArray.length; i++) {
             //markerArray[i].setMap(null);
@@ -106,7 +199,7 @@
             }
         });
     }
-        /*
+
         directionsService.route().then((response,status) => {
             //for (let i = 0; i < route_history.length; i++) {
                 //route_history[i].setMap(null);
@@ -137,8 +230,8 @@
             //showSteps(response, markerArray, stepDisplay, map);
         });
     }
-     */
-/*
+    
+
     function showSteps(directionResult, markerArray, stepDisplay, map) {
         const myRoute = directionResult.routes[0].legs[0];
         for (let i = 0; i < myRoute.steps.length; i++) {
@@ -165,72 +258,111 @@
 */    
 </script>
 
-<div id="floating-panel">
-    <form action="" method="post">
-        {% csrf_token %}
-        <strong style="color:black;background-color:white">Routes:</strong>
-        <input list="routes" id="route" class="input" name="route_name">
-            <datalist  id="routes">
-                {% for route_name in routes_name %}
-                    <option value= {{ route_name }}>
-                {% endfor %}
-                <!--
-                    { for route_name,route in routes.items }
-                        <option value= {{ route_name }}
-                            { for stop_sequence,stop in route.items }
-                                { if forloop.first } 
-                                    { for stop_index,stop_info in stop.items }
-                                        { if forloop.last }
-                                            data-value={{stop_info}}
-                                        { endif }
-                                    { endfor }
-                                { endif }
-                                
-                                { if forloop.last } 
-                                    { for stop_index,stop_info in stop.items }
-                                        { if forloop.last } 
-                                            data-id={{stop_info}}
-                                        { endif }
-                                    { endfor }
-                                { endif }
-                            { endfor }
-                        >
-                    { endfor }
-                    data-value route start position   data-id route end position   
-                -->
-                `Select your route`
-            </datalist>
-        <select name="direction">
-            <option id="direction" value ="I">Inbound</option>
-            <option id="direction" value ="O">Outbound</option>
-        </select>
-        <input id="search_route" type="submit" value="Display It" />
-    </form>
-    <br/>
-</div>
 
 <div class="container-fluid" >
-    <div class="row"> 
-        <!--{% block subcontent %}{% endblock %}-->     
-        <div class="col-md-3" id="sidebar" style="overflow:auto;color:black;background-color:white;height:500px">
-        {% if route_Info %}
-            {% for stop in route_Info %}
-                {{stop.stop_sequence}}: &nbsp {{stop.stop.stop_name}}  &nbsp    {{stop.route_number}}
-                <hr>
-            {% endfor %}
-        {%else%}
-            Route Detail Here
-        {% endif%}
+    <div class="row">  
+        <div class="col-md-4" id="sidebar" style="overflow:auto;color:black;background-color:white;height:500px">
+            {% if route_Info %}
+                <div id="SelectedRoute" style="display:none" >
+                    <form action="">
+                        {% csrf_token %}
+                        <input type="text" name="search" class="route_input" >
+                    </form>
+                    <hr>
+                </div>
+                <div id="SelectedStops">
+                    <button onclick="backToRoutes()">Back</button><br>
+                    {% for stop in route_Info %}
+                        {{stop.stop_sequence}}: &nbsp {{stop.stop.stop_name}},  &nbsp    {{stop.route_number}}
+                        <hr>
+                    {% endfor %}
+                </div>
+            {%else%}
+                <div id="SelectedRoute">
+                    <form action="">
+                        {% csrf_token %}
+                        <input type="text" name="search" class="route_input" >
+                    </form>
+                    <hr>
+                </div> 
+                <div id="SelectedStops" style="display:none"></div>
+            {% endif%}
         </div>
 
-        <div class="col-md-9">
-            
+        <div class="col-md-8">
             <div  id="map" style="width:100%; height:100%">map</div>
         </div>
     </div>
 </div>
 
+<script>
+    var route_value_list = [];
+    var route_info_list = [];
+    var user_input = document.getElementsByClassName("route_input")[0];
+    var SelectedRoute = document.getElementById("SelectedRoute");
+    var routeButtons = document.createElement("div");
+    routeButtons.id = "buttons";
+    SelectedRoute.appendChild(routeButtons);
+    "{% for route_name in routes_name %}"
+        route_value_list.push("{{ route_name.route_name }}".toString()+","+"{{ route_name.route_direction }}".toString());
+        var route_info="{{ route_name.route_name }}"+": "+"{{route_name.route_description}}";
+        route_info=route_info.replace(/&#x27;/g,"'");
+        route_info_list.push(route_info);
+    "{% endfor %}" 
+    function createRouteButtons(route_info,route_value){
+        var route_hr = document.createElement("HR");
+        var route_form = document.createElement("form");
+        route_form.action="";
+        route_form.method="post";
+        
+        
+        var csrf = document.createElement('input');
+        var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+        csrf.setAttribute("type","hidden");
+        csrf.setAttribute("name","csrfmiddlewaretoken");
+        csrf.setAttribute("value",csrfToken);
+        route_form.appendChild(csrf);
 
+        var route_button = document.createElement("BUTTON");
+        var route_name = document.createTextNode(route_info);
+        route_button.appendChild(route_name);
+        route_button.name = "route_name";
+        route_button.value = route_value;
+        route_form.appendChild(route_button);
+        
+        document.getElementById("buttons").appendChild(route_form);
+        document.getElementById("buttons").appendChild(route_hr);   
+    }
+    function displayAll(){
+        for(var i=0;i<route_info_list.length;i++){
+            createRouteButtons(route_info_list[i],route_value_list[i]);
+        }
+    };
+    displayAll();
+    user_input.oninput = function() {
+        var buttons_before = document.getElementById("buttons");
+        SelectedRoute.removeChild(buttons_before);
+        var routeButtons = document.createElement("div");
+        routeButtons.id = "buttons";
+        SelectedRoute.appendChild(routeButtons);
+        if (user_input.value==""){
+            displayAll();
+        }else{
+            for(var i=0;i<route_info_list.length;i++){
+                if(route_info_list[i].indexOf(user_input.value)>=0){
+                    createRouteButtons(route_info_list[i],route_value_list[i]);
+                }
+            };
+        }     
+    }
+
+    function backToRoutes(){
+        document.getElementById('SelectedRoute').style.display ="block";
+        document.getElementById('SelectedStops').style.display ="none";
+        displayAll();
+    }
+        
+</script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
     async

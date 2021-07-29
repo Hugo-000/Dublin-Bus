@@ -1,5 +1,6 @@
 .login-title{
     margin-bottom:10px;
+    margin-top:30px;
 }
 
 @keyframes slideInFromLeft {
@@ -27,19 +28,48 @@ flex-direction: column
 
 .form-control{
 border-radius:.25rem;
-width:300px;
+width:300px !important;
 }
 
 .btn-reg{
-border-radius:.25rem
+border-radius:.25rem !important;
+
 }
 
 #register-content{
 display: grid;
 }
 
+#login-content{
+display: grid;
+width:300px;
+}
+
+p #id_username{
+ width: 220px
+}
+
+p #id_password{
+ width: 220px !important
+}
 .submit-btn{
 display:inline-block
+}
+
+.login-github{
+    margin-right: 10px;
+}
+
+.github-text{
+    color: white;
+    text-decoration: none;
+}
+
+.btn-log{
+   display:block !important;
+   border-radius:.25rem;
+   margin:10px;
+   color: white;
 }
 
 /*Mobile responsive */

@@ -1,11 +1,12 @@
 import datetime
 import os.path
 import pickle
+from django.forms import fields
 import numpy as np
 
-from django.forms.models import model_to_dict
+from django.forms.models import model_to_dict, modelformset_factory
 
-from scrapper.models import AllStopsWithRoute, ForecastWeather, CurrentWeather, RoutePrediction
+from scrapper.models import AllStopsWithRoute, ForecastWeather, CurrentWeather, RoutePrediction, Stops, Routes, RealTimeTraffic
 
 import pickleModels
 
@@ -20,8 +21,15 @@ def getBusStepInfo(request_body):
             transit = step['transit']
             routeNumber = (transit['line']['short_name'])
             headsign = (transit['headsign'])
-            routeDirection = getRouteDirection(routeNumber, headsign)
-            path = getPath(routeNumber, routeDirection)
+            agency = (transit['line']['agencies'][0]['name'])
+            if agency != "Dublin Bus":
+                routeDirection = {'Error' : 'Cannot determine route Direction for other agencies'}
+                path = {'Error': 'Only have models for Dublin Bus'}
+            else:
+                routeDirection = getRouteDirection(routeNumber, headsign)
+                path = getPath(routeNumber, routeDirection)
+            googleDirectionString = journeySteps[i]['duration']['text']
+            googleDirection = [int(character) for character in googleDirectionString.split() if character.isdigit()]
             busStepInfo[busNumber] = {
                 'routeNumber':routeNumber, 
                 'headsign':headsign, 
@@ -30,6 +38,8 @@ def getBusStepInfo(request_body):
                 'departureStop':(transit['departure_stop']['name']),
                 'routeDirection': routeDirection,
                 'path': path,
+                'googleDuration': googleDirection[0],
+                'agency':agency,
                 }
             busNumber += 1
         else:
@@ -103,6 +113,11 @@ def getInputValues(weather, travel_date, travel_time):
     print()
     print('*************************')
 
+    #  ['temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',
+    #    'weather_main', 'Weekday', 'Hour', 'Month', 'TimeOfDay', 'Seasons',
+    #    'RushHour']
+
+
     InputValues = [int(weather["temp"]), 
                     int(weather['feels_like']), 
                     int(weather['humidity']),  
@@ -118,13 +133,57 @@ def getInputValues(weather, travel_date, travel_time):
     return InputValues
 
 #Function 
+def getBusStepTimes(busStepInfo, inputValues):
+    print('**** getBusStepTimes ****')
+    print()
+    print('inputValues', inputValues)
+    print('Bus Step Info', busStepInfo)
+
+    busStepTimes = {}
+    
+    for i in range(len(busStepInfo)):
+        print()
+        print('Loop number', i)
+        print()
+        routeNumber = busStepInfo[i]['routeNumber']
+        routeDirection = busStepInfo[i]['routeDirection']
+        arrivalStopName = busStepInfo[i]['arrivalStop']
+        departureStopName = busStepInfo[i]['departureStop']
+        arrivalPercentDone = getStopPercentDone(arrivalStopName, routeNumber, routeDirection)
+        departurePercentDone = getStopPercentDone(departureStopName, routeNumber, routeDirection)
+        model = pickleModels.getPickleModel(busStepInfo[i]['path'])
+
+        print()
+        print('route number', routeNumber)
+        print('route direction', routeDirection)
+        print('arrivalStopName', arrivalStopName)
+        print('departureStopName', departureStopName)
+        print('arrivalPercentDone', arrivalPercentDone)
+        print('departurePercentDone', departurePercentDone)
+        print('model', model)
+        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone:
+            googleEstimatedTime = busStepInfo[i]['googleDuration']
+            busStepTimes[i] = {'type':'google', 'time':googleEstimatedTime}
+        else:
+            routeTime = getRouteTime(model['ok'], inputValues)
+            arrivalTime = routeTime * arrivalPercentDone['Percent']
+            departureTime = routeTime * departurePercentDone['Percent']
+            busStepTime = arrivalTime - departureTime
+            busStepTimes[i] = {'type':'prediction', 'time':round(busStepTime, 2)}
+
+    print()
+    print('Bus Step Times', busStepTimes)
+    print()
+    print('*************************')
+
+    return busStepTimes
+
+#Function 
 def getRouteTime(model, inputValues):
 
     print('***** getRouteTime ******')
     print()
     print('inputValues', inputValues)
-    print()
-    print('*************************')
     
     # arguments used to train the model
     #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month'
@@ -132,81 +191,116 @@ def getRouteTime(model, inputValues):
     x_test = input_vals.reshape(1, -1)
     pred = model.predict(x_test)
     routeTime = int(pred)
-    print(routeTime, "mins")
 
+    print('Route Time', routeTime, "mins")
+    print()
     return routeTime
 
-#Function 
-def getBusStepTimes(busStepInfo, inputValues):
-    print('**** getBusStepTimes ****')
+#Function
+def getStopPercentDone(stopName, routeNumber, busDirection):
+    stopPercentDone = {}
+
+    stopID = [int(character) for character in stopName.split() if character.isdigit()]
+
+    print('**** getStopPercentDone ****')
     print()
-    print('inputValues', inputValues)
-    print('Bus Step Info', busStepInfo)
-    print()
-    print('*************************')
+    print('routeNumber', routeNumber, 'busDirection', busDirection)
+    print('stop name', stopName)
 
-    busStepTimes = []
-    
-    for i in range(len(busStepInfo)):
-        routeNumber = busStepInfo[i]['routeNumber']
-        model = pickleModels.getPickleModel(busStepInfo[i]['path'])
-        routeTime = getRouteTime(model, inputValues)
-        arrivalStopName = busStepInfo[i]['arrivalStop']
-        departureStopName = busStepInfo[i]['departureStop']
+    if 'Error' in busDirection:
+        return {'Error':'Bus Direction does not exist'}
 
-        arrivalStopID = [int(character) for character in arrivalStopName.split() if character.isdigit()]
-        departureStopID = [int(character) for character in departureStopName.split() if character.isdigit()]
-
-        print('**** getBusStepTimes ****')
-        print()
-        print('Arrival Stop Name', arrivalStopName)
-        print('Arrival Stop ID', arrivalStopID)
-        print('Departure Stop Name', departureStopName)
-        print('Departure Stop ID', departureStopID)
-        print()
-        print('*************************')
-
-        try: 
-            arrivalDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = arrivalStopID[-1], Route=routeNumber))
-        except RoutePrediction.DoesNotExist:
-            return 'Stop does not exist'
-        
+    elif len(stopID) == 0:
         try:
-            departureDoneDict = model_to_dict(RoutePrediction.objects.get(StopID=departureStopID[-1], Route=routeNumber))
+            stopInfoList = Stops.objects.filter(stop_name__contains = stopName)
+            print('success')
+            print('stopInfoList: ', stopInfoList)
+            print()
+        except Stops.DoesNotExist:
+            print('fail')
+            return None
+        
+        stopInfoDict = {}
+        routeInfoDict = {}
+        routeDirectionName = model_to_dict
+        for i in range(len(stopInfoList)):
+            stopInfoDict[i] = model_to_dict(stopInfoList[i])
+        
+        print('Stop Name Information', stopInfoDict)
+        print()
+
+        for i in range(len(stopInfoDict)):
+            stopID = stopInfoDict[i]['stop_id']
+            print('stop id', type(stopID), stopID)
+            try:
+                routeInfoList = AllStopsWithRoute.objects.filter(stop = stopID, route_number = routeNumber)
+                print('routeInfoList', routeInfoList)
+                print()
+            except:
+                return None
+            routeInfoDict[i] = model_to_dict(routeInfoList[0])
+            print('Stop Name Route Information', routeInfoDict)
+        
+        print()
+
+        for i in range(len(routeInfoDict)):
+            routeDirectionName = routeInfoDict[i]['direction']
+            stopIDSearch = routeInfoDict[i]['stop']
+            print('Stop Name Route Direction', routeDirectionName)
+            print('Stop bus route direction', busDirection)
+            if routeDirectionName == busDirection:
+                stopNumberList = Stops.objects.filter(stop_id = stopIDSearch)
+                stopNumberDict = model_to_dict(stopNumberList[0])
+                print('stop number dict', stopNumberDict)
+                stopNumber = stopNumberDict['stop_number']
+                print('stopNumber', stopNumber)
+                try: 
+                    stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopNumber, Route=routeNumber))
+                except RoutePrediction.DoesNotExist:
+                    print('failed')
+                    return {'Error':'Stop and Route combination does not exist'}
+                break
+    else:
+        try: 
+            stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopID[-1], Route=routeNumber))
         except RoutePrediction.DoesNotExist:
-            return 'Stop does not exist'
+            print('failed')
+            return {'Error':'Stop and Route combination does not exist'}
 
-        print('**** getBusStepTimes ****')
-        print()
-        print('Arrival Stop Name', arrivalStopName)
-        print('Arrival Stop ID info Done', arrivalDoneDict)
-        print('Departure Stop Name', departureStopName)
-        print('Departure Stop ID info Done', departureDoneDict)
-        print()
-        print('*************************')
+    print('Stop Name', stopName)
+    print('Stop ID', stopID)
 
-        arrivalPercentDone = routeTime * (float(arrivalDoneDict['PercentDone']) / 100 )
-        departurePercentDone = routeTime * (float(departureDoneDict['PercentDone']) / 100)
+    try: 
+        stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopID[-1], Route=routeNumber))
+    except RoutePrediction.DoesNotExist:
+        error = 'Stop does not exist'
 
-        print('**** getBusStepTimes ****')
-        print()
-        print('Arrival Stop Name', arrivalStopName)
-        print('Arrival Stop ID Percent time', arrivalPercentDone)
-        print('Departure Stop Name', departureStopName)
-        print('Departure Stop ID Percent time', departurePercentDone)
-        print()
-        print('*************************')
-
-        busStepTime = arrivalPercentDone - departurePercentDone
-        busStepTimes.append(round(busStepTime, 2))
-
-    print('**** getBusStepTimes ****')
+    print('Stop ID info Done', stopDoneDict)
     print()
-    print('Bus Step Times', busStepTimes)
-    print()
-    print('*************************')
 
-    return busStepTimes
+    stopPercentDone['Percent'] = float(stopDoneDict['PercentDone']) / 100
+
+    print('Stop Percent', stopPercentDone)
+    print()
+
+    print('complete')
+
+    return stopPercentDone
+
+#Function
+def sumBusTimes(busStepTimes):
+    totalBusTimes = {}
+    time = 0
+    for i in range(len(busStepTimes)):
+        if busStepTimes[i]['type'] == 'google':
+            print('google')
+            totalBusTimes['type'] = 'google'
+        else:
+            print('predictions')
+            totalBusTimes['type'] = 'predictions'
+        time += busStepTimes[i]['time']
+    totalBusTimes['time'] = time
+    return totalBusTimes
 
 #Function 
 def getRouteDirection(routeNumber, headsign):

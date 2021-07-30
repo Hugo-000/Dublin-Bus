@@ -1,3 +1,4 @@
+# from gitRepository.G1_RP_Dublin_Bus_App.dublinBus.scrapper.models import RealTimeTraffic
 import re
 from django.shortcuts import render
 from django.template import loader, Context, Template
@@ -12,7 +13,7 @@ from .forms import JourneyPlannerForm
 
 from .leap_card import leap_info
 
-from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid, RoutePrediction
+from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid, RoutePrediction, RealTimeTraffic
 
 import pickleModels 
 import predictions
@@ -42,7 +43,7 @@ class JourneyPlanner(View):
             weather = predictions.getWeather(travel_date, travel_time)
             inputValues = predictions.getInputValues(weather, travel_date, travel_time)
             busStepTimes = predictions.getBusStepTimes(busStepInfo, inputValues)
-            totalBusTime = sum(busStepTimes)
+            totalBusTime = predictions.sumBusTimes(busStepTimes)
             return JsonResponse({'estimatedTime': totalBusTime})
         
         else:
@@ -169,6 +170,14 @@ class JourneyPlanner(View):
         icon = dict.get(key)
         return icon
 
+    def getStopID(self, stopNumber):
+        stopInfo = model_to_dict(Stops.objects.filter(stop_number = stopNumber))
+        stopID = stopInfo['stop_ID']
+        return stopID
+
+    def getRealTimeInfo(self, stopID):
+        realTimeInfo = model_to_dict(RealTimeTraffic.objects.filter(stop_id = stopID))
+        return realTimeInfo
 
 class BusRoutes(View):
     def get(self, request, *args, **kwargs):

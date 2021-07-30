@@ -239,7 +239,14 @@ function handleRouteResponse(directionsDisplay, response, status) {
         }).then(r => r.json())
         .then(result => {
             const estimatedTimeElement = document.querySelector('#estimated-time');
-            estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime)} mins`;
+            const googleWarning = document.querySelector('#google_warning');
+            console.log('result', result);
+            if ('google' in result.estimatedTime) {
+                // Produce Google Warning
+                googleWarning.innerHTML.style.visibility('visible');
+            }
+                
+            estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
         });
 
         directionsDisplay.setDirections(response);

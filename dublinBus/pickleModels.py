@@ -12,30 +12,33 @@ def getPickleModel(path):
 
         If the file does not exist it will return an error.
     """
-    print('*************************')
-    print()
-    print('getPickleModel')
-    print()
-    print('*************************')
+    print('***** getPickleModel ****')
     print()
     print('path', path)
-    print()
-    print('*************************')
     
-    # filename = str(route) + "_" + str(direction) + "B"
-    # filename = str(route) + str(direction)
-    # path = "../modelsNew/"+filename
+    pickleModel={}
 
     cwd = os.getcwd()
     print("CWD", cwd)
+
+    if 'Error' in path:
+        error = "Couldn't compute the prediction"
+        pickleModel['Error'] = error
+        return pickleModel
+
     # Load the Model back from file
-    if os.path.isfile(path):
+    elif os.path.isfile(path):
         print("success")
+        print()
         with open(path, 'rb') as file:  
             model = pickle.load(file)
-            return model
+            pickleModel['ok'] = model
+            return pickleModel
 
     else:
         print("failed")
-        return "Error: Couldn't compute the prediction"
+        print()
+        error = "Couldn't compute the prediction"
+        pickleModel['Error'] = error
+        return pickleModel
 

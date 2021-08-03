@@ -47,9 +47,9 @@ INSTALLED_APPS = [
     'webpack_loader',    
 ]
 
-#Automated scripting for every 10 min, 30min, 1 hour and 23 hour
+#Automated scripting for every 5min, 10 min, 30min and 23 hour
 CRONJOBS = [
-    ('0 */1 * * *', 'scrapper.cron.realtime_traffic'),
+    ('*/5 * * * *', 'scrapper.cron.realtime_traffic'),
     ('0 */23 * * *', 'scrapper.cron.covid_data'),
     ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather'),
     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),

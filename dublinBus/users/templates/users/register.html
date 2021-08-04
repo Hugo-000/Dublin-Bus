@@ -3,13 +3,21 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-<h2>Register</h2>
+{% load static %}
 
-<form method="post">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Register">
-</form>
+<div id="register-main">
+    <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
+    <h2 class="login-title">Create an Account</h2>
+    <div>
+        <form method="post" id="register-content">
+        {% csrf_token %}
+        {{form.as_p }}
+        <input type="submit" class="btn btn-primary btn-reg" value="Register">
+        </form>
+    </div>
+    <a href="{% url 'login' %}">Back to login</a>
 
-<a href="{% url 'login' %}">Back to login</a>
+</div>
+
+
 {% endblock %}

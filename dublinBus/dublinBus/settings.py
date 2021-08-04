@@ -126,6 +126,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+TIME_FORMAT= "H:i"
+
+DATE_FORMAT = "dS F Y"
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -137,7 +141,7 @@ TIME_ZONE = 'Europe/Dublin'
 USE_I18N = True
 
 # By setting this to true it allows our date formats instead of looking at us
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 

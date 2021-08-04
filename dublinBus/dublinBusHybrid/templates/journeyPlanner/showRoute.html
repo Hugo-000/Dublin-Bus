@@ -1,50 +1,82 @@
 {% extends 'journeyPlanner.html' %}
 
 {% block subcontent %}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="true">Form</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Info</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="directions-tab" data-bs-toggle="tab" data-bs-target="#directions" type="button" role="tab" aria-controls="directions" aria-selected="false">Directions</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button" role="tab" aria-controls="live" aria-selected="false">Live</button>
+    </li>
+</ul>
 
-<h1 class="heading">Journey Information:</h1>
-    <ul>
-        <!-- <li><strong>Number of Stops:</strong> {# num_stops #}</li>
-        <li><strong>Number of Routes:</strong> {# num_routes #}</li> -->
-        <li><strong>Starting:</strong> {{ origin }}</li>
-        <li><strong>Destination:</strong> {{ destination }}</li>
-        <li><strong>Travel Date:</strong> {{ travel_date }}</li>
-        <li><strong>Departure time:</strong> {{ travel_time }}</li>
-    </ul>
-
-    <!-- Section to show the current weather data -->
-    <div >
-        <div >
-            <!-- This section needs to get the weather data for the station selected and return it to the screen -->
-            
-            <div>
-                {% load static %}
-                {% with ''|add:weather_icon as image_static %}
-                <img style="width:80px;height:80px" src={% static image_static %} />
-                {% endwith %}
-                {{forecast_weather.weather_main}},
-                {{forecast_weather.temp}}&deg;C,
-                Dublin, Ireland
-            </div>
+<div class="tab-content" id="form-tab">
+    <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+        <div id="form_panel">
+            {{ block.super }}
         </div>
-        <div>
-            <div>
-                <span>Description:</span>
-                <span>{{forecast_weather.weather_description}}</span>
-            </div>
-            <div>
-                <span>Humidity:</span>
-                <span>{{forecast_weather.humidity}}&#37;</span>
-            </div>
-            <div>
-                <span>Wind:</span>
-                <span>{{forecast_weather.wind_speed}} km/hr</span>
+    </div>
+
+    <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+        <div id="info_panel">
+            <h1 class="heading">Journey Information:</h1>
+            <ul>
+                <!--
+                <li><strong>Number of Stops:</strong> {# num_stops #}</li>
+                <li><strong>Number of Routes:</strong> {# num_routes #}</li>
+                -->
+                <li><strong>Travel Date:</strong> {{ travel_date }}</li>
+                <li><strong>Departure Time:</strong> {{ travel_time }}</li>
+                <li><strong>Estimated Journey Time:</strong> <span id="estimated-time">... calculating</span></li>
+            </ul>
+            <div id="google_warning" style="visibility:hidden;">
+                <p> Warning: the above time uses an estimated time provided by google.</p>
             </div>
 
+            <!-- Section to show the current weather data -->
+            <div >
+                <!-- This section needs to get the weather data for the station selected and return it to the screen -->
+                
+                <div>
+                    {% load static %}
+                    {% with ''|add:weather_icon as image_static %}
+                    <img style="width:20px;height:20px" src={% static image_static %} />
+                    {% endwith %}
+                    {{weather.weather_main}},
+                    {{weather.temp}}&deg;C,
+                    Dublin, Ireland
+                </div>
+                <div>
+                    <span>Description:</span>
+                    <span>{{weather.weather_description}}</span>
+                </div>
+                <div>
+                    <span>Humidity:</span>
+                    <span>{{weather.humidity}}&#37;</span>
+                </div>
+                <div>
+                    <span>Wind:</span>
+                    <span>{{weather.wind_speed}} km/hr</span>
+                </div>
+            </div> 
+
+            {{userUnix | json_script:"userUnixDate" }}
         </div>
-    </div> 
+    </div>
 
-    {{userUnix | json_script:"userUnixDate" }}
+    <div class="tab-pane fade" id="directions" role="tabpanel" aria-labelledby="directions-tab">
+        <div id="panel" style="width: 300px; float: right;"></div>
+    </div>
 
-
+    <div class="tab-pane fade" id="live" role="tabpanel" aria-labelledby="live-tab">
+        <div id="realTimeInfo" style="width: 300px; float: right;">Real Time Info Goes here</div>
+    </div>
+    
+</div>
 {% endblock %}

@@ -6,6 +6,7 @@
             by included on all of the pages.
         -->
         <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
         <meta name="description" content="base.html">
@@ -118,6 +119,8 @@
             {% block content %}{% endblock %}
         </div>
         <!--Like the header the below code inserts the footer file into the page template-->
+        
         {% include 'partials/footer.html' %}
+        
     </body>
 </html>

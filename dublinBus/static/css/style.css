@@ -5,13 +5,14 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color:white;
 }
 header{
     flex: 0 0 auto;
 }
 footer {
     flex: 0 0 auto;
-    background-color: #082a44;
+    background-color: #20374c;
 }
 
 .route_form{

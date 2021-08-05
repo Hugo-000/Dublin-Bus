@@ -50,12 +50,11 @@
 
         {% load static %}
         <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <script src= {% static 'js/map.js' %}></script>
         <script src= {% static 'js/jquery.min.js' %}></script>
         <script src= {% static 'js/bootstrap.bundle.min.js' %}></script>
         
         <link rel="stylesheet" type="text/css" href={% static 'css/style.css' %}/>
-        <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.css' %}/>
+        
         <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.min.css' %}/>
         
         
@@ -72,7 +71,7 @@
 
         <!--This section includes the jinja blocks where web page information will go.
             i.e. paragraphs, headings, images etc.-->
-        <div class='container_main'>
+        <div class='container_main bg-body' id="body_container">
             {% block content %}{% endblock %}
         </div>
 

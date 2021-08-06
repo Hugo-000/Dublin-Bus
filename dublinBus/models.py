@@ -13,7 +13,7 @@ class AuthGroup(models.Model):
     class Meta:
         managed = True
         db_table = 'auth_group'
-        
+
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
@@ -22,6 +22,7 @@ class AuthGroupPermissions(models.Model):
         managed = True
         db_table = 'auth_group_permissions'
         unique_together = (('group', 'permission'),)
+
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
@@ -30,6 +31,7 @@ class AuthPermission(models.Model):
         managed = True
         db_table = 'auth_permission'
         unique_together = (('content_type', 'codename'),)
+
 class AuthUser(models.Model):
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
@@ -44,24 +46,25 @@ class AuthUser(models.Model):
     class Meta:
         managed = True
         db_table = 'auth_user'
+
 class AuthUserGroups(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-
     class Meta:
         managed = True
         db_table = 'auth_user_groups'
         unique_together = (('user', 'group'),)
+
 class AuthUserUserPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
-
     class Meta:
         managed = True
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
+
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -81,22 +84,20 @@ class DjangoContentType(models.Model):
         managed = True
         db_table = 'django_content_type'
         unique_together = (('app_label', 'model'),)
+
 class DjangoMigrations(models.Model):
     id = models.BigAutoField(primary_key=True)
     app = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     applied = models.DateTimeField()
-
     class Meta:
         managed = True
         db_table = 'django_migrations'
-
 
 class DjangoSession(models.Model):
     session_key = models.CharField(primary_key=True, max_length=40)
     session_data = models.TextField()
     expire_date = models.DateTimeField()
-
     class Meta:
         managed = True
         db_table = 'django_session'

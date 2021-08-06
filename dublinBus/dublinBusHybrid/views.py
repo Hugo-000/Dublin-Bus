@@ -5,8 +5,9 @@ from django.template import loader, Context, Template
 from django.views.generic import View
 from django.forms.models import model_to_dict
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse, request
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 import json
 
 from .forms import JourneyPlannerForm
@@ -14,9 +15,11 @@ from .forms import JourneyPlannerForm
 from .leap_card import leap_info
 
 from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid, RoutePrediction, RealTimeTraffic
+from users.models import Addresses
 
 import pickleModels 
 import predictions
+import realTime
 
 import datetime
 import os.path
@@ -28,40 +31,47 @@ class Index(View):
         return render(request, 'index.html')
 
 class JourneyPlanner(View):
-    # def get(self, request, *args, **kwargs):
-    #     return render(request, 'journey-planner.html')
 
     def get(self, request):
         return render(request, 'journeyPlanner.html', {'form': JourneyPlannerForm()})
 
     def post(self, request, *args, **kwargs):
+        user_id = self.getUserID(request)
         if request.content_type == "application/json":
-            request_body = self.fetchJSON(request.body)            
-            busStepInfo = predictions.getBusStepInfo(request_body)
-            travel_date = predictions.getTravelDate(request_body)
-            travel_time = predictions.getTravelTime(request_body)
-            weather = predictions.getWeather(travel_date, travel_time)
-            inputValues = predictions.getInputValues(weather, travel_date, travel_time)
-            busStepTimes = predictions.getBusStepTimes(busStepInfo, inputValues)
-            totalBusTime = predictions.sumBusTimes(busStepTimes)
-            return JsonResponse({'estimatedTime': totalBusTime})
+            print('test')
+            totalBusTime = self.getEstimatedTime(self.fetchJSON(request.body))
+            return JsonResponse({ 'estimatedTime': totalBusTime })
         
         else:
             form = JourneyPlannerForm(request.POST)
 
             if form.is_valid():
-                context = self.info(form)
-                return render(request, 'journeyPlanner/showRoute.html', context= context)
+                if not 'Error' in user_id:
+                    user_id = user_id['ok']
+                    print("User ID", user_id)
+                    favouriteForm = self.getFavouriteForm(user_id, form)
+                    if not 'Error' in favouriteForm:
+                        form = favouriteForm['OK']
+                        print('Form', form)
+                context = self.info(form, user_id)
+                return render(request, 'journeyPlanner/showRoute.html', context=context)
             else:
                 return render(request, 'journeyPlanner.html', { 'form': form })
 
-    def info(self, form):
-        fd = form.cleaned_data
-        origin = fd.get('origin_location')
-        destination = fd.get('destination_location')
-        travel_date = fd.get('travel_date')
-        travel_time = fd.get('travel_time')
 
+    def getEstimatedTime(self, body):           
+        busStepInfo = predictions.getBusStepInfo(body)
+        travel_date = predictions.getTravelDate(body)
+        travel_time = predictions.getTravelTime(body)
+        weather = predictions.getWeather(travel_date, travel_time)
+        inputValues = predictions.getInputValues(weather, travel_date, travel_time)
+        busStepTimes = predictions.getBusStepTimes(busStepInfo, inputValues)
+        return predictions.sumBusTimes(busStepTimes)
+
+    def info(self, form, user_id):
+        travel_date = self.getTravelDate(form)
+        travel_time = self.getTravelTime(form)
+        
         print('*************************')
         print()
         print('type info travel_date', type(travel_date))
@@ -75,28 +85,15 @@ class JourneyPlanner(View):
         user_unix_time = self.toUnix(form)
 
         weather = predictions.getWeather(travel_date, travel_time)
-
-        print('*************************')
-        print()
-        print('Weather Dictionary', type(weather), weather)
-        print('Weather icon', weather['weather_icon'])
-        print()
-        print('*************************')        
         
-        # user_forecast_datetime = self.forecastDatetime(travel_date, travel_time)
-        # forecast_weather = ForecastWeather.objects.get(dt_iso=user_forecast_datetime)
-        # weather = model_to_dict(forecast_weather)
         iconFromDB = weather["weather_icon"]
         iconToHTML = self.iconMatching(iconFromDB)
 
         context = {
-            'origin': origin,
-            'destination': destination,
             'travel_date': travel_date,
             'travel_time': travel_time,
             'form': form,
             'weather' : weather,
-            # 'user_forecast_datetime': user_forecast_datetime,
             'weather_icon': iconToHTML,
             'userUnix': user_unix_time
         }
@@ -170,14 +167,71 @@ class JourneyPlanner(View):
         icon = dict.get(key)
         return icon
 
-    def getStopID(self, stopNumber):
-        stopInfo = model_to_dict(Stops.objects.filter(stop_number = stopNumber))
-        stopID = stopInfo['stop_ID']
-        return stopID
+    def isFavourite(self, address, user_id):
+        favouriteAddresses = Addresses.objects.get(user_id=user_id).addresses
+        if address in favouriteAddresses:    
+            return True
+        else:
+            return False
+    
+    def getFavouriteAddress(self, addressName, user_id):
+        favouriteAddresses = Addresses.objects.get(user_id=user_id).addresses
+        address = favouriteAddresses[addressName]
+        print('Address Name and address', addressName, address)
+        return address
+    
+    def getFavouriteForm(self, user_id, form):
+        origin = self.getOrigin(form)
+        destination = self.getDestination(form)
 
-    def getRealTimeInfo(self, stopID):
-        realTimeInfo = model_to_dict(RealTimeTraffic.objects.filter(stop_id = stopID))
-        return realTimeInfo
+        if not self.isFavourite(origin, user_id) and not self.isFavourite(destination, user_id):
+            return {'Error':'Origin and Destination do not match user favourites'}
+
+        if self.isFavourite(origin, user_id):
+            origin = self.getFavouriteAddress(origin, user_id)
+
+        if self.isFavourite(destination, user_id):
+            destination = self.getFavouriteAddress(destination, user_id)
+
+        newForm = JourneyPlannerForm({
+            'origin_location': origin,
+            'destination_location': destination,
+            'travel_date': self.getTravelDate(form),
+            'travel_time': self.getTravelTime(form)
+        })
+        
+        return { 'OK': newForm }
+
+    def getCleanedForm(self, form):
+        cleanedForm = form.cleaned_data
+        return cleanedForm
+    
+    def getOrigin(self, form):
+        cleanedForm = self.getCleanedForm(form)
+        origin = cleanedForm.get('origin_location')
+        return origin
+
+    def getDestination(self, form):
+        cleanedForm = self.getCleanedForm(form)
+        destination = cleanedForm.get('destination_location')
+        return destination
+    
+    def getTravelDate( self, form):
+        cleanedForm = self.getCleanedForm(form)
+        travelDate = cleanedForm.get('travel_date')
+        return travelDate
+
+    def getTravelTime(self, form):
+        cleanedForm = self.getCleanedForm(form)
+        travelTime = cleanedForm.get('travel_time')
+        return travelTime
+
+    def getUserID(self, request):
+        if request.user.is_authenticated:
+            user_id = {'ok':request.user.id}
+        else:
+            user_id = {'Error':'User is not authenticated'}
+        return user_id
 
 class BusRoutes(View):
     def get(self, request, *args, **kwargs):
@@ -238,26 +292,27 @@ class LeapCard(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs): 
         leap_username = request.POST.get('leap_username')
         leap_password = request.POST.get('leap_password')
-        #balance=dir(leap_info(leap_username,leap_password))
-        #context = {
-            #"leap_balance" : balance["balance"],
-            #"leap_card_number" : balance["card_num"],
-            #"leap_card_status" : balance["card_status"],
-            #"leap_card_type" : balance["card_type"],
-            #"leap_credit_status" : balance["credit_status"],
-            #"leap_expiry_date" : balance["expiry_date"],
-            #"leap_issue_date" : balance["issue_date"],
-            #"leap_auto_topup" : balance["auto_topup"],
-        #}
-        context_hard = {
-            "leap_balance" : "11",
-            "leap_card_number" : leap_username,
-            "leap_card_status" : "11",
-            "leap_card_type" : "11",
-            "leap_credit_status" : "11",
-            "leap_expiry_date" : "11",
-            "leap_issue_date" : "11",
-            "leap_auto_topup" : "11",
+        balance=dir(leap_info(leap_username,leap_password))
+        print('leap card balance', balance)
+        context = {
+            "leap_balance" : balance["balance"],
+            "leap_card_number" : balance["card_num"],
+            "leap_card_status" : balance["card_status"],
+            "leap_card_type" : balance["card_type"],
+            "leap_credit_status" : balance["credit_status"],
+            "leap_expiry_date" : balance["expiry_date"],
+            "leap_issue_date" : balance["issue_date"],
+            "leap_auto_topup" : balance["auto_topup"],
         }
-        return render(request, 'leapCard.html', context= context_hard)
+        # context_hard = {
+        #     "leap_balance" : "11",
+        #     "leap_card_number" : leap_username,
+        #     "leap_card_status" : "11",
+        #     "leap_card_type" : "11",
+        #     "leap_credit_status" : "11",
+        #     "leap_expiry_date" : "11",
+        #     "leap_issue_date" : "11",
+        #     "leap_auto_topup" : "11",
+        # }
+        return render(request, 'leapCard.html', context= context)
         

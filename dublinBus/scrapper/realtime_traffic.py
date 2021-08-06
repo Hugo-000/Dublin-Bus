@@ -35,7 +35,9 @@ while not start_request:
     print("sleep ofr 60 s")
     time.sleep(60)
 
-RealTimeTraffic.objects.all().delete()
+#RealTimeTraffic.objects.all().delete()
+# To delete the first Nth rows of table
+RealTimeTraffic.objects.filter(id__in=list(RealTimeTraffic.objects.values_list('pk', flat=True)[:1000])).delete()
 for each_trip in realtime_list:
   try:
     #print(each_trip)
@@ -49,9 +51,6 @@ for each_trip in realtime_list:
     start_time = each_trip['trip_update']['trip']['start_time']
     current_time = datetime.now().strftime("%H:%M:%S")
     print(current_time)
-    if current_time > start_time:
-      print("current time passed, skipped this")
-      continue
     start_date = each_trip['trip_update']['trip']['start_date']
     trip_schedule = each_trip['trip_update']['trip']['schedule_relationship']
     if 'stop_time_update' in each_trip['trip_update'].keys():
@@ -77,7 +76,7 @@ for each_trip in realtime_list:
         each.trip_schedule = trip_schedule
         each.save()
   except Exception as e:
-    print("Error: ",e)
+    print("Error: ", e)
     continue
 
 print("Finished")

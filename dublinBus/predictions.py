@@ -80,15 +80,19 @@ def getInputValues(weather, travel_date, travel_time):
     print()
     print('type getInputValues treavel_date', type(travel_date))
     print()
-    print('type getInputValues travel_time', type(travel_time))
+    print('type getInputValues travel_time', type(travel_time), travel_time)
     print()
     print('type getInputValues travel_datetime', type(travel_datetime), travel_datetime)
     print()
     print('*************************')
 
+    rushHour = ifRushHour(travel_time)
+    timeOfDay = getTimeOfDay(travel_time)
+    season = getSeason(travel_date)
     month = travel_datetime.strftime('%-m')
     hour = travel_datetime.strftime('%-H')
     weekday = travel_datetime.strftime('%w')
+    
     if weekday == '0':
         weekday = '7'
     weekdayName = travel_datetime.strftime('%a')
@@ -128,9 +132,55 @@ def getInputValues(weather, travel_date, travel_time):
                     int(weekday),
                     int(hour),
                     int(month),
+                    timeOfDay,
+                    season,
+                    rushHour,
     ]
 
     return InputValues
+
+def ifRushHour(travelTime):
+    """ If time between 07:00 - 09:00 and 16:00 - 19:00 then it is during rush hour"""
+    time9 = datetime.time(9,0,0)
+    time7 = datetime.time(7,0,0)
+    time16 = datetime.time(16,0,0)
+    time19 = datetime.time(19,0,0)
+    if time7 < travelTime < time9:
+        return 1
+    elif time16 < travelTime < time19:
+        return 1
+    else:
+        return 0
+
+def getSeason(travelDate):
+    seasonsDict =  {1: "Spring", 2: "Summer", 3: "Autumn", 4: "Winter"}
+    travelMonth = travelDate.month
+    print('travel month', travelMonth)
+    if 2 <= travelMonth <= 5:
+        season = 1
+    elif 6 <= travelMonth <= 8:
+        season = 2
+    elif 11 <= travelMonth <= 1:
+        season = 4
+    else:
+        season = 3
+    print('season', season, seasonsDict[season])
+    return season
+
+def getTimeOfDay(travelTime):
+    timeOfDayDict = {"Morning": 1, "Afternoon": 2,"Evening": 3,"Night": 4}
+    time7 = datetime.time(7,0,0)
+    time11 = datetime.time(11,0,0)
+    time15 = datetime.time(15,0,0)
+    time23 = datetime.time(23,0,0)
+    if time7 <= travelTime < time11:
+        return 1
+    elif time11 <= travelTime < time15:
+        return 2
+    elif time15 <= travelTime < time23:
+        return 3
+    else:
+        return 4
 
 #Function 
 def getBusStepTimes(busStepInfo, inputValues):
@@ -186,7 +236,7 @@ def getRouteTime(model, inputValues):
     print('inputValues', inputValues)
     
     # arguments used to train the model
-    #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month'
+    #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month', timeOfDay, Season, rushhour
     input_vals = np.array(inputValues)
     x_test = input_vals.reshape(1, -1)
     pred = model.predict(x_test)
@@ -200,80 +250,29 @@ def getRouteTime(model, inputValues):
 def getStopPercentDone(stopName, routeNumber, busDirection):
     stopPercentDone = {}
 
-    stopID = [int(character) for character in stopName.split() if character.isdigit()]
-
     print('**** getStopPercentDone ****')
     print()
     print('routeNumber', routeNumber, 'busDirection', busDirection)
     print('stop name', stopName)
 
-    if 'Error' in busDirection:
-        return {'Error':'Bus Direction does not exist'}
+    stopNumber = getStopNumber(stopName, routeNumber, busDirection)
+    # stopID = getStopID(stopNumber)
 
-    elif len(stopID) == 0:
-        try:
-            stopInfoList = Stops.objects.filter(stop_name__contains = stopName)
-            print('success')
-            print('stopInfoList: ', stopInfoList)
-            print()
-        except Stops.DoesNotExist:
-            print('fail')
-            return None
-        
-        stopInfoDict = {}
-        routeInfoDict = {}
-        routeDirectionName = model_to_dict
-        for i in range(len(stopInfoList)):
-            stopInfoDict[i] = model_to_dict(stopInfoList[i])
-        
-        print('Stop Name Information', stopInfoDict)
-        print()
+    print('Stop Number', stopNumber, type(stopNumber))
+    # print('Stop ID', stopID, type(stopID))
 
-        for i in range(len(stopInfoDict)):
-            stopID = stopInfoDict[i]['stop_id']
-            print('stop id', type(stopID), stopID)
-            try:
-                routeInfoList = AllStopsWithRoute.objects.filter(stop = stopID, route_number = routeNumber)
-                print('routeInfoList', routeInfoList)
-                print()
-            except:
-                return None
-            routeInfoDict[i] = model_to_dict(routeInfoList[0])
-            print('Stop Name Route Information', routeInfoDict)
-        
-        print()
-
-        for i in range(len(routeInfoDict)):
-            routeDirectionName = routeInfoDict[i]['direction']
-            stopIDSearch = routeInfoDict[i]['stop']
-            print('Stop Name Route Direction', routeDirectionName)
-            print('Stop bus route direction', busDirection)
-            if routeDirectionName == busDirection:
-                stopNumberList = Stops.objects.filter(stop_id = stopIDSearch)
-                stopNumberDict = model_to_dict(stopNumberList[0])
-                print('stop number dict', stopNumberDict)
-                stopNumber = stopNumberDict['stop_number']
-                print('stopNumber', stopNumber)
-                try: 
-                    stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopNumber, Route=routeNumber))
-                except RoutePrediction.DoesNotExist:
-                    print('failed')
-                    return {'Error':'Stop and Route combination does not exist'}
-                break
-    else:
+    if stopNumber == None or 'Error' in stopNumber:
+        return {'Error':'Number could not be found'}
+    else:    
         try: 
-            stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopID[-1], Route=routeNumber))
+            stopDoneDict = model_to_dict(RoutePrediction.objects.get(
+                StopID = stopNumber['OK'],
+                Route=routeNumber,
+                Direction=busDirection + "B"
+            ))
         except RoutePrediction.DoesNotExist:
             print('failed')
             return {'Error':'Stop and Route combination does not exist'}
-
-    print('Stop Name', stopName)
-    print('Stop ID', stopID)
-
-    try: 
-        stopDoneDict = model_to_dict(RoutePrediction.objects.get(StopID = stopID[-1], Route=routeNumber))
-    except RoutePrediction.DoesNotExist:
-        error = 'Stop does not exist'
 
     print('Stop ID info Done', stopDoneDict)
     print()
@@ -379,8 +378,84 @@ def getPath(routeNumber, routeDirection):
     path = './modelsNew/' + filename
     return path
 
+#Function
+def getStopNumber(stopName, routeNumber, busDirection):
+    stopNumberList = [int(character) for character in stopName.split() if character.isdigit()]
+    
+    if 'Error' in busDirection:
+        # print('Error in the direction')
+        return {'Error': 'Bus Direction does not exist'}
+    
+    if len(stopNumberList) != 0:
+        # stopNumber = stopNumberList[0]
+        # print('stop number', stopNumber)
+        # print('stop number complete')
+        return {'OK': stopNumberList[0]}
 
+    # print('Stop number is empty')
+    try:
+        stopInfoList = Stops.objects.filter(stop_name__contains = stopName)
+        # print('success')
+        # print('stopInfoList: ', stopInfoList)
+        # print()
+    except Stops.DoesNotExist:
+        # print('fail')
+        return {'Error': 'Could not find stop numbers'}
 
+    stopInfoDict = {}
+    routeInfoDict = {}
+    for i in range(len(stopInfoList)):
+        stopInfoDict[i] = model_to_dict(stopInfoList[i])
+    
+    # print('Stop Name Information', stopInfoDict)
+    # print()
+
+    for i in range(len(stopInfoDict)):
+        stopID = stopInfoDict[i]['stop_id']
+        # print('stop id', type(stopID), stopID)
+        try:
+            routeInfoList = AllStopsWithRoute.objects.filter(stop = stopID, route_number = routeNumber)
+            # print('routeInfoList', routeInfoList.first())
+            # print()
+        except:
+            return None
+
+        # TODO: Handle routeInfoList being emoty
+        routeInfoDict[i] = model_to_dict(routeInfoList.first())
+        # print('Stop Name Route Information', routeInfoDict)
+    
+    # print()
+
+    for i in range(len(routeInfoDict)):
+        routeDirectionName = routeInfoDict[i]['direction']
+        stopIDSearch = routeInfoDict[i]['stop']
+        # print('Stop Name Route Direction', routeDirectionName)
+        # print('Stop bus route direction', busDirection)
+        if routeDirectionName == busDirection:
+            # print('Directions Equal')
+            stopNumberList = Stops.objects.filter(stop_id = stopIDSearch)
+            stopNumberDict = model_to_dict(stopNumberList[0])
+            # print('stop number dict', stopNumberDict)
+            # stopNumber = stopNumberDict['stop_number']
+            # print('stopNumber', stopNumber)
+            # print('stop number complete')
+            return {'OK': stopNumberDict['stop_number']}
+    
+    
+#Function
+def getStopID(stopNumber):
+    print('stop number', stopNumber['OK'])
+    if 'Error' in stopNumber or stopNumber == '':
+        return{'Error': 'Stop ID could not be retrieved'}
+    try:
+        stopInfo = Stops.objects.filter(stop_number = stopNumber['OK'])
+    except Stops.DoesNotExist:
+        return{'Error': 'Stop ID could not be retrieved'}
+    print('stopInfo', stopInfo)
+    stopInfoDict = model_to_dict(stopInfo[0])
+    print('StopInfoDict', stopInfoDict)
+    stopID = stopInfoDict['stop_id']
+    return stopID
 
 
 

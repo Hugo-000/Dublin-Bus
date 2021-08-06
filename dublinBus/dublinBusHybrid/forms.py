@@ -10,9 +10,10 @@ class JourneyPlannerForm(forms.Form):
         max_length = 150,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Origin', 
-                'style': 'width: 300px;', 
-                'class': 'form-control'})
+                'placeholder': 'Origin',
+                'class': 'form-control'
+            }
+        )
     )
 
     destination_location = forms.CharField(
@@ -21,9 +22,10 @@ class JourneyPlannerForm(forms.Form):
         max_length = 150,
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Destination ', 
-                'style': 'width: 300px;', 
-                'class': 'form-control'})
+                'placeholder': 'Destination ',
+                'class': 'form-control'
+            }
+        )
     )
     
     today = datetime.date.today()
@@ -38,19 +40,26 @@ class JourneyPlannerForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Date', 
-                'style': 'width: 300px;', 
-                'class': 'form-control;', 
+                'class': 'form-control', 
                 'type':'date', 
                 'name':"trip-start",
                 'value':todayString,
                 'min':todayString, 
-                'max':maxDateString,}),
+                'max':maxDateString,
+            }
+        ),
         required = False
-        ) 
+    ) 
     travel_time = forms.TimeField(
         # label='Time',
         label = "",
-        widget=forms.TextInput(attrs={'placeholder': 'Time: e.g. 14:00', 'style': 'width: 300px;', 'class': 'form-control'}),
+        widget=forms.TimeInput(
+            format='%H:%M',
+            attrs={
+            'placeholder': 'Time: e.g. 14:00',
+            'class': 'form-control'
+            }
+        ),
         required = False
     )
     
@@ -90,13 +99,13 @@ class LeapCradForm(forms.Form):
     leap_username = forms.CharField(
         label = "",
         max_length = 150,
-        widget=forms.TextInput(attrs={'placeholder': 'Username', 'style': 'width: 300px;', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-control'})
     )
 
     leap_password = forms.CharField(
         label = "",
         max_length = 150,
-        widget=forms.TextInput(attrs={'placeholder': 'Password', 'style': 'width: 300px;', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'Password', 'class': 'form-control'})
     )
     def clean(self):
         cd = self.cleaned_data

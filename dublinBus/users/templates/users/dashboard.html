@@ -17,4 +17,42 @@
     </div>
 </div>
 
+<div id="favourite-addresses">
+    <div id="saved-address-table">
+        <table>
+            <thead>
+                <th> Name </th>
+                <th> Address </th>
+                <th> </th>
+            </thead>
+            <tbody>
+                {% for addressName, addressValue in userAddresses %}
+                    <tr> 
+                        <td>{{ addressName }}</td>
+                        <td>{{ addressValue }}</td>
+                        <td>
+                            <form id="delete_{{addressName}}" action="" method="post">
+                                {% csrf_token %}
+                                <input name="delete" value="true" hidden/>
+                                <input name="addressName" value="{{addressName}}" hidden />
+                                <input name="addressValue" value="{{addressValue}}" hidden />
+                                <button form="delete_{{addressName}}" type="submit">delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<div>
+    <form id="create" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button form="create" type="submit">Save</button>
+    </form>
+</div>
+
 {% endblock %}

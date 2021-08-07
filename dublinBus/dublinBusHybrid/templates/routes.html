@@ -4,8 +4,300 @@
 
 
 <script>
+    const styles = {
+        default: [],
+        silver: [
+            {
+            elementType: "geometry",
+            stylers: [{ color: "#f5f5f5" }],
+            },
+            {
+            elementType: "labels.icon",
+            stylers: [{ visibility: "off" }],
+            },
+            {
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#616161" }],
+            },
+            {
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#f5f5f5" }],
+            },
+            {
+            featureType: "administrative.land_parcel",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#bdbdbd" }],
+            },
+            {
+            featureType: "poi",
+            elementType: "geometry",
+            stylers: [{ color: "#eeeeee" }],
+            },
+            {
+            featureType: "poi",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#757575" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "geometry",
+            stylers: [{ color: "#e5e5e5" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#9e9e9e" }],
+            },
+            {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [{ color: "#ffffff" }],
+            },
+            {
+            featureType: "road.arterial",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#757575" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "geometry",
+            stylers: [{ color: "#dadada" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#616161" }],
+            },
+            {
+            featureType: "road.local",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#9e9e9e" }],
+            },
+            {
+            featureType: "transit.line",
+            elementType: "geometry",
+            stylers: [{ color: "#e5e5e5" }],
+            },
+            {
+            featureType: "transit.station",
+            elementType: "geometry",
+            stylers: [{ color: "#eeeeee" }],
+            },
+            {
+            featureType: "water",
+            elementType: "geometry",
+            stylers: [{ color: "#c9c9c9" }],
+            },
+            {
+            featureType: "water",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#9e9e9e" }],
+            },
+        ],
+        night: [
+            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+            {
+            featureType: "administrative.locality",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }],
+            },
+            {
+            featureType: "poi",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "geometry",
+            stylers: [{ color: "#263c3f" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#6b9a76" }],
+            },
+            {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [{ color: "#38414e" }],
+            },
+            {
+            featureType: "road",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#212a37" }],
+            },
+            {
+            featureType: "road",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#9ca5b3" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "geometry",
+            stylers: [{ color: "#746855" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#1f2835" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#f3d19c" }],
+            },
+            {
+            featureType: "transit",
+            elementType: "geometry",
+            stylers: [{ color: "#2f3948" }],
+            },
+            {
+            featureType: "transit.station",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }],
+            },
+            {
+            featureType: "water",
+            elementType: "geometry",
+            stylers: [{ color: "#17263c" }],
+            },
+            {
+            featureType: "water",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#515c6d" }],
+            },
+            {
+            featureType: "water",
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#17263c" }],
+            },
+        ],
+        retro: [
+            { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
+            {
+            featureType: "administrative",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#c9b2a6" }],
+            },
+            {
+            featureType: "administrative.land_parcel",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#dcd2be" }],
+            },
+            {
+            featureType: "administrative.land_parcel",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#ae9e90" }],
+            },
+            {
+            featureType: "landscape.natural",
+            elementType: "geometry",
+            stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+            featureType: "poi",
+            elementType: "geometry",
+            stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+            featureType: "poi",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#93817c" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#a5b076" }],
+            },
+            {
+            featureType: "poi.park",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#447530" }],
+            },
+            {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [{ color: "#f5f1e6" }],
+            },
+            {
+            featureType: "road.arterial",
+            elementType: "geometry",
+            stylers: [{ color: "#fdfcf8" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "geometry",
+            stylers: [{ color: "#f8c967" }],
+            },
+            {
+            featureType: "road.highway",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#e9bc62" }],
+            },
+            {
+            featureType: "road.highway.controlled_access",
+            elementType: "geometry",
+            stylers: [{ color: "#e98d58" }],
+            },
+            {
+            featureType: "road.highway.controlled_access",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#db8555" }],
+            },
+            {
+            featureType: "road.local",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#806b63" }],
+            },
+            {
+            featureType: "transit.line",
+            elementType: "geometry",
+            stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+            featureType: "transit.line",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#8f7d77" }],
+            },
+            {
+            featureType: "transit.line",
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#ebe3cd" }],
+            },
+            {
+            featureType: "transit.station",
+            elementType: "geometry",
+            stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+            featureType: "water",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#b9d3c2" }],
+            },
+            {
+            featureType: "water",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#92998d" }],
+            },
+        ],
+        hiding: [
+            {
+            featureType: "poi.business",
+            stylers: [{ visibility: "off" }],
+            },
+            {
+            featureType: "transit",
+            elementType: "labels.icon",
+            stylers: [{ visibility: "off" }],
+            },
+        ],
+    };
     function initMap() {
-        const markerArray = [];
+        
         const directionsService = new google.maps.DirectionsService();
         const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 14,
@@ -13,24 +305,31 @@
                 disableDefaultUI: true,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
         });
-        const directionsRenderer = new google.maps.DirectionsRenderer();
-        directionsRenderer.setMap(map); 
-        directionsRenderer.setPanel(document.getElementById("sidebar"));
-        const stepDisplay = new google.maps.InfoWindow();
-        const control =  document.getElementById("floating-panel");
-        //const search_result=document.getElementById("sidebar");
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(search_result);
-        //let route_history = [];
-        //document.getElementById("search_route").addEventListener("click", () => {
-            //calculateAndDisplayRoute(directionsService,directionsRenderer, map,route_history);
-        //});
+        const styleControl = document.getElementById("style-selector-control");
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(styleControl);
+        
+        const styleSelector = document.getElementById("style-selector");
+        
+        map.setOptions({ styles: styles[styleSelector.value] });
+        styleSelector.addEventListener("change", () => {
+            map.setOptions({ styles: styles[styleSelector.value] });
+        });
+        
+
+        const control =  document.getElementById("sidebar");
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(control);
+        
         var i=0;
+        const markerArray = [];
+        const stopArray=[];
+        const requestArray=[];
         "{% for stop in route_Info %}"
             var stop_position={
                 lat:Number("{{stop.stop.lat}}"),
                 lng:Number("{{stop.stop.lng}}"),
             };
+
+            stopArray[i]="{{stop.stop.lat}}".toString()+","+"{{stop.stop.lng}}".toString();
 
             markerArray[i] = new google.maps.Marker({
                 position: stop_position,
@@ -38,157 +337,209 @@
                 title:"{{stop.stop.stop_name}}",
                 label:"{{stop.stop_sequence}}",
             });
-                   
+
+/* 
             markerArray[i].addListener("click", () => {
                 stepDisplay.setContent(
                     '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
                 );
-                stepDisplay.open(map, marker);
+                stepDisplay.open(map, markerArray[i]);
             });
+
             
+            
+            if (i>0){
+                requestArray[i-1]={
+                    origin: stopArray[i-1],
+                    destination: stopArray[i],
+                    travelMode: google.maps.TravelMode.TRANSIT,
+                    transitOptions: {modes: ["BUS"],routingPreference:["FEWER_TRANSFERS"]}, 
+                };
+            }
+*/
             i++;
         "{% endfor %}" 
-            
-        //const onChangeHandler = function () {
-        //calculateAndDisplayRoute(directionsService,map);};
-        //document.getElementById("start").addEventListener("change", onChangeHandler);
-        //document.getElementById("end").addEventListener("change", onChangeHandler);
+        const latlngStr = stopArray[0].split(",", 2);
+        const latlng = {
+            lat: parseFloat(latlngStr[0]),
+            lng: parseFloat(latlngStr[1]),
+        };
+        map.setCenter(latlng);
     };
-/*
-    function calculateAndDisplayRoute(directionsService,directionsRenderer,map,route_history) {
-        //for (let i = 0; i < markerArray.length; i++) {
-            //markerArray[i].setMap(null);
-        //};
-        const route=document.getElementById("route").value;
-        if(!route) return;
-        const start = document.querySelector("#routes"  + " option[value='" + route+ "']").dataset.value;
-        const end = document.querySelector("#routes"  + " option[value='" + route+ "']").dataset.id;
-        directionsService.route({
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode.TRANSIT,
-            transitOptions: {modes: ["BUS"],routingPreference:["FEWER_TRANSFERS"]}, 
-        }).then((response) => {
-            for (let i = 0; i < route_history.length; i++) {
-                    route_history[i].setMap(null);
-            };
-            var encoded_polyline=response.routes[0].overview_polyline;
-            var decodedPath = google.maps.geometry.encoding.decodePath(encoded_polyline); 
-            var flightPath = new google.maps.Polyline({
-                path: decodedPath,
-                //levels: decodedLevels,
-                strokeColor: "#000000",
-                strokeOpacity: 0.8,
-                strokeWeight: 3.5,
-                map: map
-            });
-            route_history.push(flightPath);
-            
-            const latlngStr = start.split(",", 2);
-            const latlng = {
-                lat: parseFloat(latlngStr[0]),
-                lng: parseFloat(latlngStr[1]),
-            };
-            map.setCenter(latlng);
-            directionsRenderer.setDirections(response);
-            //document.getElementById("sidebar").innerHTML ="" + response.routes[0].overview_polyline;  
-            //+ "</b> <hr/> Path:"+response.routes[0].overview_path;
-            //directionsRenderer.setDirections(response);
-            //showSteps(response, markerArray, stepDisplay, map);
-        });
-    }
-    function showSteps(directionResult, markerArray, stepDisplay, map) {
-        const myRoute = directionResult.routes[0].legs[0];
-        for (let i = 0; i < myRoute.steps.length; i++) {
-            const marker = (markerArray[i] =
-            markerArray[i] || new google.maps.Marker());
-            marker.setMap(map);
-            marker.setPosition(myRoute.steps[i].start_location);
-            attachInstructionText(
-            stepDisplay,
-            marker,
-            myRoute.steps[i].instructions,
-            map
-            );
-        }
-    }
 
+/*     
+        var delayFactor=100;
+        var nextPolyline=0;
+        function getPolyline(request, next) {
+            directionsService.route(request, function(response, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    var flightPath = new google.maps.Polyline({
+                        path: response.routes[0].overview_path,
+                        strokeColor: "#000000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3.5,
+                        map: map
+                    });
+                }else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+                    nextPolyline--;
+                    delayFactor++;
+                }else {
+                    var reason="Code "+status;
+                    console.log(reason);
+                };
+                next();
+            }); 
+        };
+        function theNext() {
+            if (nextPolyline < requestArray.length) {
+                setTimeout(function () {
+                    getPolyline(requestArray[nextPolyline-1],theNext);
+                },delayFactor);
+            };
+            nextPolyline++;
+        };
+        theNext();
 
-    function attachInstructionText(stepDisplay, marker, text, map) {
-        google.maps.event.addListener(marker, "click", () => {
-            stepDisplay.setContent(text);
-            stepDisplay.open(map, marker);
-        });
-    };  
 */    
 </script>
 
-<div id="floating-panel">
-    <form action="" method="post">
-        {% csrf_token %}
-        <strong style="color:black;background-color:white">Routes:</strong>
-        <input list="routes" id="route" class="input" name="route_name">
-            <datalist  id="routes">
-                {% for route_name in routes_name %}
-                    <option value= {{ route_name }}>
-                {% endfor %}
-                <!--
-                    { for route_name,route in routes.items }
-                        <option value= {{ route_name }}
-                            { for stop_sequence,stop in route.items }
-                                { if forloop.first } 
-                                    { for stop_index,stop_info in stop.items }
-                                        { if forloop.last }
-                                            data-value={{stop_info}}
-                                        { endif }
-                                    { endfor }
-                                { endif }
-                                
-                                { if forloop.last } 
-                                    { for stop_index,stop_info in stop.items }
-                                        { if forloop.last } 
-                                            data-id={{stop_info}}
-                                        { endif }
-                                    { endfor }
-                                { endif }
-                            { endfor }
-                        >
-                    { endfor }
-                    data-value route start position   data-id route end position   
-                -->
-                `Select your route`
-            </datalist>
-        <select name="direction">
-            <option value ="0">inbound</option>
-            <option value ="1">outbound</option>
-        </select>
-        <input id="search_route" type="submit" value="Display It" />
-    </form>
-    <br/>
-</div>
 
 <div class="container-fluid" >
-    <div class="row"> 
-        <!--{% block subcontent %}{% endblock %}-->     
-        <div class="col-md-3" id="sidebar" style="overflow:auto;color:black;background-color:white;height:500px">
+    <div id="style-selector-control" class="map-control">
+        <select id="style-selector" class="selector-control" style="line-height:50px; font-size: 20px;">
+            <option value="default" >Default</option>
+            <option value="silver">Silver</option>
+            <option value="night" selected="selected">Night mode</option>
+            <option value="retro" >Retro</option>
+            <option value="hiding">Hide features</option>
+        </select>
+    </div>
+    <div  id="map" style="width:100%;height:700px; padding-left:0;padding-right:0;">map</div> 
+    <div id="sidebar" style="overflow:auto;height:300px;padding-left:0;padding-right:0;">
         {% if route_Info %}
-            {% for stop in route_Info %}
-                Sequence:{{stop.stop_sequence}} &nbsp Name: {{stop.stop.stop_name}}
+            <div id="SelectedRoute" style="display:none" >
+                <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
+                    {% csrf_token %}
+                    <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                </form>
+                
+            </div>
+            <div id="SelectedStops">
+                <button class="btn-primary" style="font-size: 20px;" onclick="backToRoutes()">Back</button>
                 <hr>
-            {% endfor %}
+                {% for stop in route_Info %}
+                    <p style="color: #fff;font-size: 15px;">
+                        {{stop.stop_sequence}}: &nbsp {{stop.stop.stop_name}},  &nbsp    {{stop.route_number}}
+                    </p>
+                    <hr>
+                {% endfor %}
+            </div>
         {%else%}
-            Route Detail Here
+            <div id="SelectedRoute">
+                <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%; position:sticky">
+                    {% csrf_token %}
+                    <input type="text" name="search" placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                </form>
+        
+            </div> 
+            <div id="SelectedStops" style="display:none"></div>
         {% endif%}
-        </div>
-
-        <div class="col-md-9">
-            
-            <div  id="map" style="width:100%; height:100%">map</div>
-        </div>
     </div>
 </div>
 
+<script>
+    var route_value_list = [];
+    var route_info_list = [];
+    var user_input = document.getElementsByClassName("route_input")[0];
+    var SelectedRoute = document.getElementById("SelectedRoute");
+    var routeButtons = document.createElement("div");
+    routeButtons.id = "buttons";
+    routeButtons.className="btn-group-vertical";
+    SelectedRoute.appendChild(routeButtons);
+    "{% for route_name in routes_name %}"
+        route_value_list.push("{{ route_name.route_name }}".toString()+","+"{{ route_name.route_direction }}".toString());
+        var route_info="{{ route_name.route_name }}"+": "+"{{route_name.route_description}}";
+        route_info=route_info.replace(/&#x27;/g,"'");
+        route_info_list.push(route_info);
+    "{% endfor %}" 
+    function createRouteButtons(route_info,route_value){
+        //var route_hr = document.createElement("HR");
+        var route_form = document.createElement("form");
+        route_form.action="";
+        route_form.method="post";
+        route_form.className="route_form";
+        
+        
+        var csrf = document.createElement('input');
+        var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+        csrf.setAttribute("type","hidden");
+        csrf.setAttribute("name","csrfmiddlewaretoken");
+        csrf.setAttribute("value",csrfToken);
+        route_form.appendChild(csrf);
 
+        var route_button = document.createElement("BUTTON");
+        var route_name = document.createTextNode(route_info);
+        route_button.appendChild(route_name);
+        route_button.name = "route_name";
+        route_button.value = route_value;
+        route_button.type="submit";
+        route_button.className="btn btn-primary route-btn";
+        
+        route_form.appendChild(route_button);
+        
+        document.getElementById("buttons").appendChild(route_form);
+        //document.getElementById("buttons").appendChild(route_hr);   
+    }
+    function displayAll(){
+        for(var i=0;i<route_info_list.length;i++){
+            createRouteButtons(route_info_list[i],route_value_list[i]);
+        }
+    };
+    
+    user_input.onfocus = function(){
+        document.getElementById("buttons").style.display="block"; 
+        if (user_input.value==""){
+            displayAll();
+        };   
+    };
+    document.onmousedown=function(ev){
+        var oEvent=ev||event;
+        var target=oEvent.target||oEvent.srcElement;
+        if(target.classList.contains("route-btn") || target.className=="route_input"){
+            //console.log(target.className);
+        }else{
+            document.getElementById("buttons").style.display='none';
+            //console.log(target.className);
+        }
+    };
+    //user_input.onblur = function(){
+        //document.getElementById("buttons").style.display="none";
+    //}
+
+    user_input.oninput = function() {
+        var buttons_before = document.getElementById("buttons");
+        SelectedRoute.removeChild(buttons_before);
+        var routeButtons = document.createElement("div");
+        routeButtons.id = "buttons";
+        SelectedRoute.appendChild(routeButtons); 
+        if (user_input.value==""){
+            displayAll();
+        }else{
+            for(var i=0;i<route_info_list.length;i++){
+                if(route_info_list[i].indexOf(user_input.value)>=0){
+                    createRouteButtons(route_info_list[i],route_value_list[i]);
+                }
+            };
+        } 
+    }
+
+    function backToRoutes(){
+        document.getElementById('SelectedRoute').style.display ="block";
+        document.getElementById('SelectedStops').style.display ="none";
+        displayAll();
+    }
+        
+</script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
     async

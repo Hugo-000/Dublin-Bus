@@ -2,31 +2,51 @@ html {
     height:100%;
 }
 body {
-    min-height:100%;
-    margin:0;
-    padding:0;
-    position:relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color:white;
 }
-
+header{
+    flex: 0 0 auto;
+}
 footer {
-    position:absolute;
-    bottom:0;
-    height: 230px;
-    width:100%;
-    background-color: #082a44;
+    flex: 0 0 auto;
+    background-color: #20374c;
 }
 
+.route_form{
+    padding-bottom: 0 !important;
+    margin-block-end:0 !important;
+   
+}
+#buttons{
+    background-color:#4c9be8;
+    width:100% ;
+}
+#SelectedStops{
+    background-color:#4c9be8;
+}
+.route-btn{
+    width:100% !important;
+    text-align:left !important;
+}
 .container_main {
-    padding-bottom:250px !important;
+    flex: 1 0 auto;
 }
 
-.row-content li{
-    list-style:none; 
+.footer-content h3{
+    text-align: center; 
 }
-.row-content a{
+
+.footer-content li{
+    list-style:none;
+    text-align: center; 
+}
+.footer-content a{
     color:white;
 }
-.row-content a:hover{
+.footer-content a:hover{
     text-decoration:none;
     color:#c1ba62;
 }

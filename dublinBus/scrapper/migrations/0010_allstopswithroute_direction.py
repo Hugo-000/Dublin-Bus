@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('scrapper', '0009_auto_20210716_0939'),
+        ('scrapper', '0009_remove_allstopswithroute_direction'),
     ]
 
     operations = [

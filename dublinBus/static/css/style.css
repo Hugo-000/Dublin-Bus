@@ -49,3 +49,17 @@ footer {
     text-decoration:none;
     color:#c1ba62;
 }
+
+.offcanvas-absolute {
+    position: absolute !important;
+}
+
+.rounded-sm {
+    border-radius: 0.5rem !important;
+}
+.rounded-xs {
+    border-radius: 0.25rem !important;
+}
+.text-black {
+    color: black;
+}

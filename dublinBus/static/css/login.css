@@ -31,6 +31,10 @@
   width:300px !important;
 }
 
+.form-control-fw {
+  width: 100% !important;
+}
+
 .btn-reg{
   border-radius:.25rem !important;
 }

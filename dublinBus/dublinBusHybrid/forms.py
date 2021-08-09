@@ -5,25 +5,23 @@ from scrapper.models import Stops
 
 class JourneyPlannerForm(forms.Form):
     origin_location = forms.CharField(
-        # label = 'Origin',
-        label = "",
+        label = 'Origin',
         max_length = 150,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Origin',
-                'class': 'form-control'
+                'class': 'form-control form-control-fw'
             }
         )
     )
 
     destination_location = forms.CharField(
-        # label = 'Destination',
-        label = "",
+        label = 'Destination',
         max_length = 150,
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Destination ',
-                'class': 'form-control'
+                'class': 'form-control form-control-fw'
             }
         )
     )
@@ -34,13 +32,12 @@ class JourneyPlannerForm(forms.Form):
     maxDate = today + datedelta
     maxDateString = maxDate.strftime('%Y-%m-%d')
     travel_date = forms.DateField(
-        # label='Date',
-        label = "",
+        label='Date',
         # widget=forms.SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")),
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Date', 
-                'class': 'form-control', 
+                'class': 'form-control form-control-fw', 
                 'type':'date', 
                 'name':"trip-start",
                 'value':todayString,
@@ -51,13 +48,12 @@ class JourneyPlannerForm(forms.Form):
         required = False
     ) 
     travel_time = forms.TimeField(
-        # label='Time',
-        label = "",
+        label='Time',
         widget=forms.TimeInput(
             format='%H:%M',
             attrs={
             'placeholder': 'Time: e.g. 14:00',
-            'class': 'form-control'
+            'class': 'form-control form-control-fw'
             }
         ),
         required = False

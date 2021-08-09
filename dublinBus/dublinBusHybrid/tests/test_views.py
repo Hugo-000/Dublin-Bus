@@ -57,7 +57,7 @@ class TestIndexView(TestCase):
 
     def test_get_route_by_number(self):
         """test if stops sequence of a route can be retrieved by route number"""
-        response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
+        response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E,0'})
         #CurrentWeather.objects.get(dt="01-01-2021")
         #response = self.client.resolve("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
         # print(response.content)

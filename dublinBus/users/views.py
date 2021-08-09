@@ -18,10 +18,15 @@ class Dashboard(View):
         print(self.request)
         
         user_id = request.user.id
-        context = {
-            'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
-            'form' : AddressesForm()
-        }
+        if self.hasAddresses(user_id):
+            context = {
+                'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
+                'form' : AddressesForm()
+            }
+        else:
+            context = {
+                'form' : AddressesForm()
+            }
         return render(request, 'users/dashboard.html', context=context)
 
     def post(self, request, *args, **kwargs):
@@ -32,10 +37,15 @@ class Dashboard(View):
         else:
             self.createOrUpdateAddress(user_id, AddressesForm(request.POST))
 
-        context = {
-            'userAddresses': self.getUserAddresses(user_id=user_id).addresses.items(),
-            'form': AddressesForm(),
-        }
+        if self.hasAddresses(user_id):
+            context = {
+                'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
+                'form' : AddressesForm()
+            }
+        else:
+            context = {
+                'form' : AddressesForm()
+            }
         return render(request, 'users/dashboard.html', context)
 
     def hasAddresses(self, user_id):
@@ -52,7 +62,8 @@ class Dashboard(View):
             if self.hasAddresses(user_id):
                 self.updateAddress(user_id, fd.get('addressName'), fd.get('address'))
             else:
-                self.addFirstAddress(user_id, fd.get('addressName'), fd.get('address'))
+                check = self.addFirstAddress(user_id, fd.get('addressName'), fd.get('address'))
+                print('check', check)
 
     def getUserAddresses(self, user_id):
         if self.hasAddresses(user_id):
@@ -79,9 +90,11 @@ class Dashboard(View):
             return False
     
     def addFirstAddress(self, user_id, addressName, address):
+        print('User id First Address', user_id)
+        firstAddress = {addressName:address}
+        print('First Address', firstAddress)
         try: 
-            firstAddress = {addressName:address}
-            Addresses.objects.create(user_id=user_id, address=firstAddress)
+            Addresses.objects.create(addresses=firstAddress, user_id=user_id)
             return True
         except:
             return False

@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-static-top" id="headerNav">
         <div class="container-fluid">
 
-            <a class="navbar-brand" href="../">DublinBus</a>
+            <a class="navbar-brand" href="{% url 'index' %}">DublinBus</a>
             <button  class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -27,19 +27,23 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">My Account</a>
                         <div class="dropdown-menu" data-bs-popper="none" id="dropdown-menu">
-                            <a class="dropdown-item" href="{% url 'login' %}">Login</a>
-                            <a class="dropdown-item" href="{% url 'LeapCard' %}">LeapCard</a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'password_change' %}" class="dropdown-item">Change password</a>  
+                            <a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                            <a class="dropdown-item" href="#">BookMarks</a>
+                        {% else %}
+                            <a class="dropdown-item" href="{% url 'login' %}">Login</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'register' %}">Sign Up</a>
+                        {% endif %}
                         </div>
                     </li>
                 </ul>
 
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="changeTheme()">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Night Mode</label>
+                    <input class="form-check-input" type="checkbox" id="flexSwitch" onclick="changeTheme()" checked>
+                    <label class="form-check-label" for="flexSwitch">Night Mode</label>
                 </div>
             </div>
         </div>
@@ -56,7 +60,7 @@
         var styleSelector = document.getElementById("style-selector");
         if (nav_theme.classList.contains("bg-dark")){
             nav_theme.classList.replace("bg-dark", "bg-primary");
-            body_theme.classList.replace("bg-body", "bg-info");
+            body_theme.classList.replace("bg-body", "bg-secondary");
             footer_theme.classList.replace("bg-dark", "bg-primary");
             
             if (styleSelector!==null){
@@ -73,7 +77,7 @@
             
         } else {
             nav_theme.classList.replace("bg-primary","bg-dark");
-            body_theme.classList.replace("bg-info","bg-body");
+            body_theme.classList.replace("bg-secondary","bg-body");
             footer_theme.classList.replace("bg-primary","bg-dark");
             
             if (styleSelector!==null){

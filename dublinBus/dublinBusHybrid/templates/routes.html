@@ -323,48 +323,50 @@
         const markerArray = [];
         const stopArray=[];
         const requestArray=[];
-        "{% for stop in route_Info %}"
-            var stop_position={
-                lat:Number("{{stop.stop.lat}}"),
-                lng:Number("{{stop.stop.lng}}"),
-            };
-
-            stopArray[i]="{{stop.stop.lat}}".toString()+","+"{{stop.stop.lng}}".toString();
-
-            markerArray[i] = new google.maps.Marker({
-                position: stop_position,
-                map: map,
-                title:"{{stop.stop.stop_name}}",
-                label:"{{stop.stop_sequence}}",
-            });
-
-/* 
-            markerArray[i].addListener("click", () => {
-                stepDisplay.setContent(
-                    '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
-                );
-                stepDisplay.open(map, markerArray[i]);
-            });
-
-            
-            
-            if (i>0){
-                requestArray[i-1]={
-                    origin: stopArray[i-1],
-                    destination: stopArray[i],
-                    travelMode: google.maps.TravelMode.TRANSIT,
-                    transitOptions: {modes: ["BUS"],routingPreference:["FEWER_TRANSFERS"]}, 
+        "{% if route_Info %}"
+            "{% for stop in route_Info %}"
+                var stop_position={
+                    lat:Number("{{stop.stop.lat}}"),
+                    lng:Number("{{stop.stop.lng}}"),
                 };
-            }
-*/
-            i++;
-        "{% endfor %}" 
-        const latlngStr = stopArray[0].split(",", 2);
-        const latlng = {
-            lat: parseFloat(latlngStr[0]),
-            lng: parseFloat(latlngStr[1]),
-        };
-        map.setCenter(latlng);
+
+                stopArray[i]="{{stop.stop.lat}}".toString()+","+"{{stop.stop.lng}}".toString();
+
+                markerArray[i] = new google.maps.Marker({
+                    position: stop_position,
+                    map: map,
+                    title:"{{stop.stop.stop_name}}",
+                    label:"{{stop.stop_sequence}}",
+                });
+
+    /* 
+                markerArray[i].addListener("click", () => {
+                    stepDisplay.setContent(
+                        '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
+                    );
+                    stepDisplay.open(map, markerArray[i]);
+                });
+
+                
+                
+                if (i>0){
+                    requestArray[i-1]={
+                        origin: stopArray[i-1],
+                        destination: stopArray[i],
+                        travelMode: google.maps.TravelMode.TRANSIT,
+                        transitOptions: {modes: ["BUS"],routingPreference:["FEWER_TRANSFERS"]}, 
+                    };
+                }
+    */
+                i++;
+            "{% endfor %}" 
+            const latlngStr = stopArray[0].split(",", 2);
+            const latlng = {
+                lat: parseFloat(latlngStr[0]),
+                lng: parseFloat(latlngStr[1]),
+            };
+            map.setCenter(latlng);
+        "{% endif %}"
     };
 
 /*     
@@ -520,6 +522,7 @@
         var buttons_before = document.getElementById("buttons");
         SelectedRoute.removeChild(buttons_before);
         var routeButtons = document.createElement("div");
+        var routesFound=0;
         routeButtons.id = "buttons";
         SelectedRoute.appendChild(routeButtons); 
         if (user_input.value==""){
@@ -528,8 +531,16 @@
             for(var i=0;i<route_info_list.length;i++){
                 if(route_info_list[i].indexOf(user_input.value)>=0){
                     createRouteButtons(route_info_list[i],route_value_list[i]);
+                    routesFound+=1;
                 }
             };
+        };
+        if (routesFound==0){
+            var span = document.createElement('span');
+            span.style.fontSize = "18px";
+            var no_routes_found = document.createTextNode("No Routes Found");
+            span.appendChild(no_routes_found);
+            document.getElementById("buttons").appendChild(span);
         } 
     }
 

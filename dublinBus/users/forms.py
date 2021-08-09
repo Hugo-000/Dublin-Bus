@@ -86,8 +86,8 @@ class CustomUserCreationForm(UserCreationForm):
         # }
 
 class AddressesForm(forms.Form):
-    addressName = forms.CharField(max_length='20', label='Address Name')
-    address = forms.CharField(max_length='200', label='Address')
+    addressName = forms.CharField(max_length='20', label='Bookmark Name')
+    address = forms.CharField(max_length='200', label='Address Name')
     # class Meta:
     #     model = Addresses
     #     fields = [

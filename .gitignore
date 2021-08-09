@@ -6,3 +6,4 @@
 routes/
 *.xml
 *.log
+.env

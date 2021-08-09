@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-static-top" id="headerNav">
         <div class="container-fluid">
 
-            <a class="navbar-brand" href="../">DublinBus</a>
+            <a class="navbar-brand" href="{% url 'index' %}">DublinBus</a>
             <button  class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -10,29 +10,28 @@
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'index' %}">Home
-                            <span class="visually-hidden">(current)</span>
+                        <a class="nav-link" id="dublinBusHybrid" href="{% url 'index' %}">Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'journeyPlanner' %}">JourneyPlanner</a>
+                        <a class="nav-link" id="journeyPlanner" href="{% url 'journeyPlanner' %}">JourneyPlanner</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Routes' %}">Routes</a>
+                        <a class="nav-link" id="Routes" href="{% url 'Routes' %}">Routes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'CovidInfo' %}">Covid Info</a>
+                        <a class="nav-link" id="CovidInfo" href="{% url 'CovidInfo' %}">Covid Info</a>
                     </li>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">My Account</a>
                         <div class="dropdown-menu" data-bs-popper="none" id="dropdown-menu">
-                            <a class="dropdown-item" href="{% url 'login' %}">Login</a>
-                            <a class="dropdown-item" href="{% url 'LeapCard' %}">LeapCard</a>
-                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                            <a class="dropdown-item" href="#">BookMarks</a>
+                            <a class="dropdown-item" id="login" href="{% url 'login' %}">Login</a>
+                            <a class="dropdown-item" id="LeapCard" href="{% url 'LeapCard' %}">LeapCard</a>
+                            <a class="dropdown-item" id="register" href="{% url 'logout' %}">Logout</a>
+                            <a class="dropdown-item" id="" href="#">BookMarks</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'register' %}">Sign Up</a>
+                            <a class="dropdown-item" id="register" href="{% url 'register' %}">Sign Up</a>
                         </div>
                     </li>
                 </ul>
@@ -47,6 +46,16 @@
 </header>
 
 
+<script>
+    function makeRouteActive() {
+        const routes = ['dublinBusHybrid', 'journeyPlanner', 'Routes', 'CovidInfo', 'login', 'LeapCard', 'logout', 'register'];
+        const path = window.location.pathname.split('/').filter(s => s !== "");
+        const activeRouteName = path[path.length - 1];
+        const element = document.getElementById(activeRouteName);
+        element.classList.add('active');
+    }
+    makeRouteActive();
+</script>
 
 <script>
     function changeTheme() {

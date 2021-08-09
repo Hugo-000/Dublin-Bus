@@ -54,16 +54,13 @@
 
         {% load static %}
         <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <script src= {% static 'js/jquery.min.js' %}></script>
-        <script src= {% static 'js/bootstrap.bundle.min.js' %}></script>
-        <script defer src= {% static 'js/map.js' %}></script>
+        <script defer src={% static 'js/jquery.min.js' %}></script>
+        <script defer src={% static 'js/bootstrap.bundle.min.js' %}></script>
+        <script defer src={% static 'js/map.js' %}></script>
         <link rel="stylesheet" type="text/css" href={% static 'css/style.css' %}/>
-        <link rel="stylesheet" type="text/css" href={% static 'css/bootstrap.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/login.css' %}/>
         <link rel="stylesheet" type="text/css" href={% static 'css/covid_data.css' %}/>
         <link rel="stylesheet" type="text/css" id="default-theme" href={% static 'css/bootstrap.min.css' %}/>
-        
-
     </head>
 
     <body>
@@ -81,6 +78,5 @@
         <!--Like the header the below code inserts the footer file into the page template-->
         
         {% include 'partials/footer.html' %}
-        
     </body>
 </html>

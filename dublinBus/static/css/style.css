@@ -34,19 +34,10 @@ footer {
 .container_main {
     flex: 1 0 auto;
 }
-
-.footer-content h3{
-    text-align: center; 
+.footer-made-by {
+    color: #878B91;
 }
-
-.footer-content li{
-    list-style:none;
-    text-align: center; 
-}
-.footer-content a{
-    color:white;
-}
-.footer-content a:hover{
-    text-decoration:none;
-    color:#c1ba62;
+.footer-wrapper {
+    border-top: 1px solid #455663;
+    padding-top: 1rem;
 }

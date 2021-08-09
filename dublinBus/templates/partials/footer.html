@@ -1,48 +1,50 @@
-<footer class="container-fluid foot-wrap" >
-    <hr/>
-    <div class="row">
-
-        <div class="row-content col"></div>
-        <div class="row-content col">
-            <h3>&nbsp&nbsp&nbsp&nbsp Index</h3>
-            <ul>
+<footer class="container-fluid footer-wrapper">
+    <div class="d-flex flex-column flex-sm-row justify-content-center">
+        <div class="px-3">
+            <h4>Sitemap</h4>
+            <ul class="ps-3">
                 <li><a href="{% url 'journeyPlanner' %}">JourneyPlanner</a></li>
                 <li><a href="{% url 'Routes' %}">Routes</a></li>
                 <li><a href="{% url 'CovidInfo' %}">Covid Info</a></li>
                 <li><a href="{% url 'LeapCard' %}">LeapCard</a></li>  
             </ul>
         </div>
-        <div class="row-content col">
-            <h3>&nbsp&nbsp&nbsp&nbsp BROWSE</h3>
-            <ul> 
-                <li><a href="#">How made it</a></li>
-                <li><a href="#">Gallery</a></li>
-                <li><a href="#">About Us</a></li>
-            </ul>
-        </div>
-        <div class="row-content col">
-            <h3>&nbsp&nbsp &nbsp&nbspContacts</h3>
-            <ul class="social">
+        <div class="px-3">
+            <h4>Dublin Bus</h4>
+            <ul class="ps-3 social">
                 <li>
-                    <a href="#" title="Twitter Profile">
-                        <span class="icon fa fa-twitter">Twitter</span>
+                    <a href="https://twitter.com/dublinbusnews" title="Twitter Profile">
+                        <span class="icon fa fa-twitter"></span>
+                        Twitter
                     </a>
                 </li>
                 <li>
-                    <a href="#" title="Facebook Page">
-                        <span class="icon fa fa-facebook">Facebook</span>
+                    <a href="https://www.facebook.com/Dublin-bus-550585531677633" title="Facebook Page">
+                        <span class="icon fa fa-facebook"></span>
+                        Facebook
                     </a>
                 </li>
                 <li>
-                    <a href="#" title="LinkedIn Profile">
-                        <span class="icon fa fa-linkedin">LinkedIn</span>
+                    <a href="https://www.linkedin.com/company/dublin-bus-bus-tha-cliath/" title="LinkedIn Profile">
+                        <span class="icon fa fa-linkedin"></span>
+                        LinkedIn
                     </a>
                 </li>
             </ul>
         </div>
-        <div class="row-content col"></div>
-        <p align="center" style="margin-top: 0px;margin-bottom:0px;color:#878B91;">
+        <div class="px-3">
+            <h4>Contact</h4>
+            <ul class="ps-3">
+                <li><a href="{% url 'journeyPlanner' %}">JourneyPlanner</a></li>
+                <li><a href="{% url 'Routes' %}">Routes</a></li>
+                <li><a href="{% url 'CovidInfo' %}">Covid Info</a></li>
+                <li><a href="{% url 'LeapCard' %}">LeapCard</a></li>  
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="text-center footer-made-by">
             Copyright &copy;Website designed by Group 1.
-        </p>
+        </div>
     </div>
 </footer>

@@ -66,7 +66,13 @@ def getTravelTime(request_body):
 #Function 4
 def getWeather(travel_date, travel_time):
     today = datetime.date.today()
+    nowTime = datetime.datetime.now().time()
+    time18 = datetime.time(18,0,0)
     if travel_date == today and travel_time == None:
+        weather = getCurrentWeather()
+    elif travel_date == today and travel_time <= nowTime:
+        weather = getCurrentWeather()
+    elif travel_date == today and travel_time < time18:
         weather = getCurrentWeather()
     else:
         weather = getForecastWeather(travel_date, travel_time)
@@ -116,13 +122,16 @@ def getInputValues(weather, travel_date, travel_time):
     #  ['temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',
     #    'weather_main', 'Weekday', 'Hour', 'Month', 'TimeOfDay', 'Seasons',
     #    'RushHour']
-
-
+    try:
+        rain = weather['rain_1h']
+    except KeyError:
+        rain = 0
+    print('rainfall', rain)
     InputValues = [int(weather["temp"]), 
                     int(weather['feels_like']), 
                     int(weather['humidity']),  
                     float(weather['wind_speed']),
-                    int(weather['rain_1h']),
+                    rain,
                     int(weather['clouds_all']),
                     int(weather['weather_main']),
                     int(weekday),

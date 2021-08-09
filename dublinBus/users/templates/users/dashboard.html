@@ -15,32 +15,52 @@
         <a href="{% url 'login' %}" >Login</a>
     {% endif %}
     </div>
-</div>
+
 
 <div id="favourite-addresses">
     <div id="saved-address-table">
-        <table>
-            <thead>
-                <th> Name </th>
-                <th> Address </th>
-                <th> </th>
+        <table class="table table-hover" style="margin-bottom:8px;">
+            <thead style="text-align:center;">
+                <tr>
+                    <th scope="col"> Name &nbsp&nbsp</th>
+                    <th scope="col"> Address &nbsp&nbsp</th>
+                    <th scope="col"> </th>
+                </tr>
             </thead>
-            <tbody>
+            <tbody style="align:center;">
                 {% for addressName, addressValue in userAddresses %}
-                    <tr> 
-                        <td>{{ addressName }}</td>
+                    <tr class="table-primary"> 
+                        <th scope="row">{{ addressName }}</th>
                         <td>{{ addressValue }}</td>
                         <td>
-                            <form id="delete_{{addressName}}" action="" method="post">
+                            <form id="delete_{{addressName}}" action="" method="post" style="text-align:center;margin-block-end:0;width:100%;">
                                 {% csrf_token %}
                                 <input name="delete" value="true" hidden/>
                                 <input name="addressName" value="{{addressName}}" hidden />
                                 <input name="addressValue" value="{{addressValue}}" hidden />
-                                <button form="delete_{{addressName}}" type="submit">delete</button>
+                                <button form="delete_{{addressName}}" type="submit" class="btn btn-info">delete</button>
                             </form>
                         </td>
                     </tr>
                 {% endfor %}
+
+
+
+                <tr class="table-primary"> 
+                    <th scope="row" style="text-align: center !important; vertical-align: baseline; padding-bottom:0;padding-top:16;">TestName</th>
+                    <td style="text-align: center !important; vertical-align: baseline; padding-bottom:0;padding-top:16;">TestAddress</td>
+                    <td>
+                        <form id="delete_{{addressName}}" action="" method="post" style="text-align:center;margin-block-end:0;width:100%;">
+                            {% csrf_token %}
+                            <input name="delete" value="true" hidden/>
+                            <input name="addressName" value="{{addressName}}" hidden />
+                            <input name="addressValue" value="{{addressValue}}" hidden />
+                            <button form="delete_{{addressName}}" type="submit" class="btn btn-info">delete</button>
+                        </form>
+                    </td>
+                </tr>
+
+
             </tbody>
         </table>
     </div>
@@ -51,8 +71,9 @@
     <form id="create" action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button form="create" type="submit">Save</button>
+        <button form="create" type="submit" class="btn btn-primary" >Save</button>
     </form>
 </div>
 
+</div>
 {% endblock %}

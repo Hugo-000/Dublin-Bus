@@ -1,6 +1,6 @@
 .login-title{
-    margin-bottom:10px;
-    margin-top:30px;
+  margin-bottom:10px;
+  margin-top:30px;
 }
 
 @keyframes slideInFromLeft {
@@ -12,70 +12,68 @@
   }
 }
 .bus-logo{
-   animation: 1s ease-out 0s 1 slideInFromLeft;
-   width:80px;
-   height:80px;
-   margin-top:90px;
-   margin-bottom:20px;
+  animation: 1s ease-out 0s 1 slideInFromLeft;
+  width:80px;
+  height:80px;
+  margin-top:90px;
+  margin-bottom:20px;
 }
 
 #register-main{
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column
 }
 
 .form-control{
-border-radius:.25rem;
-width:300px !important;
+  border-radius:.25rem;
+  width:300px !important;
 }
 
 .btn-reg{
-border-radius:.25rem !important;
-
+  border-radius:.25rem !important;
 }
 
 #register-content{
-display: grid;
+  display: grid;
 }
 
 #login-content{
-display: grid;
-width:300px;
+  display: grid;
+  width:300px;
 }
 
 p #id_username{
- width: 220px
+  width: 220px
 }
 
 p #id_password{
- width: 220px !important
+  width: 220px !important
 }
 .submit-btn{
-display:inline-block
+  display:inline-block
 }
 
 .login-github{
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .github-text{
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 }
 
 .btn-log{
-   display:block !important;
-   border-radius:.25rem;
-   margin:10px;
-   color: white;
+  display:block !important;
+  border-radius:.25rem !important;
+  margin:10px;
+  color: white;
 }
 
 /*Mobile responsive */
 @media only screen and (max-width: 900px) {
-
-#register-main {
-justify-content: center;
-
+  #register-main {
+    justify-content: center;
+  }
 }

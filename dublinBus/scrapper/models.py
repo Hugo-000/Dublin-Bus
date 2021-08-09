@@ -74,9 +74,12 @@ class ForecastWeather(models.Model):
         )
         return result
 class Routes(models.Model):
+    route_id = models.CharField(max_length=45, null=True)
+    agency_id = models.CharField(max_length=45, null=True)
     route_name = models.CharField(max_length=45, null=True)
     route_description = models.CharField(max_length=200, null=True)
     route_direction = models.CharField(max_length=45, null=True)
+
 
 class Stops(models.Model):
     stop_id = models.CharField(max_length=20, primary_key=True)
@@ -123,5 +126,40 @@ class RealTimeTraffic(models.Model):
     stop_arrival_delay = models.CharField(max_length=45, default="na", null=True)
     stop_id = models.CharField(max_length=45, null=True)
     stop_schedule = models.CharField(max_length=45, null=True)
+class Agency(models.Model):
+    agency_id = models.CharField(max_length=45, null=True)
+    agency_name = models.CharField(max_length=45, null=True)
+    agency_url = models.CharField(max_length=45, null=True)
+    agency_timezone = models.CharField(max_length=45, null=True)
+    agency_lang = models.CharField(max_length=45, null=True)
 
+class StopTimes(models.Model):
+    trip_id = models.CharField(max_length=45, null=True)
+    arrival_time = models.CharField(max_length=45, null=True)
+    departure_time = models.CharField(max_length=45, null=True)
+    stop_id = models.CharField(max_length=45, null=True)
+    stop_sequence = models.CharField(max_length=45, null=True)
+    stop_headsign = models.CharField(max_length=45, null=True)
+    pickup_type = models.CharField(max_length=45, null=True)
+    drop_off_type = models.CharField(max_length=45, null=True)
+    shape_dist_traveled = models.CharField(max_length=45, null=True) 
+
+class StopTimes2(models.Model):
+    trip_id = models.CharField(max_length=45, null=True)
+    arrival_time = models.CharField(max_length=45, null=True)
+    departure_time = models.CharField(max_length=45, null=True)
+    stop_id = models.CharField(max_length=45, null=True)
+    stop_sequence = models.CharField(max_length=45, null=True)
+    stop_headsign = models.CharField(max_length=45, null=True)
+    pickup_type = models.CharField(max_length=45, null=True)
+    drop_off_type = models.CharField(max_length=45, null=True)
+    shape_dist_traveled = models.CharField(max_length=45, null=True) 
+
+class Trips(models.Model):
+    route_id = models.CharField(max_length=45, null=True)
+    service_id = models.CharField(max_length=45, null=True)
+    trip_id = models.CharField(max_length=45, null=True)
+    shape_id = models.CharField(max_length=45, null=True)
+    trip_headsign = models.CharField(max_length=100, null=True)
+    direction_id = models.CharField(max_length=45, null=True)
 

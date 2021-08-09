@@ -10,192 +10,121 @@
 ></script>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-4 position-relative">
-            <div class="d-lg-none">
-                <button style="z-index: 1000;" class="btn btn-primary position-absolute top-0 left-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                    <i class="fas fa-chevron-right"></i>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                
-                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Journey Info</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="true">Form</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Info</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="directions-tab" data-bs-toggle="tab" data-bs-target="#directions" type="button" role="tab" aria-controls="directions" aria-selected="false">Directions</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button" role="tab" aria-controls="live" aria-selected="false">Live</button>
-                            </li>
-                        </ul>
-                        
-                        <div class="tab-content" id="form-tab">
-                            <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
-                                <div id="form_panel">
-                                    <form action="" method="post">
-                                        {% csrf_token %}
-                                        {{form.as_p}}
-                                        <input type="submit" value="Submit" class="btn btn-primary">
-                                    </form>
-                                </div>
-                            </div>
-                        
-                            <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
-                                <div id="info_panel">
-                                    <h1 class="heading">Journey Information:</h1>
-                                    <ul>
-                                        <!--
-                                        <li><strong>Number of Stops:</strong> {# num_stops #}</li>
-                                        <li><strong>Number of Routes:</strong> {# num_routes #}</li>
-                                        -->
-                                        <li><strong>Travel Date:</strong> {{ travel_date }}</li>
-                                        <li><strong>Departure Time:</strong> {{ travel_time }}</li>
-                                        <li><strong>Estimated Journey Time:</strong> <span id="estimated-time">... calculating</span></li>
-                                    </ul>
-                                    <div id="google_warning" style="visibility:hidden;">
-                                        <p> Warning: the above time uses an estimated time provided by google.</p>
+    <div class="row h-100 position-relative">
+            <button id="open-menu-btn" style="z-index: 1000" class="btn btn-primary position-absolute top-0 left-0 mt-2 w-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                <i class="fas fa-chevron-right"></i>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="offcanvas offcanvas-start offcanvas-absolute p-0" style="display: absolute" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="d-flex border-bottom">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="true">Form</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Info</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="directions-tab" data-bs-toggle="tab" data-bs-target="#directions" type="button" role="tab" aria-controls="directions" aria-selected="false">Directions</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button" role="tab" aria-controls="live" aria-selected="false">Live</button>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn-close text-reset ms-auto p-2" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0">
+                    <div class="tab-content" id="form-tab">
+                        <div class="tab-pane fade show active p-3" id="form" role="tabpanel" aria-labelledby="form-tab">
+                            <div id="form_panel">
+                                <div class="card text-white bg-body rounded-sm p-2">
+                                    <h5 class="card-header text-center">Journey Planner</h5>
+                                    <div class="card-body">
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            {% for field in form %}
+                                                <div class="mb-2">
+                                                    <label class="fs-6 pb-1" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                                    {{ field }}
+                                                </div>
+                                            {% endfor %}
+                                            <button type="submit" value="Submit" class="btn btn-primary w-100 mt-4 rounded-xs">Submit</button>
+                                        </form>
                                     </div>
-                        
-                                    <!-- Section to show the current weather data -->
-                                    <div >
-                                        <!-- This section needs to get the weather data for the station selected and return it to the screen -->
-                                        
-                                        <div>
-                                            {% load static %}
-                                            {% with ''|add:weather_icon as image_static %}
-                                            <img style="width:20px;height:20px" src={% static image_static %} />
-                                            {% endwith %}
-                                            {{weather.weather_main}},
-                                            {{weather.temp}}&deg;C,
-                                            Dublin, Ireland
-                                        </div>
-                                        <div>
-                                            <span>Description:</span>
-                                            <span>{{weather.weather_description}}</span>
-                                        </div>
-                                        <div>
-                                            <span>Humidity:</span>
-                                            <span>{{weather.humidity}}&#37;</span>
-                                        </div>
-                                        <div>
-                                            <span>Wind:</span>
-                                            <span>{{weather.wind_speed}} km/hr</span>
-                                        </div>
-                                    </div> 
-                        
-                                    {{userUnix | json_script:"userUnixDate" }}
-                                </div>
+                                </div> 
                             </div>
-                        
-                            <div class="tab-pane fade" id="directions" role="tabpanel" aria-labelledby="directions-tab">
-                                <div id="panel" style="width: 300px; float: right;"></div>
-                            </div>
-                        
-                            <div class="tab-pane fade" id="live" role="tabpanel" aria-labelledby="live-tab">
-                                <div id="realTimeInfo" style="width: 300px; float: right;">Real Time Info Goes here</div>
-                            </div>
-                            
-                        </div> 
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-none d-lg-block">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="true">Form</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="false">Info</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="directions-tab" data-bs-toggle="tab" data-bs-target="#directions" type="button" role="tab" aria-controls="directions" aria-selected="false">Directions</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button" role="tab" aria-controls="live" aria-selected="false">Live</button>
-                    </li>
-                </ul>
-      
-
-                <div class="tab-content" id="form-tab">
-                    <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
-                        <div id="form_panel">
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                {{form.as_p}}
-                                <input type="submit" value="Submit">
-                            </form>
                         </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
-                        <div id="info_panel">
-                            <h1 class="heading">Journey Information:</h1>
-                            <ul>
-                                <!--
-                                <li><strong>Number of Stops:</strong> {# num_stops #}</li>
-                                <li><strong>Number of Routes:</strong> {# num_routes #}</li>
-                                -->
-                                <li><strong>Travel Date:</strong> {{ travel_date }}</li>
-                                <li><strong>Departure Time:</strong> {{ travel_time }}</li>
-                                <li><strong>Estimated Journey Time:</strong> <span id="estimated-time">... calculating</span></li>
-                            </ul>
-                            <div id="google_warning" style="visibility:hidden;">
-                                <p> Warning: the above time uses an estimated time provided by google.</p>
-                            </div>
-
-                            <!-- Section to show the current weather data -->
-                            <div >
-                                <!-- This section needs to get the weather data for the station selected and return it to the screen -->
+                    
+                        <div class="tab-pane fade p-3" id="info" role="tabpanel" aria-labelledby="info-tab">
+                            <div id="info_panel">
+                                <div class="card rounded-sm text-black bg-white p-2">
+                                    <h5 class="card-header">Journey Information</h5>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                            <div class="fw-bold">Travel date</div>
+                                            <div class="">{{travel_date}}</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                            <div class="fw-bold">Departure Time</div>
+                                            <div>{{travel_time}}</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fw-bold">Estimated Journey Time</div >
+                                            <div id="estimated-time">... calculating</div>
+                                        </div>
+                                    </div>
+                                </div> 
                                 
-                                <div>
-                                    {% load static %}
-                                    {% with ''|add:weather_icon as image_static %}
-                                    <img style="width:20px;height:20px" src={% static image_static %} />
-                                    {% endwith %}
-                                    {{weather.weather_main}},
-                                    {{weather.temp}}&deg;C,
-                                    Dublin, Ireland
-                                </div>
-                                <div>
-                                    <span>Description:</span>
-                                    <span>{{weather.weather_description}}</span>
-                                </div>
-                                <div>
-                                    <span>Humidity:</span>
-                                    <span>{{weather.humidity}}&#37;</span>
-                                </div>
-                                <div>
-                                    <span>Wind:</span>
-                                    <span>{{weather.wind_speed}} km/hr</span>
-                                </div>
-                            </div> 
+                                <!-- Section to show the current weather data -->
+                                <div class="card rounded-sm text-black bg-white p-2 mt-5">
+                                    <h5 class="card-header">Weather Information</h5>
+                                    <div class="card-body">
+                                        <div class="d-flex pt-2 pb-3">
+                                            {% with ''|add:weather_icon as image_static %}
+                                                <img class="bg-white p-2 rounded-circle shadow" style="width:2.5rem;height:2.5rem" src={% static image_static %} />
+                                            {% endwith %}
+                                            <div class="ms-2 my-auto">
+                                                {{weather.weather_main}},
+                                                {{weather.temp}}&deg;C,
+                                                Dublin, Ireland
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                            <div class="fw-bold">Description</div>
+                                            <div class="">{{weather.weather_description}}</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                            <div class="fw-bold">Humidity</div>
+                                            <div>{{weather.humidity}}&#37;</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fw-bold">Wind</div >
+                                            <div>{{weather.wind_speed}} km/hr</div>
+                                        </div>
+                                    </div>
+                                </div> 
 
-                            {{userUnix | json_script:"userUnixDate" }}
+                                <div id="google_warning" class="alert alert-warning shadow rounded-sm text-black mt-2" style="visibility:hidden;">
+                                    Warning: the above time uses an estimated time provided by google.
+                                </div>
+                                {{userUnix | json_script:"userUnixDate" }}
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="directions" role="tabpanel" aria-labelledby="directions-tab">
-                        <div id="panel" style="width: 300px; float: right;"></div>
-                    </div>
-
-                    <div class="tab-pane fade" id="live" role="tabpanel" aria-labelledby="live-tab">
-                        <div id="realTimeInfo" style="width: 300px; float: right;">Real Time Info Goes here</div>
-                    </div>  
+                    
+                        <div class="tab-pane fade" id="directions" role="tabpanel" aria-labelledby="directions-tab">
+                            <div id="panel" class="w-100 bg-white"></div>
+                        </div>
+                    
+                        <div class="tab-pane fade p-3" id="live" role="tabpanel" aria-labelledby="live-tab">
+                            <div id="realTimeInfo" style="width: 300px; float: right;">Real Time Info Goes here</div>
+                        </div>
+                        
+                    </div> 
                 </div>
             </div>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-4 col-lg-2"></div>
+        <div class="col-md-8 col-lg-10">
             <div id="style-selector-control" class="map-control">
                 <select id="style-selector" class="selector-control" style="line-height:50px; font-size: 20px;">
                     <option value="default" >Default</option>
@@ -210,4 +139,18 @@
     </div>
 </div>
 
+<script>
+    function openSideMenu() {
+        if (window.screen.width >= 992) {
+            // open the menu 
+            console.log('open side menu')
+            document.getElementById('open-menu-btn').click();
+        } 
+    }
+    function selectInfo() {
+        document.querySelector('#info-tab').click();
+    }
+    openSideMenu();
+    selectInfo();
+</script>
 {% endblock %}

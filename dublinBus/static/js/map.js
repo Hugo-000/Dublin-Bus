@@ -373,18 +373,8 @@ function createMap() {
         /*Disable the default map ui*/
         disableDefaultUI: true,
         /*restrict the boundary of map*/
-        restriction: {
-            latLngBounds: {
-                north: 54,
-                south: 53,
-                west: -6.4,
-                east: -6.2,
-            },
-            strictBounds: false
-        },
     });
 }
-
 
 function handleLocationError(browserProblem, locationWindow, pos) {
     // convert the error types into human understandable error codes 
@@ -437,7 +427,9 @@ function getRoute(map) {
         };
 
         directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById('panel-desktop'))
         directionsDisplay.setPanel(document.getElementById('panel'));
+        
 
         console.log('directions', directionsDisplay)
 
@@ -519,9 +511,11 @@ function handleRouteResponse(directionsDisplay, response, status) {
             const estimatedTimeElement = document.querySelector('#estimated-time');
             const googleWarning = document.querySelector('#google_warning');
             console.log('result', result);
-            if ('google' in result.estimatedTime) {
+            console.log('google_warning', googleWarning)
+            if (result.estimatedTime.type === "google") {
                 // Produce Google Warning
-                googleWarning.innerHTML.style.visibility('visible');
+                console.log('google')
+                googleWarning.style.visibility = 'visible';
             }
                 
             estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;

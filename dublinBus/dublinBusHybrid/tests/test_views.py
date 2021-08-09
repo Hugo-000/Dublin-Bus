@@ -57,12 +57,20 @@ class TestIndexView(TestCase):
 
     def test_get_route_by_number(self):
         """test if stops sequence of a route can be retrieved by route number"""
-        response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
+        response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E,0'})
         #CurrentWeather.objects.get(dt="01-01-2021")
         #response = self.client.resolve("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
         # print(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'routes.html')
         #self.assertEqual(len(response.context['route']), 1)
-('scrapper', '0008_allstopswithroute_direction'),
-('scrapper', '0009_auto_20210716_0939'),
+
+    def test_get_route_by_number_404(self):
+        """test if stops sequence of a route can be retrieved by route number"""
+        response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '44324'})
+        with self.assertRaises(IndexError):
+            response.content['route_Info']
+            self.assertEqual(response.status_code, 404)
+            self.assertRaises(IndexError, response)
+
+

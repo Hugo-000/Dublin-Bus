@@ -9,10 +9,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 print("test base", BASE_DIR)
 
-from django.test.runner import DiscoverRunner
-# myapp.tests.py
-from django.test import TestCase, SimpleTestCase
-
 class TestIndexView(TestCase):
     def test_resolve_to_index(self):
         """test the url works fine"""
@@ -51,19 +47,20 @@ class TestIndexView(TestCase):
 
     def test_get_directions(self):
         """test if the direction can e inferenced by lat and lng data: "UCD","UCD","2021-08-06","16:00"""
-        # response = self.client.post("/dublinBusHybrid/journeyPlanner/", {'origin_location': 'UCD', 'destination_location': 'Rathmines','travel_date':'2021-08-08','travel_time':'16:00'},
-        #                             HTTP_ACCEPT='')
+        response = self.client.post("/dublinBusHybrid/journeyPlanner/", {'origin_location': 'UCD', 'destination_location': 'Rathmines','travel_date':'2021-08-08','travel_time':'16:00'},
+                                    HTTP_ACCEPT='application/json')
         # # content_type  = "application/json"
+        #print(response.content)
         # print(response.status_code)
-        pass
         #direction = JourneyPlanner().fetchJSON("UCD")
-        # self.assertEqual(direction, 1)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_route_by_number(self):
         """test if stops sequence of a route can be retrieved by route number"""
         response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
+        #CurrentWeather.objects.get(dt="01-01-2021")
         #response = self.client.resolve("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
-
-        print(response.status_code)
-        print(response.content)
-        self.assertEqual(response.resolver_match.func.__name__, BusRoutes.post(request=response))
+        # print(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'routes.html')
+        #self.assertEqual(len(response.context['route']), 1)

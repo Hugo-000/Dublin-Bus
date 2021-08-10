@@ -9,13 +9,21 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4 position-relative">
-            {# % block subcontent % #}
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{form.as_p}}
-                    <input type="submit" value="Submit">
-                </form>
-            {# % endblock % #}
+            <div class="card text-white rounded-sm p-2">
+                <h5 class="card-header text-center">Journey Planner</h5>
+                <div class="card-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="mb-2">
+                                <label class="fs-6 pb-1" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" value="Submit" class="btn btn-primary w-100 mt-4 rounded-xs">Submit</button>
+                    </form>
+                </div>
+            </div> 
         </div>
 
         <div class="col-md-8 d-none d-lg-block">
@@ -34,7 +42,7 @@
 </div>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
-    async
+    defer
 ></script>
 
 {% endblock %}

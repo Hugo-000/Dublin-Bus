@@ -406,6 +406,67 @@
 </script>
 
 
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <ul class="nav nav-tabs">
+        {% if route_Info %}
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#choose_route">Routes</a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#choose_stop">Stops</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#choose_route">Routes</a>
+            </li>
+        {% endif %}
+    </ul>
+    <div id="myTabContent" class="tab-content" style="overflow:auto;padding-left:0;padding-right:0;">
+        {% if route_Info %}
+            <div class="tab-pane fade" id="choose_route">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightLabel">Choose your route here:</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div id="SelectedRoute">
+                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
+                        {% csrf_token %}
+                        <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                    </form>   
+                </div> 
+            </div>
+            <div class="tab-pane fade active show" id="choose_stop">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightLabel">Stops on the Routes:</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div id="SelectedStops">
+                    {% for stop in route_Info %}
+                        <p style="color: #fff;font-size: 15px;">
+                            {{stop.stop_sequence}}: &nbsp {{stop.stop.stop_name}}, &nbsp Line &nbsp {{stop.route_number}}
+                        </p>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="tab-pane fade active show" id="choose_route">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightLabel">Choose your route here:</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div id="SelectedRoute">
+                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
+                        {% csrf_token %}
+                        <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                    </form>   
+                </div> 
+            </div>
+        {% endif %}
+    </div>
+</div>
+
 <div class="container-fluid" >
     <div id="style-selector-control" class="map-control">
         <select id="style-selector" class="selector-control" style="line-height:50px; font-size: 20px;">
@@ -419,32 +480,9 @@
     <div  id="map" style="width:100%;height:700px; padding-left:0;padding-right:0;">map</div> 
     <div id="sidebar" style="overflow:auto;height:300px;padding-left:0;padding-right:0;">
         {% if route_Info %}
-            <div id="SelectedRoute" style="display:none" >
-                <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
-                    {% csrf_token %}
-                    <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
-                </form>
-                
-            </div>
-            <div id="SelectedStops">
-                <button class="btn-primary" style="font-size: 20px;" onclick="backToRoutes()">Back</button>
-                <hr>
-                {% for stop in route_Info %}
-                    <p style="color: #fff;font-size: 15px;">
-                        {{stop.stop_sequence}}: &nbsp {{stop.stop.stop_name}},  &nbsp    {{stop.route_number}}
-                    </p>
-                    <hr>
-                {% endfor %}
-            </div>
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Show Stops</button>
         {%else%}
-            <div id="SelectedRoute">
-                <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%; position:sticky">
-                    {% csrf_token %}
-                    <input type="text" name="search" placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
-                </form>
-        
-            </div> 
-            <div id="SelectedStops" style="display:none"></div>
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Search For Routes</button>
         {% endif%}
     </div>
 </div>
@@ -547,6 +585,8 @@
     function backToRoutes(){
         document.getElementById('SelectedRoute').style.display ="block";
         document.getElementById('SelectedStops').style.display ="none";
+        document.getElementById('offcanvasRightLabel').innerHTML ="Choose your route here:";
+        
         displayAll();
     }
         

@@ -2,11 +2,12 @@
 
 {% extends 'layouts/base.html' %}
 
-
+{% load static %}
 
 {% block content %}
 
 <div id="register-main">
+    <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
     <h2 class="login-title">Login</h2>
     <div>
         <form method="post" id="login-content">
@@ -30,6 +31,9 @@
     <a href="{#% url 'dashboard' %#}" class="btn btn-success btn-log">Back to dashboard</a>
     -->
     </div>
+
+    <br>
+    <br>
 
 
 </div>

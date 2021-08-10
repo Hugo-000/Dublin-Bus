@@ -265,7 +265,8 @@ class BusRoutes(View):
             route_number_set.add(route.route_name)
         route_chosed = request.POST.get('route_name').split(",",1)
         route_number_chosed=route_chosed[0]
-        route_direction_chosed="O" if route_chosed[1]=="0" else "I"
+        if (len(route_chosed)==2):
+            route_direction_chosed="O" if route_chosed[1]=="0" else "I"
         #route_direction_chosed=request.POST.get('direction')
 
         route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed).filter(direction=route_direction_chosed)

@@ -54,7 +54,10 @@ def convertToDate(time ):
 
 for each in forecast_weather['list']:
     if each.get("rain"):
-        rain = each['rain']['1h']
+        if each.get("rain").keys() == '1h':
+            rain = each['rain']['1h']
+        if each.get("rain").keys() == '3h':
+            rain = each['rain']['3h']
     else:
         rain = 0
 

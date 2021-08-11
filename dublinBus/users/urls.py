@@ -11,4 +11,5 @@ urlpatterns = [
     url(r"^register/", register, name="register"),
 
     path('dashboard/', views.Dashboard.as_view(), name='dashboard'),
+    path('termsandconditions', views.TermsAndConditions.as_view(), name='termsandconditions'),
 ]

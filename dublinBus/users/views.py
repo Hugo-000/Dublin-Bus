@@ -121,3 +121,7 @@ def register(request):
         "users/register.html",
         {"form":form}
     )
+
+class TermsAndConditions(View):
+    def get(self):
+        return render('users/termsandcond.html')

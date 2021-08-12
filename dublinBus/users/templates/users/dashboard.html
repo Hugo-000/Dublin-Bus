@@ -78,6 +78,13 @@
             <a href="{% url 'password_change' %}" class="btn btn-primary btn-log">Change password</a>
 
             <a href="{% url 'logout' %}" class="btn btn-info btn-log">Logout</a>
+
+            <form id="delete_{{user_id}}" action="/delete/" method="post" style="text-align:center;margin-block-end:0;width:100%;">
+                {% csrf_token %}
+                <input name="delete" value="true" hidden/>
+                <button form="delete_{{user_id}}" type="submit" class="btn btn-danger">delete</button>
+            </form>
+            <!-- <a href="{# % url 'delete' % #}" class="btn btn-danger btn-log">Delete</a> -->
         {% else %}
             <a href="{% url 'login' %}" >Login</a>
         {% endif %}

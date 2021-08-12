@@ -1,5 +1,6 @@
 
 import json
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -20,11 +21,13 @@ class Dashboard(View):
         user_id = request.user.id
         if self.hasAddresses(user_id):
             context = {
+                'user_id':user_id,
                 'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
                 'form' : AddressesForm()
             }
         else:
             context = {
+                'user_id':user_id,
                 'form' : AddressesForm()
             }
         return render(request, 'users/dashboard.html', context=context)
@@ -39,11 +42,13 @@ class Dashboard(View):
 
         if self.hasAddresses(user_id):
             context = {
+                'user_id':user_id,
                 'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
                 'form' : AddressesForm()
             }
         else:
             context = {
+                'user_id':user_id,
                 'form' : AddressesForm()
             }
         return render(request, 'users/dashboard.html', context)
@@ -121,3 +126,24 @@ def register(request):
         "users/register.html",
         {"form":form}
     )
+class Delete(View):
+    def post(self, request):
+        print("you have arrived here")
+        user_id = self.getUserID(request)
+        print("user_id", user_id)
+        self.deleteUser(user_id['ok'])
+        return render(request, 'users/deleteUser.html') 
+
+    def deleteUser(self, user_id):
+        try:
+            u = User.objects.get(id = user_id)
+            u.delete()
+        except User.DoesNotExist:   
+            return None
+
+    def getUserID(self, request):
+        if request.user.is_authenticated:
+            user_id = {'ok':request.user.id}
+        else:
+            user_id = {'Error':'User is not authenticated'}
+        return user_id

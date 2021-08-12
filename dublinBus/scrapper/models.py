@@ -57,20 +57,24 @@ class ForecastWeather(models.Model):
 
     def __str__(self):
         result = (
-            f"{self.dt}",
-            f"{self.dt_iso}",
-            f"{self.temp}",
-            f"{self.temp_min}",
-            f"{self.temp_max}",
-            f"{self.pressure}",
-            f"{self.humidity}",
-            f"{self.wind_speed}",
-            f"{self.wind_deg}",
-            f"{self.clouds_all}",
-            f"{self.weather_id}",
-            f"{self.weather_main}",
-            f"{self.weather_description}",
-            f"{self.weather_icon}",
+            f"{self.dt},"
+            f"{self.dt_iso},"
+            f"{self.temp},"
+            f"{self.feels_like},"
+            f"{self.temp_min},"
+            f"{self.temp_max},"
+            f"{self.pressure},"
+            f"{self.humidity},"
+            f"{self.wind_speed},"
+            f"{self.wind_deg},"
+            f"{self.clouds_all},"
+            f"{self.weather_id},"
+            f"{self.weather_main},"
+            f"{self.weather_description},"
+            f"{self.weather_icon},"
+            f"{self.rain_1h},"
+            f"{self.weekday},"
+            f"{self.month},"
         )
         return result
 class Routes(models.Model):
@@ -123,5 +127,3 @@ class RealTimeTraffic(models.Model):
     stop_arrival_delay = models.CharField(max_length=45, default="na", null=True)
     stop_id = models.CharField(max_length=45, null=True)
     stop_schedule = models.CharField(max_length=45, null=True)
-
-

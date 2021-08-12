@@ -37,6 +37,15 @@ weather = CurrentWeather()
 w = CurrentWeather()
 #put the json response to the model
 try:
+    if curr_weather.get("rain"):
+        if curr_weather.get("rain").keys() == '1h':
+            rain = w['rain']['1h']
+        if curr_weather.get("rain").keys() == '3h':
+            rain = w['rain']['3h']
+        else:
+            rain = 0
+    else:
+        rain = 0
     w.dt = curr_weather['dt']
     w.temp = round(curr_weather['main']['temp'] - 273.15)
     w.feels_like = round(curr_weather['main']['feels_like'] - 273.15)
@@ -50,6 +59,9 @@ try:
     w.weather_main = curr_weather['weather'][0]['main']
     w.weather_description = curr_weather['weather'][0]['description']
     w.weather_icon = curr_weather['weather'][0]['icon']
+    w.rain = rain
+    print(rain)
+    w.weather_id = curr_weather['weather'][0]['id']
     w.save()
 except Exception as e:
     print(e)

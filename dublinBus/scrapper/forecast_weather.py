@@ -15,46 +15,55 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dublinBus.settings")
 django.setup()
 
 from scrapper.models import ForecastWeather
-#Add API info
 
-#Add API info
+# Add API info
 apiKey = 'ac8d0dd5f40c8d6da60fd0785a3f75c4'
 q = 'dublin'
 
-forecast_weather_link = "http://api.openweathermap.org/data/2.5/forecast?q="+q+"&appid="+apiKey
+forecast_weather_link = "http://api.openweathermap.org/data/2.5/forecast?q=" + q + "&appid=" + apiKey
 
-#get response
+# get response
 response = requests.get(forecast_weather_link)
 print("status code: ", response.status_code)
 
 forecast_weather = response.json()
-#delete object model and create a new one
-ForecastWeather.objects.all().delete()
+# delete object model and create a new one
+#ForecastWeather.objects.all().delete()
+def validateSixDay():
+    """Range smaller than today and greater than 6 days after will be filtered out"""
+    sixth_day = datetime.date.today() + datetime.timedelta(days=5)
+    #Range smaller than today and greater than 6 days after will be filtered out
+    res = ForecastWeather.objects.filter(dt_iso__gt=sixth_day, dt_iso__lt=datetime.date.today())
+    #samples1 = ForecastWeather.objects.filter(dt_iso__lte=test).delete()
+    print(res)
 
-
-def convertToDate(time ):
+def convertToDate(time):
+    """Reformate the data into correct date"""
     dayOfWeek = datetime.datetime.fromtimestamp(time).weekday()
     month = datetime.datetime.fromtimestamp(time).month
     # int value range: 0-6, monday-sunday from api convert to format that will be used for modeling.
     weekDayConverter = {
-        0:"1",
-        1:"2",
-        2:"3",
-        3:"4",
-        4:"5",
-        5:"6",
-        6:"7"
+        0: "1",
+        1: "2",
+        2: "3",
+        3: "4",
+        4: "5",
+        5: "6",
+        6: "7"
     }
     dayOfWeek = weekDayConverter.get(dayOfWeek)
     return {
         "dayOfWeek": dayOfWeek,
-        "month":month
+        "month": month
     }
 
 
 for each in forecast_weather['list']:
     if each.get("rain"):
-        rain = each['rain']['1h']
+        if each.get("rain").keys() == '1h':
+            rain = each['rain']['1h']
+        if each.get("rain").keys() == '3h':
+            rain = each['rain']['3h']
     else:
         rain = 0
 
@@ -82,5 +91,6 @@ for each in forecast_weather['list']:
     except Exception as e:
         print(e)
         continue
-        
+#filter out database data in the end
+validateSixDay()
 print("Finished")

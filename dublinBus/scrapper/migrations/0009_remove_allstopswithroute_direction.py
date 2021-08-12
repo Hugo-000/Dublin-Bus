@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('scrapper', '0008_allstopswithroute_direction'),
+        ('scrapper', '0009_auto_20210716_0939'),
     ]
 
     operations = [

@@ -16,6 +16,8 @@ class CurrentWeather(models.Model):
     weather_main = models.CharField(max_length=45, null=True)
     weather_description = models.CharField(max_length=45, null=True)
     weather_icon = models.CharField(max_length=45, null=True)
+    rain = models.CharField(max_length=45, default="0", null=True)
+    weather_id = models.CharField(max_length=45, null=True)
 
     def __str__(self):
         result = (
@@ -32,6 +34,8 @@ class CurrentWeather(models.Model):
             f"{self.weather_main},"
             f"{self.weather_description},"
             f"{self.weather_icon},"
+            f"{self.rain_1h},"
+            f"{self.weather_id},"
         )
         return result
 
@@ -57,22 +61,27 @@ class ForecastWeather(models.Model):
 
     def __str__(self):
         result = (
-            f"{self.dt}",
-            f"{self.dt_iso}",
-            f"{self.temp}",
-            f"{self.temp_min}",
-            f"{self.temp_max}",
-            f"{self.pressure}",
-            f"{self.humidity}",
-            f"{self.wind_speed}",
-            f"{self.wind_deg}",
-            f"{self.clouds_all}",
-            f"{self.weather_id}",
-            f"{self.weather_main}",
-            f"{self.weather_description}",
-            f"{self.weather_icon}",
+            f"{self.dt},"
+            f"{self.dt_iso},"
+            f"{self.temp},"
+            f"{self.feels_like},"
+            f"{self.temp_min},"
+            f"{self.temp_max},"
+            f"{self.pressure},"
+            f"{self.humidity},"
+            f"{self.wind_speed},"
+            f"{self.wind_deg},"
+            f"{self.clouds_all},"
+            f"{self.weather_id},"
+            f"{self.weather_main},"
+            f"{self.weather_description},"
+            f"{self.weather_icon},"
+            f"{self.rain_1h},"
+            f"{self.weekday},"
+            f"{self.month},"
         )
         return result
+
 class Routes(models.Model):
     route_name = models.CharField(max_length=45, null=True)
     route_description = models.CharField(max_length=200, null=True)

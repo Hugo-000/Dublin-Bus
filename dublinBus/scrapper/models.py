@@ -16,6 +16,8 @@ class CurrentWeather(models.Model):
     weather_main = models.CharField(max_length=45, null=True)
     weather_description = models.CharField(max_length=45, null=True)
     weather_icon = models.CharField(max_length=45, null=True)
+    rain = models.CharField(max_length=45, default="0", null=True)
+    weather_id = models.CharField(max_length=45, null=True)
 
     def __str__(self):
         result = (
@@ -32,6 +34,8 @@ class CurrentWeather(models.Model):
             f"{self.weather_main},"
             f"{self.weather_description},"
             f"{self.weather_icon},"
+            f"{self.rain_1h},"
+            f"{self.weather_id},"
         )
         return result
 
@@ -77,6 +81,7 @@ class ForecastWeather(models.Model):
             f"{self.month},"
         )
         return result
+
 class Routes(models.Model):
     route_name = models.CharField(max_length=45, null=True)
     route_description = models.CharField(max_length=200, null=True)
@@ -127,3 +132,5 @@ class RealTimeTraffic(models.Model):
     stop_arrival_delay = models.CharField(max_length=45, default="na", null=True)
     stop_id = models.CharField(max_length=45, null=True)
     stop_schedule = models.CharField(max_length=45, null=True)
+
+

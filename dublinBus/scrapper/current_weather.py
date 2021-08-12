@@ -42,6 +42,8 @@ try:
             rain = w['rain']['1h']
         if curr_weather.get("rain").keys() == '3h':
             rain = w['rain']['3h']
+        else:
+            rain = 0
     else:
         rain = 0
     w.dt = curr_weather['dt']
@@ -58,6 +60,7 @@ try:
     w.weather_description = curr_weather['weather'][0]['description']
     w.weather_icon = curr_weather['weather'][0]['icon']
     w.rain = rain
+    print(rain)
     w.weather_id = curr_weather['weather'][0]['id']
     w.save()
 except Exception as e:

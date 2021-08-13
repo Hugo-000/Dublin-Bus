@@ -68,8 +68,8 @@ class TestIndexView(TestCase):
     def test_get_route_by_number_404(self):
         """test if stops sequence of a route can be retrieved by route number"""
         response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '44324, I'})
-        print(response.content)
         with self.assertRaises(IndexError):
             response.content['route_Info']
             self.assertEqual(response.status_code, 200)
             self.assertRaises(IndexError, response)
+

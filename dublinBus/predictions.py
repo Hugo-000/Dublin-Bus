@@ -116,32 +116,46 @@ def getInputValues(weather, travel_date, travel_time):
     # Error checking required to make sure that the weather main is in the dictionary
     weatherMainDict = {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}
 
-    weather['weather_main'] = weatherMainDict[weather['weather_main']]
-
-    print('**** getInputValues *****')
-    print()
-    print('weather main', weather['weather_main'])
-    print()
-    print('*************************')
+    if "current" in weather:
+        weather['current']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
+        rain = int(weather['current']['rain'])
+        temp = int(weather['current']["temp"])
+        feels_like = int(weather['current']['feels_like']) 
+        humidity = int(weather['current']['humidity'])
+        wind_speed = float(weather['current']['wind_speed'])
+        clouds_all = int(weather['current']['clouds_all'])
+        weather_main = int(weather['current']['weather_main'])
+    elif "forecast" in weather:
+        weather['forecast']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
+        rain = int(weather['forecast']['rain_1h'])
+        temp = int(weather['forecast']["temp"])
+        feels_like = int(weather['forecast']['feels_like']) 
+        humidity = int(weather['forecast']['humidity'])
+        wind_speed = float(weather['forecast']['wind_speed'])
+        clouds_all = int(weather['forecast']['clouds_all'])
+        weather_main = int(weather['forecast']['weather_main'])
+    else:
+        return {"Error":"Couldn't get the weather data"}
 
     #  ['temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',
     #    'weather_main', 'Weekday', 'Hour', 'Month', 'TimeOfDay', 'Seasons',
     #    'RushHour']
 
 
-    InputValues = [int(weather["temp"]), 
-                    int(weather['feels_like']), 
-                    int(weather['humidity']),  
-                    float(weather['wind_speed']),
-                    int(weather['rain_1h']),
-                    int(weather['clouds_all']),
-                    int(weather['weather_main']),
-                    int(weekday),
-                    int(hour),
-                    int(month),
-                    timeOfDay,
-                    season,
-                    rushHour,
+    InputValues = [
+        temp, 
+        feels_like, 
+        humidity,  
+        wind_speed,
+        rain,
+        clouds_all,
+        weather_main,
+        int(weekday),
+        int(hour),
+        int(month),
+        timeOfDay,
+        season,
+        rushHour,
     ]
 
     return InputValues
@@ -218,7 +232,7 @@ def getBusStepTimes(busStepInfo, inputValues):
         print('arrivalPercentDone', arrivalPercentDone)
         print('departurePercentDone', departurePercentDone)
         print('model', model)
-        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone:
+        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues:
             googleEstimatedTime = busStepInfo[i]['googleDuration']
             busStepTimes[i] = {'type':'google', 'time':googleEstimatedTime}
         else:
@@ -244,11 +258,11 @@ def getRouteTime(model, inputValues):
     
     # arguments used to train the model
     #'temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',’weather_main’,’weekday’ 'Hour', 'Month', timeOfDay, Season, rushhour
+
     input_vals = np.array(inputValues)
     x_test = input_vals.reshape(1, -1)
     pred = model.predict(x_test)
     routeTime = int(pred)
-
     print('Route Time', routeTime, "mins")
     print()
     return routeTime
@@ -334,9 +348,9 @@ def getRouteDirection(routeNumber, headsign):
 def getCurrentWeather():
     try:
         current_weather = model_to_dict(CurrentWeather.objects.all().last())
-        return current_weather
+        return {"current" : current_weather}
     except ForecastWeather.DoesNotExist:
-        return "Current weather is not available"
+        return {"Error":"Current weather is not available"}
 
 #Function 
 def forecastDatetime(travel_date, travel_time):
@@ -374,9 +388,9 @@ def getForecastWeather(travel_date, travel_time):
         user_forecast_datetime = forecastDatetime(travel_date, travel_time)
         print(user_forecast_datetime)
         forecast_weather = model_to_dict(ForecastWeather.objects.get(dt_iso=user_forecast_datetime))
-        return forecast_weather
+        return {"forecast" : forecast_weather}
     except ForecastWeather.DoesNotExist:
-        return "Forecast weather is not available"
+        return {"Error" : "Forecast weather is not available"}
 
 #Function 
 def getPath(routeNumber, routeDirection):
@@ -421,7 +435,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
         stopID = stopInfoDict[i]['stop_id']
         # print('stop id', type(stopID), stopID)
         try:
-            routeInfoList = AllStopsWithRoute.objects.filter(stop = stopID, route_number = routeNumber)
+            routeInfoList = AllStopsWithRoute.objects.get(stop = stopID, route_number = routeNumber)
             # print('routeInfoList', routeInfoList.first())
             # print()
         except:

@@ -308,6 +308,7 @@ function initMap() {
 
     // calls funcntion to get a route for the map //
     getRoute(map);
+
 }
 
 
@@ -550,3 +551,7 @@ function handleRouteResponse(directionsDisplay, response, status) {
 function getCSRFToken() {
     return document.querySelector('[name="csrfmiddlewaretoken"]').value;
 }
+
+setTimeout(()=>{
+    document.getElementById("style-selector-control").style.display='block';
+},3000);

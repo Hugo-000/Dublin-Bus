@@ -389,6 +389,9 @@
         map.setCenter(latlng);
         document.getElementById("offcanvas_trigger").click();
     };
+    setTimeout(()=>{
+        document.getElementById("style-selector-control").style.display='block';
+    },3000);
 /*     
         var delayFactor=100;
         var nextPolyline=0;
@@ -450,9 +453,10 @@
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div id="SelectedRoute">
-                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
+                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;" >
                         {% csrf_token %}
                         <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                        <input type="text" class="hidden_input" style="display:none">
                     </form>   
                 </div> 
             </div>
@@ -478,9 +482,10 @@
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div id="SelectedRoute">
-                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;">
+                    <form action="" style="text-align:center; vertical-align:bottom;margin-block-end:0;width:100%;" >
                         {% csrf_token %}
                         <input type="text" name="search"  placeholder="Search Bus Route Here" class="route_input" style="width:100%;line-height:30px; font-size: 20px;">
+                        <input type="text" class="hidden_input" style="display:none">
                     </form>   
                 </div> 
             </div>
@@ -489,7 +494,7 @@
 </div>
 
 <div class="container-fluid" >
-    <div id="style-selector-control" class="map-control">
+    <div id="style-selector-control" class="map-control" style="display:none">
         <select id="style-selector" class="selector-control" style="line-height:50px; font-size: 20px;">
             <option value="default" >Default</option>
             <option value="silver">Silver</option>

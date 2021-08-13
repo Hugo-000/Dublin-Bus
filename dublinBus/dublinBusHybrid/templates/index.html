@@ -46,7 +46,7 @@
 						We predict the time cost for you!
 					</p>
 					<p>
-						<a class="btn btn-primary" href="../journeyPlanner/">Get Started Here</a>
+						<a class="btn btn-primary" href="{% url 'journeyPlanner' %}">Get Started Here</a>
 					</p>
 				</div>
 			</div>
@@ -62,7 +62,7 @@
 						We provide information about specific station distribution!
 					</p>
 					<p>
-						<a class="btn btn-primary" href="../Routes/">Get Started Here</a>
+						<a class="btn btn-primary" href="{% url 'Routes' %}">Get Started Here</a>
 					</p>
 				</div>
 			</div>
@@ -77,10 +77,14 @@
 				Bookmarks
 			</h2>
 			<p>
-				We can help you add the routes or bus stops to BookMarks
+				We can help you add the bus stops to BookMarks
 			</p>
 			<p>
-				<a class="btn" href="#">View details »</a>
+				{% if user.is_authenticated %}
+					<a class="btn" href="{% url 'dashboard' %}">View details »</a>
+				{% else %}
+					<a class="btn" href="{% url 'register' %}">View details »</a>
+				{% endif %}
 			</p>
 		</div>
 		<div class="col-md-6 column">

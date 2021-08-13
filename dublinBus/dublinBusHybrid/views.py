@@ -85,19 +85,37 @@ class JourneyPlanner(View):
         user_unix_time = self.toUnix(form)
 
         weather = predictions.getWeather(travel_date, travel_time)
-        
-        iconFromDB = weather["weather_icon"]
-        iconToHTML = self.iconMatching(iconFromDB)
+        if "current" in weather:
+            weather = weather["current"]
+            iconFromDB = weather["weather_icon"]
+        elif "forecast" in weather:
+            weather = weather["forecast"]
+            iconFromDB = weather["weather_icon"]
+        else:
+            return {"Error":"No weather information"}
 
-        context = {
-            'travel_date': travel_date,
-            'travel_time': travel_time,
-            'form': form,
-            'weather' : weather,
-            'weather_icon': iconToHTML,
-            'userUnix': user_unix_time
-        }
-        return context
+        if not "error" in weather:
+            iconToHTML = self.iconMatching(iconFromDB)
+
+            context = {
+                'travel_date': travel_date,
+                'travel_time': travel_time,
+                'form': form,
+                'weather' : weather,
+                'weather_icon': iconToHTML,
+                'userUnix': user_unix_time
+            }
+            return context
+        else:
+            context = {
+                'travel_date': travel_date,
+                'travel_time': travel_time,
+                'form': form,
+                'weather' : "Error",
+                'weather_icon': iconToHTML,
+                'userUnix': user_unix_time
+            }
+            return context
 
     def fetchJSON(self, request_body):
         info = json.loads(request_body)

@@ -92,27 +92,33 @@
                                     <h5 class="card-header">Weather Information</h5>
                                     <div class="card-body">
                                         <div class="d-flex pt-2 pb-3">
-                                            {% with ''|add:weather_icon as image_static %}
-                                                <img class="bg-white p-2 rounded-circle shadow" style="width:2.5rem;height:2.5rem" src={% static image_static %} />
-                                            {% endwith %}
-                                            <div class="ms-2 my-auto">
-                                                {{weather.weather_main}},
-                                                {{weather.temp}}&deg;C,
-                                                Dublin, Ireland
+                                            {% if not "Error" in weather %}
+                                                {% with ''|add:weather_icon as image_static %}
+                                                    <img class="bg-white p-2 rounded-circle shadow" style="width:2.5rem;height:2.5rem" src={% static image_static %} />
+                                                {% endwith %}
+                                                <div class="ms-2 my-auto">
+                                                    {{weather.weather_main}},
+                                                    {{weather.temp}}&deg;C,
+                                                    Dublin, Ireland
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between border-bottom mb-2">
-                                            <div class="fw-bold">Description</div>
-                                            <div class="">{{weather.weather_description}}</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between border-bottom mb-2">
-                                            <div class="fw-bold">Humidity</div>
-                                            <div>{{weather.humidity}}&#37;</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="fw-bold">Wind</div >
-                                            <div>{{weather.wind_speed}} km/hr</div>
-                                        </div>
+                                            <div class="d-flex justify-content-between border-bottom mb-2">
+                                                <div class="fw-bold">Description</div>
+                                                <div class="">{{weather.weather_description}}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom mb-2">
+                                                <div class="fw-bold">Humidity</div>
+                                                <div>{{weather.humidity}}&#37;</div>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <div class="fw-bold">Wind</div >
+                                                <div>{{weather.wind_speed}} km/hr</div>
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                            Weather results cannot be displayed at this time
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div> 
 

@@ -119,37 +119,43 @@ def getInputValues(weather, travel_date, travel_time):
     if "current" in weather:
         weather['current']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
         rain = int(weather['current']['rain'])
+        temp = int(weather['current']["temp"])
+        feels_like = int(weather['current']['feels_like']) 
+        humidity = int(weather['current']['humidity'])
+        wind_speed = float(weather['current']['wind_speed'])
+        clouds_all = int(weather['current']['clouds_all'])
+        weather_main = int(weather['current']['weather_main'])
     elif "forecast" in weather:
         weather['forecast']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
         rain = int(weather['forecast']['rain_1h'])
+        temp = int(weather['forecast']["temp"])
+        feels_like = int(weather['forecast']['feels_like']) 
+        humidity = int(weather['forecast']['humidity'])
+        wind_speed = float(weather['forecast']['wind_speed'])
+        clouds_all = int(weather['forecast']['clouds_all'])
+        weather_main = int(weather['forecast']['weather_main'])
     else:
         return {"Error":"Couldn't get the weather data"}
-
-
-    print('**** getInputValues *****')
-    print()
-    print('weather main', weather['weather_main'])
-    print()
-    print('*************************')
 
     #  ['temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',
     #    'weather_main', 'Weekday', 'Hour', 'Month', 'TimeOfDay', 'Seasons',
     #    'RushHour']
 
 
-    InputValues = [int(weather["temp"]), 
-                    int(weather['feels_like']), 
-                    int(weather['humidity']),  
-                    float(weather['wind_speed']),
-                    rain,
-                    int(weather['clouds_all']),
-                    int(weather['weather_main']),
-                    int(weekday),
-                    int(hour),
-                    int(month),
-                    timeOfDay,
-                    season,
-                    rushHour,
+    InputValues = [
+        temp, 
+        feels_like, 
+        humidity,  
+        wind_speed,
+        rain,
+        clouds_all,
+        weather_main,
+        int(weekday),
+        int(hour),
+        int(month),
+        timeOfDay,
+        season,
+        rushHour,
     ]
 
     return InputValues
@@ -429,7 +435,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
         stopID = stopInfoDict[i]['stop_id']
         # print('stop id', type(stopID), stopID)
         try:
-            routeInfoList = AllStopsWithRoute.objects.filter(stop = stopID, route_number = routeNumber)
+            routeInfoList = AllStopsWithRoute.objects.get(stop = stopID, route_number = routeNumber)
             # print('routeInfoList', routeInfoList.first())
             # print()
         except:

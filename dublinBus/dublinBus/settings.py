@@ -12,47 +12,54 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 print("setting py path: ",BASE_DIR)
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$snn3k^%4kgmw5zr+a+$ld)(sm)&ubv&$gg3f$4i*l4jveqsc&'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django_crontab',
+    'scrapper',
+    'users',
+    'social_django',
     'dublinBusHybrid.apps.DublinbushybridConfig',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webpack_loader',
-    'scrapper',
-
+    'webpack_loader',    
 ]
-#Automated scripting for every 3 hours and 10 mins
-CRONJOBS = [
-    ('* 3 * * *', 'scrapper.cron.scheduling_forecast_weather'),
-    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
 
+#Automated scripting for every 5min, 10 min, 30min and 23 hour
+CRONJOBS = [
+    ('*/5 * * * *', 'scrapper.cron.realtime_traffic'),
+    ('0 */23 * * *', 'scrapper.cron.covid_data'),
+    ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather'),
+    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
 ]
 
 WEBPACK_LOADER = {
@@ -77,7 +84,7 @@ ROOT_URLCONF = 'dublinBus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,6 +92,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -92,10 +101,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dublinBus.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 
 DATABASES = {
     'default': {
@@ -126,6 +133,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+TIME_FORMAT= "H:i"
+
+DATE_FORMAT = "dS F Y"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -138,17 +148,45 @@ TIME_ZONE = 'Europe/Dublin'
 USE_I18N = True
 
 # By setting this to true it allows our date formats instead of looking at us
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR + "/static"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+# LOGIN_REDIRECT_URL = '/'
+
+LOGIN_REDIRECT_URL = "dashboard"
+
+# EMAIL_HOST = env('SMTP_HOSTNAME')
+# # print("Email Host", EMAIL_HOST)
+# EMAIL_PORT = env('MAILGUN_PORT')
+# EMAIL_HOST_USER = env('MAILGUN_USERNAME')
+# EMAIL_HOST_PASSWORD = env('MAILGUN_PASSWORD')
+# EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = 'postmarker.django.EmailBackend'
+POSTMARK = {
+    'TOKEN': env('TOKEN'),
+    'TEST_MODE': False,
+    'VERBOSITY': 0,
+}
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "social_core.backends.github.GithubOAuth2",
+]
+
+SOCIAL_AUTH_GITHUB_KEY = os.environ.get("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = os.environ.get("SOCIAL_AUTH_GITHUB_SECRET")

@@ -26,3 +26,15 @@ def scheduling_forecast_weather():
   print(BASE_DIR)
   result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/forecast_weather.py"],shell=True)
 
+def realtime_traffic():
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+  sys.path.append(BASE_DIR)
+  print(BASE_DIR)
+  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/realtime_traffic.py"],shell=True)
+
+def covid_data():
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+  sys.path.append(BASE_DIR)
+  print(BASE_DIR)
+  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/covid_data.py"],shell=True)
+

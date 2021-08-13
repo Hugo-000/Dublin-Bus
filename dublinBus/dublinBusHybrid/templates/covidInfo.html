@@ -1,9 +1,134 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-<h1 id="heading">
-    CovidInfo
-</h1>
+<div class="alert-text">Due to the current disruption of HSE IT systems, some indicators might not be provided.
+        The statistics and graphs in this section are built using confirmed figures provided by the Health Executive Service (HSE), and are updated following official release of new data.
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <Strong>Last 14 days statistics</Strong>
+        </div>
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">Covid data up to</div>
+                <hr>
+                {{covid.dt}}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Total Confirmed Cases:
+                </div>
+                <hr>
+                {{covid.totalConfirmedCases}}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Daily New Cases:
+                </div>
+                <hr> {{covid.confirmedCases}}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Total Death Cases:
+                </div>
+                <hr>{{covid.totalDeaths}}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Daily Death Cases:
+                </div>
+                <hr>
+                {{covid.confirmedDeaths}}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Total Hospitalised Cases:
+                </div>
+                <hr>
+                {{covid.hospitalisedCases}}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="login-text">
+                <div class="login-text-title">
+                Total Cases Treated in ICU:
+                </div>
+                <hr> {{covid.icu}}
+            </div>
+        </div>
+    </div>
+    <div class="dock-container">
+        <!--Chart info -->
+
+        <section class="main-content-row">
+            <h2 class="chart-title">Last 14 days confirmed cases</h2>
+            <div class="chart-container point-container chart-con">
+                <canvas id="dailyconfirmedcases" class="chart-con"></canvas>
+            </div>
+        </section>
+    </div>
+    <div class="modal-footer">
+    <a class="btn btn-primary btn-custom" href="https://www2.hse.ie/screening-and-vaccinations/covid-19-vaccine/" target="_blank">
+        Click here for vaccine data
+    </a>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.4.1/dist/chart.min.js"
+        integrity="sha256-GMN9UIJeUeOsn/Uq4xDheGItEeSpI5Hcfp/63GclDZk=" crossorigin="anonymous"></script>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    var ctx1 = document.getElementById('dailyconfirmedcases').getContext('2d');
+    var dailyconfirmedcases = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: [ {% for item in covid_chart %}'{{item.dt}}',{% endfor %}],
+            datasets: [
+                {
+                label: 'Daily Confirmed Cases',
+                data: [{% for item in covid_chart %}'{{item.confirmedCases}}',{% endfor %}],
+                borderColor: ['rgb(75, 192, 192)'],
+                pointBackgroundColor: 'rgb(212, 36, 36)',
+                borderWidth: 2,
+                pointRadius: 1,
+                pointhitRadius:1},
+                ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        maxTicksLimit: 29,
+                        autoskip: true
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 
 
+
+</script>
 {% endblock %}

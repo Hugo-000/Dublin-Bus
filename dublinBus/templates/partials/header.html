@@ -53,12 +53,48 @@
 
 
 <script>
+    var storage=window.localStorage;
+    if (!storage.getItem("theme")){
+        storage.setItem("theme", "dark");
+    };
+    if (storage.getItem("theme")!=="dark"){
+        document.getElementById('flexSwitch').checked=false;
+        var nav_theme=document.getElementById("headerNav");
+        var body_theme=document.getElementById("body_container");
+        var footer_theme=document.getElementById("footer");
+        nav_theme.classList.replace("bg-dark", "bg-primary");
+        body_theme.classList.replace("bg-body", "bg-secondary");
+        footer_theme.classList.replace("bg-dark", "bg-primary");
+    };
+
+    if (!storage.getItem("map")){
+        storage.setItem("map", "night");
+    };
+    if (storage.getItem("map")!=="night"){
+        var styleSelector = document.getElementById("style-selector"); 
+        if (styleSelector!==null){
+            styleSelector.focus();
+            styleSelector.value=storage.getItem("map");
+            if ("createEvent" in document) {
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("change", false, true);
+                styleSelector.dispatchEvent(evt);
+            } else {
+                styleSelector.fireEvent("onchange");
+            }
+        }
+    };
     function changeTheme() {
         var nav_theme=document.getElementById("headerNav");
         var body_theme=document.getElementById("body_container");
         var footer_theme=document.getElementById("footer");
         var styleSelector = document.getElementById("style-selector");
-        if (nav_theme.classList.contains("bg-dark")){
+        //if (nav_theme.classList.contains("bg-dark")){
+        if (storage.getItem("theme")=="dark")){
+
+            storage.setItem("theme", "day");
+            storage.setItem("map", "default");
+
             nav_theme.classList.replace("bg-dark", "bg-primary");
             body_theme.classList.replace("bg-body", "bg-secondary");
             footer_theme.classList.replace("bg-dark", "bg-primary");
@@ -76,6 +112,10 @@
             }
             
         } else {
+
+            storage.setItem("theme", "dark");
+            storage.setItem("map", "night");
+
             nav_theme.classList.replace("bg-primary","bg-dark");
             body_theme.classList.replace("bg-secondary","bg-body");
             footer_theme.classList.replace("bg-primary","bg-dark");

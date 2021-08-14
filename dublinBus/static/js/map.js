@@ -321,6 +321,7 @@ function addControls(map) {
     map.setOptions({ styles: styles[styleSelector.value] });
     styleSelector.addEventListener("change", () => {
         map.setOptions({ styles: styles[styleSelector.value] });
+        window.localStorage.setItem("map", styleSelector.value);
     });
     // create the location information window and a button // 
     const locationWindow = new google.maps.InfoWindow();

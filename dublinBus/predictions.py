@@ -126,7 +126,7 @@ def getInputValues(weather, travel_date, travel_time):
         clouds_all = int(weather['current']['clouds_all'])
         weather_main = int(weather['current']['weather_main'])
     elif "forecast" in weather:
-        weather['forecast']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
+        weather['forecast']['weather_main'] = weatherMainDict[weather['forecast']['weather_main']]
         rain = int(weather['forecast']['rain_1h'])
         temp = int(weather['forecast']["temp"])
         feels_like = int(weather['forecast']['feels_like']) 
@@ -135,6 +135,7 @@ def getInputValues(weather, travel_date, travel_time):
         clouds_all = int(weather['forecast']['clouds_all'])
         weather_main = int(weather['forecast']['weather_main'])
     else:
+        print("Weather has an error")
         return {"Error":"Couldn't get the weather data"}
 
     #  ['temp', 'feels_like', 'humidity', 'wind_speed', 'rain_1h', 'clouds_all',

@@ -63,3 +63,6 @@ footer {
 .text-black {
     color: black;
 }
+.pac-container {
+    z-index: 2000;
+}

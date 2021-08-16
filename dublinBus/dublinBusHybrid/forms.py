@@ -47,6 +47,7 @@ class JourneyPlannerForm(forms.Form):
         ),
         required = False
     ) 
+    
     travel_time = forms.TimeField(
         label='Time',
         widget=forms.TimeInput(
@@ -62,9 +63,22 @@ class JourneyPlannerForm(forms.Form):
 
     def clean(self):
         cd = self.cleaned_data
+        today = datetime.date.today()
+        now = datetime.datetime.now().time()
+        today_datetime = datetime.datetime.combine(today, now)
+
+        if cd.get('travel_time') == None or cd.get('travel_time') == "":
+            cd['travel_time'] = now
 
         travel_date = cd.get('travel_date')
+        travel_time = cd.get('travel_time')
+
         today = datetime.date.today()
+        
+        travel_datetime = datetime.datetime.combine( travel_date, travel_time)
+
+        bus_start_time = datetime.time(5, 0)
+        bus_finish_time = datetime.time(0,0)
 
         if travel_date and travel_date < today:
             self.add_error('travel_date', 'Invalid date - date of travel is in past')
@@ -72,21 +86,12 @@ class JourneyPlannerForm(forms.Form):
         # Check if a date is in the allowed range (+4 weeks from today).
         if travel_date and travel_date > today + datetime.timedelta(days=5):
             self.add_error('travel_date', 'Invalid date - date of travel is too far in the future')
-        
-        travel_time = cd.get('travel_time')
-        bus_start_time = datetime.time(5, 0)
-        bus_finish_time = datetime.time(0,0)
 
-        if travel_time and travel_time < bus_start_time:
-            self.add_error('travel_date', 'Invalid time - the buses start at 05:00')
         if travel_time and travel_time > bus_finish_time and travel_time < bus_start_time:
-            self.add_error('travel_date', 'Invalid time - last bus at 00:00')
+            self.add_error('travel_time', 'Invalid time - buses run between 05:00 and 00:00')
+        elif travel_time and travel_datetime < today_datetime:
+            self.add_error('travel_time', 'Invalid time - cannot make a prediction of the past')
         if travel_date != today and travel_time == '':
             self.add_error('Please provide a time for departure')
 
         return cd
-
-    # class Meta:
-    #     fields = [
-    #         "whatever"
-    #     ]

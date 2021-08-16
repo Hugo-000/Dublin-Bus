@@ -110,13 +110,16 @@ def getInputValues(weather, travel_date, travel_time):
     print('Hour', hour)
     print('weekday', type(weekday), weekday)
     print('weekday name', weekdayName)
+    print('weather', weather)
     print()
     print('*************************')
 
     # Error checking required to make sure that the weather main is in the dictionary
     weatherMainDict = {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}
 
-    if "current" in weather:
+
+    if weather and "current" in weather:
+        print("current")
         weather['current']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
         rain = int(weather['current']['rain'])
         temp = int(weather['current']["temp"])
@@ -126,7 +129,12 @@ def getInputValues(weather, travel_date, travel_time):
         clouds_all = int(weather['current']['clouds_all'])
         weather_main = int(weather['current']['weather_main'])
     elif "forecast" in weather:
-        weather['forecast']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
+        print("test")
+        print("test", weather)
+        print("test", weather['forecast'])
+        print("test", weather['forecast']['weather_main'])
+        print("test",weatherMainDict[weather['forecast']['weather_main']])
+        weather['forecast']['weather_main'] = weatherMainDict[weather['forecast']['weather_main']]
         rain = int(weather['forecast']['rain_1h'])
         temp = int(weather['forecast']["temp"])
         feels_like = int(weather['forecast']['feels_like']) 
@@ -442,7 +450,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
             return None
 
         # TODO: Handle routeInfoList being emoty
-        routeInfoDict[i] = model_to_dict(routeInfoList.first())
+        routeInfoDict[i] = model_to_dict(routeInfoList)
         # print('Stop Name Route Information', routeInfoDict)
     
     # print()

@@ -9,7 +9,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4 position-relative">
-            <div class="card text-white rounded-sm p-2">
+            <div class="card text-white rounded-sm p-2 mt-2">
                 <h5 class="card-header text-center">Journey Planner</h5>
                 <div class="card-body">
                     <form action="" method="post">
@@ -41,8 +41,17 @@
     </div>
 </div>
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
-    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyHv2bXwLbbBAyLF9uIOVF3LpEJW9oowg&callback=initMap&libraries=places&v=weekly"
 ></script>
+
+<script>
+    const options = {
+        componentRestrictions: { country: "ie" },
+        fields: ["address_components", "geometry", "icon", "name"],
+        strictBounds: false,
+    };
+    new google.maps.places.Autocomplete(document.getElementById("id_origin_location"), options);
+    new google.maps.places.Autocomplete(document.getElementById("id_destination_location"), options);
+</script>
 
 {% endblock %}

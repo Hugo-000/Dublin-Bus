@@ -61,6 +61,7 @@ class JourneyPlanner(View):
 
     def getEstimatedTime(self, body):           
         busStepInfo = predictions.getBusStepInfo(body)
+        print("bus step info",busStepInfo)
         travel_date = predictions.getTravelDate(body)
         travel_time = predictions.getTravelTime(body)
         weather = predictions.getWeather(travel_date, travel_time)

@@ -117,23 +117,31 @@ def getInputValues(weather, travel_date, travel_time):
     weatherMainDict = {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}
 
     if "current" in weather:
-        weather['current']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
-        rain = int(weather['current']['rain'])
-        temp = int(weather['current']["temp"])
-        feels_like = int(weather['current']['feels_like']) 
-        humidity = int(weather['current']['humidity'])
-        wind_speed = float(weather['current']['wind_speed'])
-        clouds_all = int(weather['current']['clouds_all'])
-        weather_main = int(weather['current']['weather_main'])
+        weather_main_desc = weather['current']['weather_main']
+        if not weather_main_desc in weatherMainDict:
+            return {"Error":"Weather description doesn't have a prediction"}
+        else:
+            weather['current']['weather_main'] = weatherMainDict[weather_main_desc]
+            rain = int(weather['current']['rain'])
+            temp = int(weather['current']["temp"])
+            feels_like = int(weather['current']['feels_like']) 
+            humidity = int(weather['current']['humidity'])
+            wind_speed = float(weather['current']['wind_speed'])
+            clouds_all = int(weather['current']['clouds_all'])
+            weather_main = int(weather['current']['weather_main'])
     elif "forecast" in weather:
-        weather['forecast']['weather_main'] = weatherMainDict[weather['forecast']['weather_main']]
-        rain = int(weather['forecast']['rain_1h'])
-        temp = int(weather['forecast']["temp"])
-        feels_like = int(weather['forecast']['feels_like']) 
-        humidity = int(weather['forecast']['humidity'])
-        wind_speed = float(weather['forecast']['wind_speed'])
-        clouds_all = int(weather['forecast']['clouds_all'])
-        weather_main = int(weather['forecast']['weather_main'])
+        weather_main_desc = weather['forecast']['weather_main']
+        if not weather_main_desc in weatherMainDict:
+            return {"Error":"Weather description doesn't have a prediction"}
+        else:
+            weather['forecast']['weather_main'] = weatherMainDict[weather_main_desc]
+            rain = int(weather['forecast']['rain_1h'])
+            temp = int(weather['forecast']["temp"])
+            feels_like = int(weather['forecast']['feels_like']) 
+            humidity = int(weather['forecast']['humidity'])
+            wind_speed = float(weather['forecast']['wind_speed'])
+            clouds_all = int(weather['forecast']['clouds_all'])
+            weather_main = int(weather['forecast']['weather_main'])
     else:
         print("Weather has an error")
         return {"Error":"Couldn't get the weather data"}
@@ -233,7 +241,7 @@ def getBusStepTimes(busStepInfo, inputValues):
         print('arrivalPercentDone', arrivalPercentDone)
         print('departurePercentDone', departurePercentDone)
         print('model', model)
-        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues:
+        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues or 'Error' in routeDirection:
             googleEstimatedTime = busStepInfo[i]['googleDuration']
             busStepTimes[i] = {'type':'google', 'time':googleEstimatedTime}
         else:
@@ -272,10 +280,10 @@ def getRouteTime(model, inputValues):
 def getStopPercentDone(stopName, routeNumber, busDirection):
     stopPercentDone = {}
 
-    print('**** getStopPercentDone ****')
-    print()
-    print('routeNumber', routeNumber, 'busDirection', busDirection)
-    print('stop name', stopName)
+    # print('**** getStopPercentDone ****')
+    # print()
+    # print('routeNumber', routeNumber, 'busDirection', busDirection)
+    # print('stop name', stopName)
 
     stopNumber = getStopNumber(stopName, routeNumber, busDirection)
     # stopID = getStopID(stopNumber)
@@ -290,7 +298,7 @@ def getStopPercentDone(stopName, routeNumber, busDirection):
             stopDoneDict = model_to_dict(RoutePrediction.objects.get(
                 StopID = stopNumber['OK'],
                 Route=routeNumber,
-                Direction=busDirection + "B"
+                Direction=busDirection['ok'] + "B"
             ))
         except RoutePrediction.DoesNotExist:
             print('failed')
@@ -327,6 +335,7 @@ def sumBusTimes(busStepTimes):
 def getRouteDirection(routeNumber, headsign):
     print('Headsign', headsign)
     print('route number', routeNumber)
+
     try:
         temp = AllStopsWithRoute.objects.filter(route_number=routeNumber,stop_headsign=" " + headsign).first()
         temp = model_to_dict(temp)
@@ -336,14 +345,14 @@ def getRouteDirection(routeNumber, headsign):
         print('direction', direction)
         print()
         print('*************************')
-        return direction
+        return {"ok":direction}
     except AllStopsWithRoute.DoesNotExist:
         print('****getRouteDirection****')
         print()
         print('direction', 'did not work')
         print()
         print('*************************')
-        return None
+        return {"Error":"Direction couldn't be determined"}
 
 #Function 
 def getCurrentWeather():
@@ -395,10 +404,13 @@ def getForecastWeather(travel_date, travel_time):
 
 #Function 
 def getPath(routeNumber, routeDirection):
-    pathDirection = '_' + str(routeDirection) + 'B'
-    filename = str(routeNumber) + pathDirection
-    path = './modelsNew/' + filename
-    return path
+    if not "Error" in routeDirection:
+        pathDirection = '_' + str(routeDirection["ok"]) + 'B'
+        filename = str(routeNumber) + pathDirection
+        path = './modelsNew/' + filename
+        return path
+    else:
+        return {"Error":"couldn't generate path"}
 
 #Function
 def getStopNumber(stopName, routeNumber, busDirection):
@@ -443,7 +455,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
             return None
 
         # TODO: Handle routeInfoList being emoty
-        routeInfoDict[i] = model_to_dict(routeInfoList.first())
+        routeInfoDict[i] = model_to_dict(routeInfoList)
         # print('Stop Name Route Information', routeInfoDict)
     
     # print()
@@ -453,7 +465,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
         stopIDSearch = routeInfoDict[i]['stop']
         # print('Stop Name Route Direction', routeDirectionName)
         # print('Stop bus route direction', busDirection)
-        if routeDirectionName == busDirection:
+        if routeDirectionName == busDirection['ok']:
             # print('Directions Equal')
             stopNumberList = Stops.objects.filter(stop_id = stopIDSearch)
             stopNumberDict = model_to_dict(stopNumberList[0])

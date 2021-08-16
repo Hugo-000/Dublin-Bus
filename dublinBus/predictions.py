@@ -241,7 +241,7 @@ def getBusStepTimes(busStepInfo, inputValues):
         print('arrivalPercentDone', arrivalPercentDone)
         print('departurePercentDone', departurePercentDone)
         print('model', model)
-        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues:
+        if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues or 'Error' in routeDirection:
             googleEstimatedTime = busStepInfo[i]['googleDuration']
             busStepTimes[i] = {'type':'google', 'time':googleEstimatedTime}
         else:
@@ -280,10 +280,10 @@ def getRouteTime(model, inputValues):
 def getStopPercentDone(stopName, routeNumber, busDirection):
     stopPercentDone = {}
 
-    print('**** getStopPercentDone ****')
-    print()
-    print('routeNumber', routeNumber, 'busDirection', busDirection)
-    print('stop name', stopName)
+    # print('**** getStopPercentDone ****')
+    # print()
+    # print('routeNumber', routeNumber, 'busDirection', busDirection)
+    # print('stop name', stopName)
 
     stopNumber = getStopNumber(stopName, routeNumber, busDirection)
     # stopID = getStopID(stopNumber)
@@ -298,7 +298,7 @@ def getStopPercentDone(stopName, routeNumber, busDirection):
             stopDoneDict = model_to_dict(RoutePrediction.objects.get(
                 StopID = stopNumber['OK'],
                 Route=routeNumber,
-                Direction=busDirection + "B"
+                Direction=busDirection['ok'] + "B"
             ))
         except RoutePrediction.DoesNotExist:
             print('failed')
@@ -335,6 +335,7 @@ def sumBusTimes(busStepTimes):
 def getRouteDirection(routeNumber, headsign):
     print('Headsign', headsign)
     print('route number', routeNumber)
+
     try:
         temp = AllStopsWithRoute.objects.filter(route_number=routeNumber,stop_headsign=" " + headsign).first()
         temp = model_to_dict(temp)
@@ -344,14 +345,14 @@ def getRouteDirection(routeNumber, headsign):
         print('direction', direction)
         print()
         print('*************************')
-        return direction
+        return {"ok":direction}
     except AllStopsWithRoute.DoesNotExist:
         print('****getRouteDirection****')
         print()
         print('direction', 'did not work')
         print()
         print('*************************')
-        return None
+        return {"Error":"Direction couldn't be determined"}
 
 #Function 
 def getCurrentWeather():
@@ -403,10 +404,13 @@ def getForecastWeather(travel_date, travel_time):
 
 #Function 
 def getPath(routeNumber, routeDirection):
-    pathDirection = '_' + str(routeDirection) + 'B'
-    filename = str(routeNumber) + pathDirection
-    path = './modelsNew/' + filename
-    return path
+    if not "Error" in routeDirection:
+        pathDirection = '_' + str(routeDirection["ok"]) + 'B'
+        filename = str(routeNumber) + pathDirection
+        path = './modelsNew/' + filename
+        return path
+    else:
+        return {"Error":"couldn't generate path"}
 
 #Function
 def getStopNumber(stopName, routeNumber, busDirection):
@@ -461,7 +465,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
         stopIDSearch = routeInfoDict[i]['stop']
         # print('Stop Name Route Direction', routeDirectionName)
         # print('Stop bus route direction', busDirection)
-        if routeDirectionName == busDirection:
+        if routeDirectionName == busDirection['ok']:
             # print('Directions Equal')
             stopNumberList = Stops.objects.filter(stop_id = stopIDSearch)
             stopNumberDict = model_to_dict(stopNumberList[0])

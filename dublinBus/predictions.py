@@ -117,23 +117,31 @@ def getInputValues(weather, travel_date, travel_time):
     weatherMainDict = {"Rain": 1, "Clouds": 2,"Drizzle": 3,"Clear": 4,"Fog": 5,"Mist": 6,"Snow": 7,"Smoke": 8}
 
     if "current" in weather:
-        weather['current']['weather_main'] = weatherMainDict[weather['current']['weather_main']]
-        rain = int(weather['current']['rain'])
-        temp = int(weather['current']["temp"])
-        feels_like = int(weather['current']['feels_like']) 
-        humidity = int(weather['current']['humidity'])
-        wind_speed = float(weather['current']['wind_speed'])
-        clouds_all = int(weather['current']['clouds_all'])
-        weather_main = int(weather['current']['weather_main'])
+        weather_main_desc = weather['current']['weather_main']
+        if not weather_main_desc in weatherMainDict:
+            return {"Error":"Weather description doesn't have a prediction"}
+        else:
+            weather['current']['weather_main'] = weatherMainDict[weather_main_desc]
+            rain = int(weather['current']['rain'])
+            temp = int(weather['current']["temp"])
+            feels_like = int(weather['current']['feels_like']) 
+            humidity = int(weather['current']['humidity'])
+            wind_speed = float(weather['current']['wind_speed'])
+            clouds_all = int(weather['current']['clouds_all'])
+            weather_main = int(weather['current']['weather_main'])
     elif "forecast" in weather:
-        weather['forecast']['weather_main'] = weatherMainDict[weather['forecast']['weather_main']]
-        rain = int(weather['forecast']['rain_1h'])
-        temp = int(weather['forecast']["temp"])
-        feels_like = int(weather['forecast']['feels_like']) 
-        humidity = int(weather['forecast']['humidity'])
-        wind_speed = float(weather['forecast']['wind_speed'])
-        clouds_all = int(weather['forecast']['clouds_all'])
-        weather_main = int(weather['forecast']['weather_main'])
+        weather_main_desc = weather['forecast']['weather_main']
+        if not weather_main_desc in weatherMainDict:
+            return {"Error":"Weather description doesn't have a prediction"}
+        else:
+            weather['forecast']['weather_main'] = weatherMainDict[weather_main_desc]
+            rain = int(weather['forecast']['rain_1h'])
+            temp = int(weather['forecast']["temp"])
+            feels_like = int(weather['forecast']['feels_like']) 
+            humidity = int(weather['forecast']['humidity'])
+            wind_speed = float(weather['forecast']['wind_speed'])
+            clouds_all = int(weather['forecast']['clouds_all'])
+            weather_main = int(weather['forecast']['weather_main'])
     else:
         print("Weather has an error")
         return {"Error":"Couldn't get the weather data"}
@@ -443,7 +451,7 @@ def getStopNumber(stopName, routeNumber, busDirection):
             return None
 
         # TODO: Handle routeInfoList being emoty
-        routeInfoDict[i] = model_to_dict(routeInfoList.first())
+        routeInfoDict[i] = model_to_dict(routeInfoList)
         # print('Stop Name Route Information', routeInfoDict)
     
     # print()

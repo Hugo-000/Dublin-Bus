@@ -372,6 +372,9 @@ def forecastDatetime(travel_date, travel_time):
     forecast_21pm = datetime.time(21,0,0)
     forecast_00am = datetime.time(0,0,0)
 
+    print("travel_time", travel_time)
+    print("travel_time", travel_time)
+
     if travel_time > datetime.time(4,30) and travel_time <= datetime.time(7,30):
         user_forecast_datetime = datetime.datetime.combine( travel_date, forecast_6am)
     elif travel_time > datetime.time(7,30) and travel_time <= datetime.time(10,30):

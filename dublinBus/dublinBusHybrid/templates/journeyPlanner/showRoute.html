@@ -153,6 +153,16 @@
 </div>
 
 <script>
+    const options = {
+        componentRestrictions: { country: "ie" },
+        fields: ["address_components", "geometry", "icon", "name"],
+        strictBounds: false,
+    };
+    new google.maps.places.Autocomplete(document.getElementById("id_origin_location"), options);
+    new google.maps.places.Autocomplete(document.getElementById("id_destination_location"), options);
+</script>
+
+<script>
     function openSideMenu() {
         if (window.screen.width >= 992) {
             // open the menu 

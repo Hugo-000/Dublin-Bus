@@ -308,6 +308,8 @@ function initMap() {
 
     // calls funcntion to get a route for the map //
     getRoute(map);
+    
+    
 
 }
 
@@ -395,9 +397,7 @@ function createMap() {
 // }; 
 
 
-function getRoute(map) {
-    // 
-
+async function getRoute(map) {
     // If Django adds error list class (i.e. the form is invalid)
     // don't attempt to get the route
     if (document.querySelector('.errorlist')) return;
@@ -432,119 +432,97 @@ function getRoute(map) {
         directionsDisplay.setPanel(document.getElementById('panel-desktop'))
         directionsDisplay.setPanel(document.getElementById('panel'));
         
-
-        console.log('directions', directionsDisplay)
-
-        const directionsResult = directionsService.route(requestOpts);
-        console.log('Results', directionsResult)
-
-        // directionsResult.then(response => {
-        //     let legs = [];
-            
-        //     response.routes.forEach(route => {
-        //         legs = legs.concat(route.legs);
-        //     });
-
-        //     let steps = legs[0]['steps'];
-        //     let travel_modes = [];
-
-        //     steps.forEach(element => travel_modes.concat(element['travel_mode']))
-
-        //     // for (let step = 0; step < length(); step++) {
-        //     //     console.log('Walking east one step');
-        //     // }
-
-        //     console.log('legs', legs[0]);
-        //     console.log('======');
-        //     console.log('steps', steps);
-        //     console.log('======');
-            
-
-        //     const l = response.routes.reduce((accumulator, route) => [...accumulator, ...route.legs], []);
-        //     console.log('Legs', l);
-        // })  
-
-        directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
+        await directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
     } catch(e) {
-        console.log('e', e);
+        console.log("e", e.message)
+        if (e.message === "DIRECTIONS_ROUTE: NOT_FOUND: At least one of the origin, destination, or waypoints could not be geocoded.") {
+            alert("OOPS! Something went wrong, no route found. Please try using the suggestions and try again!");
+        } else {
+            alert("OOPS! Something went wrong, no route found. Please try again!");
+        }
     }
 }
 
 function handleRouteResponse(directionsDisplay, response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
+    console.log('handleRouteREsponse', {
+        directionsDisplay,
+        response,
+        status
+    })
 
-        // response.then(result => {           
-            const s = response.routes
-                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
+    if (status !== google.maps.DirectionsStatus.OK) return;
 
-            console.log('steps Jen s', s);
+    // response.then(result => {           
+    // const s = response.routes
+    //     .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
+    //     .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
 
-            const l = response.routes
-                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
-                .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
-            console.log('steps Jen l', l);
+    // console.log('steps Jen s', s);
 
-        var travel_time = document.querySelector('#id_travel_time').value
+    const l = response.routes
+        .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
+        .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
+        .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
+    console.log('steps Jen l', l);
 
-        if (travel_time == "") {
-            var today = new Date();
-            travel_time = today.getHours() + ":" + today.getMinutes();
-        } 
+    var travel_time = document.querySelector('#id_travel_time').value
+
+    if (travel_time == "") {
+        var today = new Date();
+        travel_time = today.getHours() + ":" + today.getMinutes();
+    } 
 
 
-        fetch('/dublinBusHybrid/journeyPlanner/', {
-            method: 'POST',
-            credentials: 'include',     
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': getCSRFToken()
-            },
+    fetch('/dublinBusHybrid/journeyPlanner/', {
+        method: 'POST',
+        credentials: 'include',     
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-CSRFToken': getCSRFToken()
+        },
 
-            body: JSON.stringify({
-                'travel_date': document.querySelector('#id_travel_date').value,
-                'travel_time': travel_time + ':00',
-                'Steps': l,
+        body: JSON.stringify({
+            'travel_date': document.querySelector('#id_travel_date').value,
+            'travel_time': travel_time + ':00',
+            'Steps': l,
+        })
+    }).then(r => r.json())
+    .then(result => {
+        const estimatedTimeElement = document.querySelector('#estimated-time');
+        const googleWarning = document.querySelector('#google_warning');
+        console.log('result', result);
+        console.log('google_warning', googleWarning)
+        if (result.estimatedTime.type === "google") {
+            // Produce Google Warning
+            console.log('google')
+            googleWarning.style.visibility = 'visible';
+        }
+            
+        estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
+    });
+
+    directionsDisplay.setDirections(response);
+
+
+    // Setup loading screen
+    // Give the server the details
+    // .then(do the stuff)
+
+    console.log(response)
+    response.routes.forEach(r => {
+        r.legs.forEach(l => {
+            l.steps.forEach(s => {
+                if (s.transit) {
+                    console.log("s", s)
+                    console.log('arrival_stop', s.transit)
+
+                }
+
             })
-        }).then(r => r.json())
-        .then(result => {
-            const estimatedTimeElement = document.querySelector('#estimated-time');
-            const googleWarning = document.querySelector('#google_warning');
-            console.log('result', result);
-            console.log('google_warning', googleWarning)
-            if (result.estimatedTime.type === "google") {
-                // Produce Google Warning
-                console.log('google')
-                googleWarning.style.visibility = 'visible';
-            }
-                
-            estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
-        });
 
-        directionsDisplay.setDirections(response);
-
-
-        // Setup loading screen
-        // Give the server the details
-        // .then(do the stuff)
-
-        console.log(response)
-        response.routes.forEach(r => {
-            r.legs.forEach(l => {
-                l.steps.forEach(s => {
-                    if (s.transit) {
-                        console.log("s", s)
-                        console.log('arrival_stop', s.transit)
-
-                    }
-
-                })
-
-            })
-        });
-    }
+        })
+    });
 }
 
 // get a csrf token from the page by selecting the input element and

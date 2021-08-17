@@ -41,6 +41,8 @@ ALLOWED_HOSTS = [] if env('DEBUG') else ALLOWED_HOSTS
 
 print('Allowed hosts', ALLOWED_HOSTS)
 
+#GOOGLE MAPS API KEY
+GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 
 # Application definition
 

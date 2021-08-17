@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse, request
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.conf import settings
 import json
 
 from .forms import JourneyPlannerForm
@@ -33,7 +34,11 @@ class Index(View):
 class JourneyPlanner(View):
 
     def get(self, request):
-        return render(request, 'journeyPlanner.html', {'form': JourneyPlannerForm()})
+        context = {
+            'api_key': settings.GOOGLE_MAPS_API_KEY,
+            'form': JourneyPlannerForm(),
+        }
+        return render(request, 'journeyPlanner.html', context=context)
 
     def post(self, request, *args, **kwargs):
         user_id = self.getUserID(request)
@@ -55,9 +60,14 @@ class JourneyPlanner(View):
                             form = favouriteForm['OK']
                             print('Form', form)
                 context = self.info(form, user_id)
+                context['api_key'] = settings.GOOGLE_MAPS_API_KEY
                 return render(request, 'journeyPlanner/showRoute.html', context=context)
             else:
-                return render(request, 'journeyPlanner.html', { 'form': form })
+                context = {
+                    'api_key': settings.GOOGLE_MAPS_API_KEY,
+                    'form':form
+                }
+                return render(request, 'journeyPlanner.html', context=context)
 
 
     def getEstimatedTime(self, body):           
@@ -208,8 +218,8 @@ class JourneyPlanner(View):
         return address
     
     def getFavouriteForm(self, user_id, form):
-        origin = self.getOrigin(form)
-        destination = self.getDestination(form)
+        origin = self.getOrigin(form).lower()
+        destination = self.getDestination(form).lower()
 
         if not self.isFavourite(origin, user_id) and not self.isFavourite(destination, user_id):
             return {'Error':'Origin and Destination do not match user favourites'}
@@ -284,7 +294,12 @@ class BusRoutes(View):
             #all_route_Info[route_number_chosed]=route_info
             #all_route_Info.append(route_info)
 
-        return render(request, 'routes.html',{"routes_name":routes})
+        context = {
+            'api_key': settings.GOOGLE_MAPS_API_KEY,
+            'routes_name': routes
+        }
+
+        return render(request, 'routes.html',context=context)
     def post(self, request, *args, **kwargs):
         routes=Routes.objects.all()
         route_number_set=set(())
@@ -298,13 +313,12 @@ class BusRoutes(View):
 
         route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed).filter(direction=route_direction_chosed)
         #serializers.serialize("json",route_chosed)
-        return render(request, 'routes.html',{"routes_name":routes,"route_Info":route_chosed})
-
-
-
-        
-        
-
+        context = {
+            'api_key': settings.GOOGLE_MAPS_API_KEY,
+            "routes_name":routes,
+            "route_Info":route_chosed
+        }
+        return render(request, 'routes.html',context=context)
 class CovidInfo(View):
     def get(self, request):
         try:

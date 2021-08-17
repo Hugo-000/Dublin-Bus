@@ -227,10 +227,13 @@ class JourneyPlanner(View):
         return travelTime
 
     def getUserID(self, request):
+        print({"getUSeR IC"})
         if request.user.is_authenticated:
+            print(request.user)
             user_id = {'ok':request.user.id}
         else:
             user_id = {'Error':'User is not authenticated'}
+        print(user_id)
         return user_id
 
 class BusRoutes(View):

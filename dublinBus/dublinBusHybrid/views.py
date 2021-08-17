@@ -49,10 +49,11 @@ class JourneyPlanner(View):
                 if not 'Error' in user_id:
                     user_id = user_id['ok']
                     print("User ID", user_id)
-                    favouriteForm = self.getFavouriteForm(user_id, form)
-                    if not 'Error' in favouriteForm:
-                        form = favouriteForm['OK']
-                        print('Form', form)
+                    if self.hasAddresses(user_id):
+                        favouriteForm = self.getFavouriteForm(user_id, form)
+                        if not 'Error' in favouriteForm:
+                            form = favouriteForm['OK']
+                            print('Form', form)
                 context = self.info(form, user_id)
                 return render(request, 'journeyPlanner/showRoute.html', context=context)
             else:
@@ -186,6 +187,13 @@ class JourneyPlanner(View):
         icon = dict.get(key)
         return icon
 
+    def hasAddresses(self, user_id):
+        try: 
+            json_address = Addresses.objects.get(user_id=user_id)
+            return True
+        except:
+            return False
+    
     def isFavourite(self, address, user_id):
         favouriteAddresses = Addresses.objects.get(user_id=user_id).addresses
         if address in favouriteAddresses:    

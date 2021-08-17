@@ -324,11 +324,12 @@ def sumBusTimes(busStepTimes):
         if busStepTimes[i]['type'] == 'google':
             print('google')
             totalBusTimes['type'] = 'google'
-        else:
+        elif 'predictions' in busStepTimes[i] and totalBusTimes['type']=='google':
             print('predictions')
             totalBusTimes['type'] = 'predictions'
         time += busStepTimes[i]['time']
     totalBusTimes['time'] = time
+    print('total Bus Times',totalBusTimes)
     return totalBusTimes
 
 #Function 
@@ -338,14 +339,18 @@ def getRouteDirection(routeNumber, headsign):
 
     try:
         temp = AllStopsWithRoute.objects.filter(route_number=routeNumber,stop_headsign=" " + headsign).first()
-        temp = model_to_dict(temp)
-        direction = temp['direction']
-        print('****getRouteDirection****')
-        print()
-        print('direction', direction)
-        print()
-        print('*************************')
-        return {"ok":direction}
+        if temp != None:
+            print('getRouteDirection',temp)
+            temp = model_to_dict(temp)
+            direction = temp['direction']
+            print('****getRouteDirection****')
+            print()
+            print('direction', direction)
+            print()
+            print('*************************')
+            return {"ok":direction}
+        else:
+            return {"Error":"Direction couldn't be determined"}
     except AllStopsWithRoute.DoesNotExist:
         print('****getRouteDirection****')
         print()

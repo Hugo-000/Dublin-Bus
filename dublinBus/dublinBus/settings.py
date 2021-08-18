@@ -190,6 +190,8 @@ POSTMARK = {
     'VERBOSITY': 0,
 }
 
+DEFAULT_FROM_EMAIL = "info@odalaighdesign.com"
+
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.github.GithubOAuth2",

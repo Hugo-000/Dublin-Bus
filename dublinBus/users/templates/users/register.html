@@ -6,7 +6,7 @@
 
 {% load static %}
 
-<div id="register-main">
+<div id="register-main" class="mb-3">
     
     <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
     <h2 class="login-title">Create an Account</h2>
@@ -24,8 +24,6 @@
         <a href="{% url 'social:begin' 'github' %}" class="github-text">Sign up with GitHub</a>
     </div>
     <a href="{% url 'login' %}">Back to login</a>
-    <br>
-    <br>
 
 </div>
 

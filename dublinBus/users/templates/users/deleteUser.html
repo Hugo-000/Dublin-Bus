@@ -3,14 +3,11 @@
 {% block content %}
 
 {% load static %}
-<div id="register-main">
-    
+<div id="register-main" class="mb-3">   
     <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
     <Strong class="login-title" style="text-align:center">Account deleted</Strong>
     <hr/>
-    <a href="{% url 'login'%}" class="btn btn-primary btn-reg">Back to login</a>
-    <br>
-    <br>
+    <a href="{% url 'register.html'%}" class="btn btn-primary btn-reg">Back to Sign-up</a>
 </div>
 
 {% endblock %}

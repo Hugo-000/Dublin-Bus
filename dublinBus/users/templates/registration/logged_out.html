@@ -1,15 +1,10 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 {% block content %}
-<div id="register-main">
-  
-      <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
-      <Strong class="login-title" style="text-align:center">You have successfully logged out </Strong>
-      <hr/>
-      <a href="{% url 'login'%}" class="btn btn-primary btn-reg">Click here to login again.</a>
-      <br>
-      <br>
- 
-
-</div>
+      <div id="register-main" class="mb-3">
+            <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
+            <Strong class="login-title" style="text-align:center">You have successfully logged out </Strong>
+            <hr/>
+            <a href="{% url 'login'%}" class="btn btn-primary btn-reg">Click here to login again.</a>
+      </div>
 {% endblock %}

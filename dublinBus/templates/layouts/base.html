@@ -17,66 +17,63 @@
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
             rel="stylesheet"
         />
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" 
+        <link 
+            href="https://fonts.gstatic.com"
+            rel="preconnect"  
         />
-        
         <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap"
             rel="stylesheet"
         />
-        
         <link
             href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap"
             rel="stylesheet"
         />
-
         <link 
-            rel="preconnect" href="https://fonts.googleapis.com"
+            href="https://fonts.googleapis.com"
+            rel="preconnect" 
         />
-        
         <link 
-            rel="preconnect" href="https://fonts.gstatic.com" crossorigin
+            href="https://fonts.gstatic.com"
+            rel="preconnect"  
+            crossorigin
         />
-        
         <link 
-            href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" 
+            rel="stylesheet"
         />
-
         <script
             src="https://kit.fontawesome.com/b21397b3b4.js"
             crossorigin="anonymous"
         ></script>
 
-        
-
         {% load static %}
         <link rel="icon" href={% static 'images/favicon.ico' %} />
-        <!-- <script src= {#% static 'js/jquery.min.js' %#}></script> -->
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-        
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'css/covid_data.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
         <link rel="stylesheet" type="text/css" id="default-theme" href="{% static 'css/bootstrap.min.css' %}" />
     </head>
 
     <body>
         <!--
         The jinja below inserts the header html file into the web page template
-        The header file includes the link to the navbar
+        The header file includes the navbar
         -->
         {% include 'partials/header.html' %}
 
-        <!--This section includes the jinja blocks where web page information will go.
-            i.e. paragraphs, headings, images etc.-->
+        <!--
+        This section includes the jinja blocks where web page information will go.
+        i.e. paragraphs, headings, images etc.
+        -->
         <div class='container_main bg-body' id="body_container">
             {% block content %}{% endblock %}
         </div>
         
-        <!--Like the header the below code inserts the footer file into the page template-->
-        
+        <!--
+        Like the header the below code inserts the footer file into the page template
+        -->
         {% include 'partials/footer.html' %}
         
     </body>
@@ -95,7 +92,6 @@
             body_theme.classList.replace("bg-body", "bg-secondary");
             footer_theme.classList.replace("bg-dark", "bg-primary");
         };
-
         if (!storage.getItem("map")){
             storage.setItem("map", "night");
         };
@@ -121,7 +117,6 @@
             var styleSelector = document.getElementById("style-selector");
             //if (nav_theme.classList.contains("bg-dark")){
             if (storage.getItem("theme")=="dark"){
-
                 storage.setItem("theme", "day");
                 storage.setItem("map", "default");
 
@@ -140,9 +135,7 @@
                         styleSelector.fireEvent("onchange");
                     }
                 }
-                
             } else {
-
                 storage.setItem("theme", "dark");
                 storage.setItem("map", "night");
 
@@ -161,35 +154,7 @@
                         styleSelector.fireEvent("onchange");
                     }
                 }
-                
             }
         }
-        /*
-        function change(themeName){
-            var link = document.getElementsByTagName("link")[0];
-            if(themeName === "default-theme"){
-                link.id = "default-theme";
-                link.href = '/static/css/bootstrap.min.css';
-                document.cookie = "themeCookies=default-theme;path=/";
-            }else if(themeName === "morph-theme"){
-                link.id = "morph-theme";
-                link.href = '/static/css/bootstrap_morph.min.css';
-                document.cookie = "themeCookies=morph-theme;path=/";
-            }
-        }
-        function getThemeName() {
-            var themeCookies = "themeCookies=";
-            var allCookies = document.cookie.split(';');
-            for(var i=0; i<allCookies.length; i++){
-                var c = allCookies[i].trim();
-                if(c.indexOf(themeCookies) === 0)
-                    return c.substring(themeCookies.length, c.length);
-            }
-            return "default-theme";
-        }
-        $(document).ready(function () {
-            change(getThemeName());
-        });
-        */
     </script>
 </html>

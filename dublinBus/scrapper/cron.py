@@ -19,24 +19,28 @@ def scheduling_curr_weather():
   sys.path.append(BASE_DIR)
   print(BASE_DIR)
   #result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ "/Users/chowsy/PycharmProjects/G1_RP_Dublin-Bus-App/backend/base/scrapper/current_weather.py"],shell=True)
-  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/current_weather.py"],shell=True)
-  print("Result " , result)
+  #result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/current_weather.py"],shell=True)
+  result = subprocess.run(["source ~/venv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/current_weather.py"],shell=True)
+  #print("Result " , result)
 
 def scheduling_forecast_weather():
   BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
   sys.path.append(BASE_DIR)
   print(BASE_DIR)
-  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/forecast_weather.py"],shell=True)
+  #result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/forecast_weather.py"],shell=True)
+  result = subprocess.run(["source ~/venv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/forecast_weather.py"],shell=True)
 
 def realtime_traffic():
   BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
   sys.path.append(BASE_DIR)
   print(BASE_DIR)
-  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/realtime_traffic.py"],shell=True)
+  #result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/realtime_traffic.py"],shell=True)
+  result = subprocess.run(["source ~/venv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/realtime_traffic.py"],shell=True)
 
 def covid_data():
   BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
   sys.path.append(BASE_DIR)
   print(BASE_DIR)
-  result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/covid_data.py"],shell=True)
+  #result = subprocess.run(["source " + BASE_DIR + "/myenv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/covid_data.py"],shell=True)
+  result = subprocess.run(["source ~/venv/bin/activate" +";" + "python3 "+ BASE_DIR + "/dublinBus/scrapper/covid_data.py"],shell=True)
 

@@ -308,11 +308,7 @@ function initMap() {
 
     // calls funcntion to get a route for the map //
     getRoute(map);
-    
-    
-
 }
-
 
 function addControls(map) {
 
@@ -325,77 +321,20 @@ function addControls(map) {
         map.setOptions({ styles: styles[styleSelector.value] });
         window.localStorage.setItem("map", styleSelector.value);
     });
-    // create the location information window and a button // 
-    // const locationWindow = new google.maps.InfoWindow();
-    // const locationButton = document.createElement("button");
-
-    // assign the attributes to the button //
-    // locationButton.textContent = "Current Location";
-    // locationButton.classList.add("custom-map-control-button");
-
-    // set the location of the button //
-    // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
-
-    // Enable the button to listen to a click and onclick move to current location //
-    // locationButton.addEventListener("click", () => {
-    //     // if Browser doesn't support Geolocation return error //
-    //     if (!navigator.geolocation) return handleLocationError("type3", locationWindow, map.getCenter());
-
-    //     // else assume browser has geoloction enabled
-    //     navigator.geolocation.getCurrentPosition(
-    //         // set the latitude and longitude of the map restrictions
-    //         ({ coords: { latitude, longitude } }) => {
-    //         //Due to the area of the map is restricted, there needs to check if the user is near the staions
-    //         if (latitude > 53.365 || latitude < 53.325 || longitude > -6.2307 || longitude < -6.3101) {
-    //             // if user not within the coordinates fro restriction produce an error
-    //             handleLocationError("type1", locationWindow, map.getCenter());
-
-    //         } else {
-    //             // if user is within the restricted area set the position
-    //             locationWindow.setPosition({
-    //                 lat: latitude,
-    //                 lng: longitude,
-    //             });
-    //             // show the current location on the map
-    //             locationWindow.setContent("Location found.");
-    //             locationWindow.open(map);
-    //         }
-    //     // if the geo location functionality fails produce an error
-    //     }, () => handleLocationError("type2", locationWindow, map.getCenter()));
-    // });
 }
 function createMap() {
     const element = document.getElementById("map");
 
     if (!element) return;
     
-    // build a map in night time mode
     // assign the map to the element identified as map
     return new google.maps.Map(element, {
         zoom: 14,
         center: { lat: 53.349804, lng: -6.260310 },
         /*Disable the default map ui*/
         disableDefaultUI: true,
-        /*restrict the boundary of map*/
     });
 }
-
-// function handleLocationError(browserProblem, locationWindow, pos) {
-//     // convert the error types into human understandable error codes 
-//     locationWindow.setPosition(pos); // why do we need this?????
-//     if (browserProblem=="type1"){
-//             var problem="Error: Currently there is no station near your position"
-//     }else{
-//             if (browserProblem=="type2"){
-//                 var problem="Error: The Geolocation service failed."
-//             } else {
-//                 var problem="Error: Your browser doesn't support geolocation."
-//             }
-//     };
-//     locationWindow.setContent(problem);
-//     locationWindow.open(map);
-// }; 
-
 
 async function getRoute(map) {
     // If Django adds error list class (i.e. the form is invalid)
@@ -452,13 +391,6 @@ function handleRouteResponse(directionsDisplay, response, status) {
 
     if (status !== google.maps.DirectionsStatus.OK) return;
 
-    // response.then(result => {           
-    // const s = response.routes
-    //     .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-    //     .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
-
-    // console.log('steps Jen s', s);
-
     const l = response.routes
         .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
         .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
@@ -471,7 +403,6 @@ function handleRouteResponse(directionsDisplay, response, status) {
         var today = new Date();
         travel_time = today.getHours() + ":" + today.getMinutes();
     } 
-
 
     fetch('/dublinBusHybrid/journeyPlanner/', {
         method: 'POST',
@@ -503,11 +434,6 @@ function handleRouteResponse(directionsDisplay, response, status) {
     });
 
     directionsDisplay.setDirections(response);
-
-
-    // Setup loading screen
-    // Give the server the details
-    // .then(do the stuff)
 
     console.log(response)
     response.routes.forEach(r => {

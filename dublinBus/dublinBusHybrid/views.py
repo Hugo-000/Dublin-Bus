@@ -1,31 +1,16 @@
 # from gitRepository.G1_RP_Dublin_Bus_App.dublinBus.scrapper.models import RealTimeTraffic
-import re
 from django.shortcuts import render
-from django.template import loader, Context, Template
 from django.views.generic import View
-from django.forms.models import model_to_dict
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonResponse, request
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
+from django.http import Http404, JsonResponse
 from django.conf import settings
 import json
 
 from .forms import JourneyPlannerForm
-
-from .leap_card import leap_info
-
-from scrapper.models import Stops, Routes, AllStopsWithRoute, ForecastWeather, CurrentWeather, Covid, RoutePrediction, RealTimeTraffic
+from scrapper.models import Routes, AllStopsWithRoute, Covid
 from users.models import Addresses
 
-import pickleModels 
 import predictions
-# import realTime
-
 import datetime
-import os.path
-import pickle
-import numpy as np
 
 class Index(View):
     def get(self, request, *args, **kwargs):
@@ -68,7 +53,6 @@ class JourneyPlanner(View):
                     'form':form
                 }
                 return render(request, 'journeyPlanner.html', context=context)
-
 
     def getEstimatedTime(self, body):           
         busStepInfo = predictions.getBusStepInfo(body)
@@ -273,33 +257,12 @@ class JourneyPlanner(View):
 class BusRoutes(View):
     def get(self, request, *args, **kwargs):
         routes=Routes.objects.all()
-        #route_number_set=set(())
-        #for route in routes:
-            #route_number_set.add(route.route_name)
-        #all_route_Info=[]
-        #all_route_Info={}
-        #for route_number_chosed in route_number_set:
-            #route_chosed = AllStopsWithRoute.objects.raw('SELECT * FROM Dublin_Bus.scrapper_allstopswithroute inner join Dublin_Bus.scrapper_stops where scrapper_allstopswithroute.stop_id = scrapper_stops.stop_id and route_number = "'+route_number_chosed+'";')
-            #route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed)
-            #route_info=[]
-            #route_info={}
-            #for stop_chosed in route_chosed:
-                #stop_coordinate=str(stop_chosed.stop.lat)+","+str(stop_chosed.stop.lng)
-                #route_info.append(stop_of_chosed_route.stop.stop_name)
-                #route_info.append(stop_coordinate)
-                #route_info[stop_chosed.stop_sequence]={
-                    #"stop_name":stop_chosed.stop.stop_name,
-                    #"stop_coordinate":stop_coordinate,
-                #}
-            #all_route_Info[route_number_chosed]=route_info
-            #all_route_Info.append(route_info)
-
         context = {
             'api_key': settings.GOOGLE_MAPS_API_KEY,
             'routes_name': routes
         }
-
         return render(request, 'routes.html',context=context)
+
     def post(self, request, *args, **kwargs):
         routes=Routes.objects.all()
         route_number_set=set(())
@@ -309,10 +272,9 @@ class BusRoutes(View):
         route_number_chosed=route_chosed[0]
         if (len(route_chosed)==2):
             route_direction_chosed="O" if route_chosed[1]=="0" else "I"
-        #route_direction_chosed=request.POST.get('direction')
 
         route_chosed=AllStopsWithRoute.objects.select_related('stop').filter(route_number=route_number_chosed).filter(direction=route_direction_chosed)
-        #serializers.serialize("json",route_chosed)
+        
         context = {
             'api_key': settings.GOOGLE_MAPS_API_KEY,
             "routes_name":routes,

@@ -64,14 +64,22 @@ INSTALLED_APPS = [
     'webpack_loader',    
 ]
 
+# Show crontab logs in output
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+
 #Automated scripting for every 5min, 10 min, 30min and 23 hour
+#CRONJOBS = [
+#     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather', '>> ' + os.path.join(BASE_DIR,'log/debug_current_weather.log')),
+#     ('*/5 * * * *', 'scrapper.cron.realtime_traffic', '>> ' + os.path.join(BASE_DIR,'log/debug_realtime_traffic.log')),
+#     ('0 */23 * * *', 'scrapper.cron.covid_data', '>> ' + os.path.join(BASE_DIR,'log/debug_covid_data.log')),
+#     ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather', '>> ' + os.path.join(BASE_DIR,'log/debug_scheduling_forecast_weather.log')),
+# ]
 CRONJOBS = [
+    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
     ('*/5 * * * *', 'scrapper.cron.realtime_traffic'),
     ('0 */23 * * *', 'scrapper.cron.covid_data'),
     ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather'),
-    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
 ]
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',

@@ -13,5 +13,16 @@ const options = {
     fields: ["address_components", "geometry", "icon", "name"],
     strictBounds: false,
 };
-new google.maps.places.Autocomplete(document.getElementById("id_origin_location"), options);
-new google.maps.places.Autocomplete(document.getElementById("id_destination_location"), options);
+try {
+    new google.maps.places.Autocomplete(document.getElementById("id_origin_location"), options);
+    new google.maps.places.Autocomplete(document.getElementById("id_destination_location"), options);
+}
+catch (error) {
+
+}
+
+try{
+    new google.maps.places.Autocomplete(document.getElementById("id_address"), options);
+} catch (error) {
+
+}

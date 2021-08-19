@@ -329,35 +329,4 @@ class CovidInfo(View):
             raise Http404("Covid data does not exist")
         return render(request, 'covidInfo.html', {'covid': covid_stat,'covid_chart':covid_chart})
 
-class LeapCard(LoginRequiredMixin, View):
-
-    def get(self, request):
-        return render(request, 'leapCard.html')
-
-    def post(self, request, *args, **kwargs): 
-        leap_username = request.POST.get('leap_username')
-        leap_password = request.POST.get('leap_password')
-        balance=dir(leap_info(leap_username,leap_password))
-        print('leap card balance', balance)
-        context = {
-            "leap_balance" : balance["balance"],
-            "leap_card_number" : balance["card_num"],
-            "leap_card_status" : balance["card_status"],
-            "leap_card_type" : balance["card_type"],
-            "leap_credit_status" : balance["credit_status"],
-            "leap_expiry_date" : balance["expiry_date"],
-            "leap_issue_date" : balance["issue_date"],
-            "leap_auto_topup" : balance["auto_topup"],
-        }
-        # context_hard = {
-        #     "leap_balance" : "11",
-        #     "leap_card_number" : leap_username,
-        #     "leap_card_status" : "11",
-        #     "leap_card_type" : "11",
-        #     "leap_credit_status" : "11",
-        #     "leap_expiry_date" : "11",
-        #     "leap_issue_date" : "11",
-        #     "leap_auto_topup" : "11",
-        # }
-        return render(request, 'leapCard.html', context= context)
         

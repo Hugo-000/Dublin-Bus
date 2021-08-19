@@ -33,7 +33,6 @@ class JourneyPlannerForm(forms.Form):
     maxDateString = maxDate.strftime('%Y-%m-%d')
     travel_date = forms.DateField(
         label='Date',
-        # widget=forms.SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")),
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Date', 
@@ -60,7 +59,6 @@ class JourneyPlannerForm(forms.Form):
         required = False
     )
     
-
     def clean(self):
         cd = self.cleaned_data
         today = datetime.date.today()

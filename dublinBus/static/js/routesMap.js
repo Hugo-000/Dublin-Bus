@@ -1,3 +1,4 @@
+let map;
 const styles = {
     default: [],
     silver: [
@@ -290,173 +291,83 @@ const styles = {
         },
     ],
 };
-
 function initMap() {
-    // Initializes the map on the page //
     
-    // Creates the map //
-    const map = createMap();
-
-    // If there is no map created then do nothing
-    if (!map) return;
-
-    // prints the information pertaining to the map in the console //
-    console.log(map);
-
-    // calls a function to add controlability to the map //
-    addControls(map);
-
-    // calls funcntion to get a route for the map //
-    getRoute(map);
-}
-
-function addControls(map) {
-
-    // function to add controls to the map for style //
+    const directionsService = new google.maps.DirectionsService();
+    map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 14,
+            center: { lat: 53.349804, lng: -6.260310 },
+            disableDefaultUI: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+    });
     const styleControl = document.getElementById("style-selector-control");
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(styleControl);
+    
     const styleSelector = document.getElementById("style-selector");
+    
     map.setOptions({ styles: styles[styleSelector.value] });
     styleSelector.addEventListener("change", () => {
         map.setOptions({ styles: styles[styleSelector.value] });
         window.localStorage.setItem("map", styleSelector.value);
     });
-}
-function createMap() {
-    const element = document.getElementById("map");
-
-    if (!element) return;
     
-    // assign the map to the element identified as map
-    return new google.maps.Map(element, {
-        zoom: 14,
-        center: { lat: 53.349804, lng: -6.260310 },
-        /*Disable the default map ui*/
-        disableDefaultUI: true,
-    });
-}
 
-async function getRoute(map) {
-    // If Django adds error list class (i.e. the form is invalid)
-    // don't attempt to get the route
-    if (document.querySelector('.errorlist')) return;
+    const control =  document.getElementById("sidebar");
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(control);
+    
+    var stepDisplay = new google.maps.InfoWindow();
+    var i=0;
+    const markerArray = [];
+    const stopArray=[];
+    const requestArray=[];
+    "{% if route_Info %}"
+        "{% for stop in route_Info %}"
+            var stop_position={
+                lat:Number("{{stop.stop.lat}}"),
+                lng:Number("{{stop.stop.lng}}"),
+            };
 
-    const origin = document.querySelector('#id_origin_location').value;
-    const destination = document.querySelector('#id_destination_location').value;
+            stopArray[i]="{{stop.stop.lat}}".toString()+","+"{{stop.stop.lng}}".toString();
 
-    // If there is no value for origin or desitnation return
-    if (!origin || !destination) return;
+            markerArray[i] = new google.maps.Marker({
+                position: stop_position,
+                map: map,
+                title:"{{stop.stop.stop_name}}",
+                label:"{{stop.stop_sequence}}",
+            });
 
-    try {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsDisplay = new google.maps.DirectionsRenderer();
+            markerArray[i].addListener("click", () => {
+                var pos = {
+                    lat:Number("{{stop.stop.lat}}"),
+                    lng:Number("{{stop.stop.lng}}"),
+                };
+                stepDisplay.setPosition(pos);
+                stepDisplay.setContent(
+                    '<p style="color:black">'+"{{stop.stop.stop_name}}"+'</p>'
+                );
+                stepDisplay.open(map);
+            });
 
-        var userUnixDate = document.getElementById("userUnixDate").textContent;
-        console.log(document.getElementById("userUnixDate").textContent)
-        console.log(userUnixDate)
-        console.log(new Date(1626081706 * 1000))
-        const requestOpts = {
-            origin,
-            destination,
-            travelMode: google.maps.DirectionsTravelMode.TRANSIT,
-            transitOptions: {
-                departureTime: new Date(userUnixDate  * 1000),
-                modes: ['BUS'],
-                routingPreference: 'FEWER_TRANSFERS'    //LESS_WALKING is the alternative
-            },
-            //provideRouteAlternatives: false,            //When True provides alternative routes
+            i++;
+        "{% endfor %}" 
+        const latlngStr = stopArray[0].split(",", 2);
+        const latlng = {
+            lat: parseFloat(latlngStr[0]),
+            lng: parseFloat(latlngStr[1]),
         };
-
-        directionsDisplay.setMap(map);
-        directionsDisplay.setPanel(document.getElementById('panel-desktop'))
-        directionsDisplay.setPanel(document.getElementById('panel'));
-        
-        await directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
-    } catch(e) {
-        console.log("e", e.message)
-        if (e.message === "DIRECTIONS_ROUTE: NOT_FOUND: At least one of the origin, destination, or waypoints could not be geocoded.") {
-            alert("OOPS! Something went wrong, no route found. Please try using the suggestions and try again!");
-        } else {
-            alert("OOPS! Something went wrong, no route found. Please try again!");
-        }
-    }
-}
-
-function handleRouteResponse(directionsDisplay, response, status) {
-    console.log('handleRouteREsponse', {
-        directionsDisplay,
-        response,
-        status
-    })
-
-    if (status !== google.maps.DirectionsStatus.OK) return;
-
-    const l = response.routes
-        .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-        .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
-        .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
-    console.log('steps Jen l', l);
-
-    var travel_time = document.querySelector('#id_travel_time').value
-
-    if (travel_time == "") {
-        var today = new Date();
-        travel_time = today.getHours() + ":" + today.getMinutes();
-    } 
-
-    fetch('/dublinBusHybrid/journeyPlanner/', {
-        method: 'POST',
-        credentials: 'include',     
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json; charset=UTF-8',
-            'X-CSRFToken': getCSRFToken()
-        },
-
-        body: JSON.stringify({
-            'travel_date': document.querySelector('#id_travel_date').value,
-            'travel_time': travel_time + ':00',
-            'Steps': l,
-        })
-    }).then(r => r.json())
-    .then(result => {
-        const estimatedTimeElement = document.querySelector('#estimated-time');
-        const googleWarning = document.querySelector('#google_warning');
-        console.log('result', result);
-        console.log('google_warning', googleWarning)
-        if (result.estimatedTime.type === "google") {
-            // Produce Google Warning
-            console.log('google')
-            googleWarning.style.visibility = 'visible';
-        }
-            
-        estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
-    });
-
-    directionsDisplay.setDirections(response);
-
-    console.log(response)
-    response.routes.forEach(r => {
-        r.legs.forEach(l => {
-            l.steps.forEach(s => {
-                if (s.transit) {
-                    console.log("s", s)
-                    console.log('arrival_stop', s.transit)
-
-                }
-
-            })
-
-        })
-    });
-}
-
-// get a csrf token from the page by selecting the input element and
-// returning the value
-function getCSRFToken() {
-    return document.querySelector('[name="csrfmiddlewaretoken"]').value;
-}
-
+        map.setZoom(13);
+        map.setCenter(latlng);            
+    "{% endif %}"        
+};
+function focusThisStop(lat,lng){
+    const latlng = {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+    };
+    map.setZoom(16);
+    map.setCenter(latlng);
+    document.getElementById("offcanvas_trigger").click();
+};
 setTimeout(()=>{
     document.getElementById("style-selector-control").style.display='block';
 },3000);

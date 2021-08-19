@@ -1,4 +1,3 @@
-# from gitRepository.G1_RP_Dublin_Bus_App.dublinBus.scrapper.models import RealTimeTraffic
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import Http404, JsonResponse
@@ -54,7 +53,12 @@ class JourneyPlanner(View):
                 }
                 return render(request, 'journeyPlanner.html', context=context)
 
-    def getEstimatedTime(self, body):           
+    def getEstimatedTime(self, body):  
+        """
+            Function that fetches data from other functions in order to get the estimated time of each bus. 
+            The function the sums the times and returns the total bus time along with a key indicating if the time
+            contains any google estimated times.
+        """         
         busStepInfo = predictions.getBusStepInfo(body)
         print("bus step info",busStepInfo)
         travel_date = predictions.getTravelDate(body)
@@ -65,18 +69,13 @@ class JourneyPlanner(View):
         return predictions.sumBusTimes(busStepTimes)
 
     def info(self, form, user_id):
+        """
+            A function which fetches the information contained within the form and forms a context dictionary for the 
+            html file. Additionally the function fetches the weather data fro the given date and time and adds it to the 
+            dictionary for use in the weather card.
+        """
         travel_date = self.getTravelDate(form)
         travel_time = self.getTravelTime(form)
-        
-        print('*************************')
-        print()
-        print('type info travel_date', type(travel_date))
-        print('type info travel_date', travel_date)
-        print()
-        print('type info travel_time', type(travel_time))
-        print('type info travel_time', travel_time)
-        print()
-        print('*************************')
 
         user_unix_time = self.toUnix(form)
 
@@ -114,33 +113,21 @@ class JourneyPlanner(View):
             return context
 
     def fetchJSON(self, request_body):
+        """
+            Function which takes the information from the JSON link and converts it into data types which python understands 
+            and returns a python dictionary
+        """
         info = json.loads(request_body)
-
-        print('*************************')
-        print()
-        print('type of info', type(info))
-        print()
-        print('*************************')
-        print()
-        print('Type Travel Date before strf', type(info['travel_date']), info['travel_date'] )
-        print('Type Travel Time before strf', type(info['travel_time']), info['travel_time'] )
-        print()
-        print('*************************')
         
         info['travel_time'] = datetime.datetime.strptime(info['travel_time'], '%H:%M:%S').time()
         info['travel_date'] = datetime.datetime.strptime(info['travel_date'], '%Y-%m-%d').date()
 
-        print()
-        print('Type Travel Date after strf', type(info['travel_date']), info['travel_date'] )
-        print('Type Travel Time after strf', type(info['travel_time']), info['travel_time'] )
-        print()
-        print('*************************')
-
-        # print(info)
-        print(info)
         return info
 
     def toUnix(self, form):
+        """
+            converts the travel date and travel time into a unix timestap
+        """
         fd = form.cleaned_data
         travel_date = fd.get('travel_date')
         travel_time = fd.get('travel_time')
@@ -158,6 +145,10 @@ class JourneyPlanner(View):
         return "error"
 
     def iconMatching(self, key):
+        """
+            converts the weather icon values from the weather table to the images we have for the 
+            weather types to be used in the weather card.
+        """
         dict = {
             "01n":"images/01d.png",
             "01d":"images/01n.png",
@@ -182,6 +173,9 @@ class JourneyPlanner(View):
         return icon
 
     def hasAddresses(self, user_id):
+        """
+            function to determine if the user has any favourite addresses stored on the system
+        """
         try: 
             json_address = Addresses.objects.get(user_id=user_id)
             return True
@@ -189,6 +183,10 @@ class JourneyPlanner(View):
             return False
     
     def isFavourite(self, address, user_id):
+        """
+            Function to check if the address passed to it is a favourite key word.
+            If so it returns True, if not it returns false
+        """
         favouriteAddresses = Addresses.objects.get(user_id=user_id).addresses
         if address in favouriteAddresses:    
             return True
@@ -196,12 +194,18 @@ class JourneyPlanner(View):
             return False
     
     def getFavouriteAddress(self, addressName, user_id):
+        """
+            Function to retirive the favourite addresses dictionary for the user from the database 
+        """
         favouriteAddresses = Addresses.objects.get(user_id=user_id).addresses
         address = favouriteAddresses[addressName]
-        print('Address Name and address', addressName, address)
         return address
     
     def getFavouriteForm(self, user_id, form):
+        """
+            Function to regenerate the journeyPlannerForm after the user has entered a favourite address key word.
+            This enables the google maps API to read the address required to generate the map instead of the key word.
+        """
         origin = self.getOrigin(form).lower()
         destination = self.getDestination(form).lower()
 
@@ -224,30 +228,48 @@ class JourneyPlanner(View):
         return { 'OK': newForm }
 
     def getCleanedForm(self, form):
+        """
+            Function to return the cleaned data from the form
+        """
         cleanedForm = form.cleaned_data
         return cleanedForm
     
     def getOrigin(self, form):
+        """
+            function to get the origin address from the cleaned data of a form
+        """
         cleanedForm = self.getCleanedForm(form)
         origin = cleanedForm.get('origin_location')
         return origin
 
     def getDestination(self, form):
+        """
+            function to get the destination address from the cleaned data of a form
+        """
         cleanedForm = self.getCleanedForm(form)
         destination = cleanedForm.get('destination_location')
         return destination
     
     def getTravelDate( self, form):
+        """
+            function to get the travel date from the cleaned data of a form
+        """
         cleanedForm = self.getCleanedForm(form)
         travelDate = cleanedForm.get('travel_date')
         return travelDate
 
     def getTravelTime(self, form):
+        """
+            function to get the travel time from the cleaned data of a form
+        """
         cleanedForm = self.getCleanedForm(form)
         travelTime = cleanedForm.get('travel_time')
         return travelTime
 
     def getUserID(self, request):
+        """
+            Function to get the user id from an authenticated user
+        """
         if request.user.is_authenticated:
             user_id = {'ok':request.user.id}
         else:

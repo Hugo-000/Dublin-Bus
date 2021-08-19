@@ -68,7 +68,7 @@ INSTALLED_APPS = [
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 
 #Automated scripting for every 5min, 10 min, 30min and 23 hour
-# CRONJOBS = [
+#CRONJOBS = [
 #     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather', '>> ' + os.path.join(BASE_DIR,'log/debug_current_weather.log')),
 #     ('*/5 * * * *', 'scrapper.cron.realtime_traffic', '>> ' + os.path.join(BASE_DIR,'log/debug_realtime_traffic.log')),
 #     ('0 */23 * * *', 'scrapper.cron.covid_data', '>> ' + os.path.join(BASE_DIR,'log/debug_covid_data.log')),

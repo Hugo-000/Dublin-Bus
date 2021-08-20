@@ -270,10 +270,13 @@ class JourneyPlanner(View):
         """
             Function to get the user id from an authenticated user
         """
+        print({"getUSeR IC"})
         if request.user.is_authenticated:
+            print(request.user)
             user_id = {'ok':request.user.id}
         else:
             user_id = {'Error':'User is not authenticated'}
+        print(user_id)
         return user_id
 
 class BusRoutes(View):

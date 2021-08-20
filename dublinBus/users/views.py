@@ -142,6 +142,8 @@ class Delete(View):
         user_id = self.getUserID(request)
         print("user_id", user_id)
         self.deleteUser(user_id['ok'])
+        print("user deleted")
+        print(request)
         return render(request, 'users/deleteUser.html') 
 
     def deleteUser(self, user_id):

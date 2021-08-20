@@ -64,29 +64,19 @@ class TestIndexView(TestCase):
                                         'travel_date': '2021-08-08', 'travel_time': '16:00'
                                         },
                                     HTTP_ACCEPT='application/json')
-        # # content_type  = "application/json"
-        # print(response.content)
-        # print(response.status_code)
-        # direction = JourneyPlanner().fetchJSON("UCD")
         self.assertEqual(response.status_code, 200)
 
     def test_get_route_by_number(self):
         """test if stops sequence of a route can be retrieved by route number"""
         response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '66E,0'})
-        # CurrentWeather.objects.get(dt="01-01-2021")
-        # response = self.client.resolve("/dublinBusHybrid/Routes/", {'route_name': '66E', 'direction': '0'})
-        # print(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'routes.html')
-        # self.assertEqual(len(response.context['route']), 1)
 
-    def test_get_route_by_number_404(self):
-        """test if stops sequence of a route can be retrieved by route number"""
+    def test_get_route_by_wrong_route(self):
+        """test if stops sequence of a route can be retrieved by route number that is not exist"""
         response = self.client.post("/dublinBusHybrid/Routes/", {'route_name': '44324, I'})
-        with self.assertRaises(IndexError):
-            #response.content['route_Info']
-            self.assertEqual(response.status_code, 200)
-            self.assertRaises(IndexError, response)
+        self.assertEqual(response.status_code, 200)
+
 
     def test_jouurney_planner(self):
         """test data from the post method can successfully predict the query without transfer"""

@@ -8,6 +8,7 @@ from django.urls import reverse
 from users.forms import CustomUserCreationForm, AddressesForm
 from django.views.generic import View
 from users.models import Addresses
+from django.conf import settings
 
 # from users.models import AuthUser
 
@@ -21,12 +22,14 @@ class Dashboard(View):
         user_id = request.user.id
         if self.hasAddresses(user_id):
             context = {
+                'api_key': settings.GOOGLE_MAPS_API_KEY,
                 'user_id':user_id,
                 'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
                 'form' : AddressesForm()
             }
         else:
             context = {
+                'api_key': settings.GOOGLE_MAPS_API_KEY,
                 'user_id':user_id,
                 'form' : AddressesForm()
             }
@@ -42,12 +45,14 @@ class Dashboard(View):
 
         if self.hasAddresses(user_id):
             context = {
+                'api_key': settings.GOOGLE_MAPS_API_KEY,
                 'user_id':user_id,
                 'userAddresses' : self.getUserAddresses(user_id=user_id).addresses.items(),
                 'form' : AddressesForm()
             }
         else:
             context = {
+                'api_key': settings.GOOGLE_MAPS_API_KEY,
                 'user_id':user_id,
                 'form' : AddressesForm()
             }
@@ -63,11 +68,13 @@ class Dashboard(View):
     def createOrUpdateAddress(self, user_id, form):
         if form.is_valid():
             fd = form.cleaned_data
+            addressName = fd.get('addressName').lower()
+            address = fd.get('address')
 
             if self.hasAddresses(user_id):
-                self.updateAddress(user_id, fd.get('addressName'), fd.get('address'))
+                self.updateAddress(user_id, addressName, address)
             else:
-                check = self.addFirstAddress(user_id, fd.get('addressName'), fd.get('address'))
+                check = self.addFirstAddress(user_id, addressName, address)
                 print('check', check)
 
     def getUserAddresses(self, user_id):
@@ -77,6 +84,7 @@ class Dashboard(View):
             return []
 
     def deleteAddress(self, user_id, addressName):
+        addressName = addressName.lower()
         try:
             deleteAddress = self.getUserAddresses(user_id=user_id)
             deleteAddress.addresses.pop(addressName)
@@ -86,6 +94,7 @@ class Dashboard(View):
             return False
 
     def updateAddress(self, user_id, addressName, address):
+        addressName = addressName.lower()
         try:
             updateAddress = self.getUserAddresses(user_id=user_id)
             updateAddress.addresses[addressName] = address
@@ -95,6 +104,7 @@ class Dashboard(View):
             return False
     
     def addFirstAddress(self, user_id, addressName, address):
+        addressName = addressName.lower()
         print('User id First Address', user_id)
         firstAddress = {addressName:address}
         print('First Address', firstAddress)
@@ -132,6 +142,8 @@ class Delete(View):
         user_id = self.getUserID(request)
         print("user_id", user_id)
         self.deleteUser(user_id['ok'])
+        print("user deleted")
+        print(request)
         return render(request, 'users/deleteUser.html') 
 
     def deleteUser(self, user_id):

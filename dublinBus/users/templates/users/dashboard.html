@@ -1,12 +1,10 @@
-<!--users/templates/users/dashboard.html-->
-
 {% extends 'layouts/base.html' %}
 
 {% block content %}
 
 {% load static %}
 
-<div id="register-main">
+<div id="register-main" class="mb-3">
     <img alt="bus-logo" class="bus-logo"src={% static 'images/bus.png' %} />
     <div id="login-content">
         {% if user.is_authenticated %}
@@ -22,30 +20,30 @@
                             Check your Bookmarks
                         </button>
                     </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <div id="favourite-addresses">
                                 <div id="saved-address-table">
                                     <table class="table table-hover" style="margin-bottom:8px;">
-                                        <thead style="text-align:center;">
+                                        <thead style="text-align:left;">
                                             <tr class="table-secondary">
-                                                <th scope="col"> Name &nbsp&nbsp</th>
-                                                <th scope="col"> Address &nbsp&nbsp</th>
+                                                <th scope="col"> Name </th>
+                                                <th scope="col"> Address</th>
                                                 <th scope="col"> </th>
                                             </tr>
                                         </thead>
-                                        <tbody style="align:center;">
+                                        <tbody style="text-align:left;">
                                             {% for addressName, addressValue in userAddresses %}
-                                                <tr class="table-primary"> 
-                                                    <th scope="row" style="text-align: center !important; vertical-align: baseline; padding-bottom:0;padding-top:16;">{{ addressName }}</th>
-                                                    <td style="text-align: center !important; vertical-align: baseline; padding-bottom:0;padding-top:16;">{{ addressValue }}</td>
-                                                    <td>
+                                                <tr class="table-primary" style="vertical-align:center"> 
+                                                    <th scope="row" style="text-align: left !important; vertical-align: middle; padding-bottom:8;padding-top:8;">{{ addressName }}</th>
+                                                    <td style="text-align: left !important; vertical-align: middle; padding-bottom:8;padding-top:8;">{{ addressValue }}</td>
+                                                    <td style="text-align: left !important; vertical-align: middle; padding-bottom:8;padding-top:8;">
                                                         <form id="delete_{{addressName}}" action="" method="post" style="text-align:center;margin-block-end:0;width:100%;">
                                                             {% csrf_token %}
                                                             <input name="delete" value="true" hidden/>
                                                             <input name="addressName" value="{{addressName}}" hidden />
                                                             <input name="addressValue" value="{{addressValue}}" hidden />
-                                                            <button form="delete_{{addressName}}" type="submit" class="btn btn-info">delete</button>
+                                                            <button form="delete_{{addressName}}" type="submit" class="btn btn-info">Delete</button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -63,7 +61,7 @@
                             Add new Bookmark
                         </button>
                     </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <form id="create" action="" method="post">
                                 {% csrf_token %}
@@ -79,17 +77,23 @@
 
             <a href="{% url 'logout' %}" class="btn btn-info btn-log">Logout</a>
 
-            <form id="delete_{{user_id}}" action="/delete/" method="post" style="text-align:center;margin-block-end:0;width:100%;">
+            <form id="delete_{{user_id}}" action="/delete/" method="post">
                 {% csrf_token %}
                 <input name="delete" value="true" hidden/>
-                <button form="delete_{{user_id}}" type="submit" class="btn btn-danger">delete</button>
+                <button form="delete_{{user_id}}" type="submit" class="btn btn-danger btn-log w-100">Delete Account</button>
             </form>
-            <!-- <a href="{# % url 'delete' % #}" class="btn btn-danger btn-log">Delete</a> -->
         {% else %}
             <a href="{% url 'login' %}" >Login</a>
         {% endif %}
     </div>
-    <br>
-    <br>
 </div>
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&libraries=places&v=weekly"
+> 
+</script>
+
+<script src={% static 'js/placesAutocomplete.js' %}></script>
+
 {% endblock %}
+

@@ -308,9 +308,7 @@ function initMap() {
 
     // calls funcntion to get a route for the map //
     getRoute(map);
-
 }
-
 
 function addControls(map) {
 
@@ -321,44 +319,7 @@ function addControls(map) {
     map.setOptions({ styles: styles[styleSelector.value] });
     styleSelector.addEventListener("change", () => {
         map.setOptions({ styles: styles[styleSelector.value] });
-    });
-    // create the location information window and a button // 
-    const locationWindow = new google.maps.InfoWindow();
-    const locationButton = document.createElement("button");
-
-    // assign the attributes to the button //
-    locationButton.textContent = "Current Location";
-    locationButton.classList.add("custom-map-control-button");
-
-    // set the location of the button //
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
-
-    // Enable the button to listen to a click and onclick move to current location //
-    locationButton.addEventListener("click", () => {
-        // if Browser doesn't support Geolocation return error //
-        if (!navigator.geolocation) return handleLocationError("type3", locationWindow, map.getCenter());
-
-        // else assume browser has geoloction enabled
-        navigator.geolocation.getCurrentPosition(
-            // set the latitude and longitude of the map restrictions
-            ({ coords: { latitude, longitude } }) => {
-            //Due to the area of the map is restricted, there needs to check if the user is near the staions
-            if (latitude > 53.365 || latitude < 53.325 || longitude > -6.2307 || longitude < -6.3101) {
-                // if user not within the coordinates fro restriction produce an error
-                handleLocationError("type1", locationWindow, map.getCenter());
-
-            } else {
-                // if user is within the restricted area set the position
-                locationWindow.setPosition({
-                    lat: latitude,
-                    lng: longitude,
-                });
-                // show the current location on the map
-                locationWindow.setContent("Location found.");
-                locationWindow.open(map);
-            }
-        // if the geo location functionality fails produce an error
-        }, () => handleLocationError("type2", locationWindow, map.getCenter()));
+        window.localStorage.setItem("map", styleSelector.value);
     });
 }
 function createMap() {
@@ -366,37 +327,16 @@ function createMap() {
 
     if (!element) return;
     
-    // build a map in night time mode
     // assign the map to the element identified as map
     return new google.maps.Map(element, {
         zoom: 14,
         center: { lat: 53.349804, lng: -6.260310 },
         /*Disable the default map ui*/
         disableDefaultUI: true,
-        /*restrict the boundary of map*/
     });
 }
 
-function handleLocationError(browserProblem, locationWindow, pos) {
-    // convert the error types into human understandable error codes 
-    locationWindow.setPosition(pos); // why do we need this?????
-    if (browserProblem=="type1"){
-            var problem="Error: Currently there is no station near your position"
-    }else{
-            if (browserProblem=="type2"){
-                var problem="Error: The Geolocation service failed."
-            } else {
-                var problem="Error: Your browser doesn't support geolocation."
-            }
-    };
-    locationWindow.setContent(problem);
-    locationWindow.open(map);
-}; 
-
-
-function getRoute(map) {
-    // 
-
+async function getRoute(map) {
     // If Django adds error list class (i.e. the form is invalid)
     // don't attempt to get the route
     if (document.querySelector('.errorlist')) return;
@@ -431,119 +371,84 @@ function getRoute(map) {
         directionsDisplay.setPanel(document.getElementById('panel-desktop'))
         directionsDisplay.setPanel(document.getElementById('panel'));
         
-
-        console.log('directions', directionsDisplay)
-
-        const directionsResult = directionsService.route(requestOpts);
-        console.log('Results', directionsResult)
-
-        // directionsResult.then(response => {
-        //     let legs = [];
-            
-        //     response.routes.forEach(route => {
-        //         legs = legs.concat(route.legs);
-        //     });
-
-        //     let steps = legs[0]['steps'];
-        //     let travel_modes = [];
-
-        //     steps.forEach(element => travel_modes.concat(element['travel_mode']))
-
-        //     // for (let step = 0; step < length(); step++) {
-        //     //     console.log('Walking east one step');
-        //     // }
-
-        //     console.log('legs', legs[0]);
-        //     console.log('======');
-        //     console.log('steps', steps);
-        //     console.log('======');
-            
-
-        //     const l = response.routes.reduce((accumulator, route) => [...accumulator, ...route.legs], []);
-        //     console.log('Legs', l);
-        // })  
-
-        directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
+        await directionsService.route(requestOpts, (...args) => handleRouteResponse(directionsDisplay, ...args));
     } catch(e) {
-        console.log('e', e);
+        console.log("e", e.message)
+        if (e.message === "DIRECTIONS_ROUTE: NOT_FOUND: At least one of the origin, destination, or waypoints could not be geocoded.") {
+            alert("OOPS! Something went wrong, no route found. Please try using the suggestions and try again!");
+        } else {
+            alert("OOPS! Something went wrong, no route found. Please try again!");
+        }
     }
 }
 
 function handleRouteResponse(directionsDisplay, response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
+    console.log('handleRouteREsponse', {
+        directionsDisplay,
+        response,
+        status
+    })
 
-        // response.then(result => {           
-            const s = response.routes
-                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], []);
+    if (status !== google.maps.DirectionsStatus.OK) return;
 
-            console.log('steps Jen s', s);
+    const l = response.routes
+        .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
+        .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
+        .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
+    console.log('steps Jen l', l);
 
-            const l = response.routes
-                .reduce((accumulator, route) => [...accumulator, ...route.legs], [])
-                .reduce((accumulator, leg) => [...accumulator, ...leg.steps], [])
-                .map(step => ({ distance: step.distance, duration: step.duration, instructions: step.instructions, transit: step.transit, travel_mode: step.travel_mode }));
-            console.log('steps Jen l', l);
+    var travel_time = document.querySelector('#id_travel_time').value
 
-        var travel_time = document.querySelector('#id_travel_time').value
+    if (travel_time == "") {
+        var today = new Date();
+        travel_time = today.getHours() + ":" + today.getMinutes();
+    } 
 
-        if (travel_time == "") {
-            var today = new Date();
-            travel_time = today.getHours() + ":" + today.getMinutes();
-        } 
+    fetch('/dublinBusHybrid/journeyPlanner/', {
+        method: 'POST',
+        credentials: 'include',     
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-CSRFToken': getCSRFToken()
+        },
 
+        body: JSON.stringify({
+            'travel_date': document.querySelector('#id_travel_date').value,
+            'travel_time': travel_time + ':00',
+            'Steps': l,
+        })
+    }).then(r => r.json())
+    .then(result => {
+        const estimatedTimeElement = document.querySelector('#estimated-time');
+        const googleWarning = document.querySelector('#google_warning');
+        console.log('result', result);
+        console.log('google_warning', googleWarning)
+        if (result.estimatedTime.type === "google") {
+            // Produce Google Warning
+            console.log('google')
+            googleWarning.style.visibility = 'visible';
+        }
+            
+        estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
+    });
 
-        fetch('/dublinBusHybrid/journeyPlanner/', {
-            method: 'POST',
-            credentials: 'include',     
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=UTF-8',
-                'X-CSRFToken': getCSRFToken()
-            },
+    directionsDisplay.setDirections(response);
 
-            body: JSON.stringify({
-                'travel_date': document.querySelector('#id_travel_date').value,
-                'travel_time': travel_time + ':00',
-                'Steps': l,
-            })
-        }).then(r => r.json())
-        .then(result => {
-            const estimatedTimeElement = document.querySelector('#estimated-time');
-            const googleWarning = document.querySelector('#google_warning');
-            console.log('result', result);
-            console.log('google_warning', googleWarning)
-            if (result.estimatedTime.type === "google") {
-                // Produce Google Warning
-                console.log('google')
-                googleWarning.style.visibility = 'visible';
-            }
-                
-            estimatedTimeElement.innerHTML = `${Math.floor(result.estimatedTime.time)} mins`;
-        });
+    console.log(response)
+    response.routes.forEach(r => {
+        r.legs.forEach(l => {
+            l.steps.forEach(s => {
+                if (s.transit) {
+                    console.log("s", s)
+                    console.log('arrival_stop', s.transit)
 
-        directionsDisplay.setDirections(response);
-
-
-        // Setup loading screen
-        // Give the server the details
-        // .then(do the stuff)
-
-        console.log(response)
-        response.routes.forEach(r => {
-            r.legs.forEach(l => {
-                l.steps.forEach(s => {
-                    if (s.transit) {
-                        console.log("s", s)
-                        console.log('arrival_stop', s.transit)
-
-                    }
-
-                })
+                }
 
             })
-        });
-    }
+
+        })
+    });
 }
 
 // get a csrf token from the page by selecting the input element and

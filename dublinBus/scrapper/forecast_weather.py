@@ -6,6 +6,8 @@ import django
 import sys
 import datetime
 
+from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 print(BASE_DIR)
@@ -17,7 +19,7 @@ django.setup()
 from scrapper.models import ForecastWeather
 
 # Add API info
-apiKey = 'ac8d0dd5f40c8d6da60fd0785a3f75c4'
+apiKey = settings.OPEN_WEATHER_MAPS_API_KEY
 q = 'dublin'
 
 forecast_weather_link = "http://api.openweathermap.org/data/2.5/forecast?q=" + q + "&appid=" + apiKey

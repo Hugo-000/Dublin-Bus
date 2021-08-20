@@ -3,12 +3,7 @@
 {% block content %}
 
 {% load static %}
-
 <script src={% static 'js/map.js' %}></script>
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbl2iDuIG5vhOpzFUYHxFRZNg8RwDnW2M&callback=initMap&libraries=&v=weekly"
-    defer
-></script>
 
 <div class="container-fluid">
     <div class="row h-100 position-relative">
@@ -45,6 +40,13 @@
                                                 <div class="mb-2">
                                                     <label class="fs-6 pb-1" for="{{ field.auto_id }}">{{ field.label }}</label>
                                                     {{ field }}
+                                                    {% if form.errors %}
+                                                        {% for error in field.errors %}
+                                                            <div class="mb-2">
+                                                                {{ error }}
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 </div>
                                             {% endfor %}
                                             <button type="submit" value="Submit" class="btn btn-primary w-100 mt-4 rounded-xs">Submit</button>
@@ -67,9 +69,12 @@
                                             <div class="fw-bold">Departure Time</div>
                                             <div>{{travel_time}}</div>
                                         </div>
-                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                        <div class="d-flex justify-content-between">
                                             <div class="fw-bold">Estimated Journey Time</div >
                                             <div id="estimated-time">... calculating</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between border-bottom mb-2">
+                                            *Excludes walking and waiting time
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <div class="fw-bold">Payments Accepted</div >
@@ -92,27 +97,33 @@
                                     <h5 class="card-header">Weather Information</h5>
                                     <div class="card-body">
                                         <div class="d-flex pt-2 pb-3">
-                                            {% with ''|add:weather_icon as image_static %}
-                                                <img class="bg-white p-2 rounded-circle shadow" style="width:2.5rem;height:2.5rem" src={% static image_static %} />
-                                            {% endwith %}
-                                            <div class="ms-2 my-auto">
-                                                {{weather.weather_main}},
-                                                {{weather.temp}}&deg;C,
-                                                Dublin, Ireland
+                                            {% if not "Error" in weather %}
+                                                {% with ''|add:weather_icon as image_static %}
+                                                    <img class="bg-white p-2 rounded-circle shadow" style="width:2.5rem;height:2.5rem" src={% static image_static %} />
+                                                {% endwith %}
+                                                <div class="ms-2 my-auto">
+                                                    {{weather.weather_main}},
+                                                    {{weather.temp}}&deg;C,
+                                                    Dublin, Ireland
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between border-bottom mb-2">
-                                            <div class="fw-bold">Description</div>
-                                            <div class="">{{weather.weather_description}}</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between border-bottom mb-2">
-                                            <div class="fw-bold">Humidity</div>
-                                            <div>{{weather.humidity}}&#37;</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="fw-bold">Wind</div >
-                                            <div>{{weather.wind_speed}} km/hr</div>
-                                        </div>
+                                            <div class="d-flex justify-content-between border-bottom mb-2">
+                                                <div class="fw-bold">Description</div>
+                                                <div class="">{{weather.weather_description}}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-between border-bottom mb-2">
+                                                <div class="fw-bold">Humidity</div>
+                                                <div>{{weather.humidity}}&#37;</div>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <div class="fw-bold">Wind</div >
+                                                <div>{{weather.wind_speed}} km/hr</div>
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                            Weather results cannot be displayed at this time
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div> 
 
@@ -132,7 +143,7 @@
             </div>
         <div class="col-md-4 col-lg-2"></div>
         <div class="col-md-8 col-lg-10">
-            <div id="style-selector-control" class="map-control">
+            <div id="style-selector-control" class="map-control" style="display:none">
                 <select id="style-selector" class="selector-control" style="line-height:50px; font-size: 20px;">
                     <option value="default" >Default</option>
                     <option value="silver">Silver</option>
@@ -146,18 +157,8 @@
     </div>
 </div>
 
-<script>
-    function openSideMenu() {
-        if (window.screen.width >= 992) {
-            // open the menu 
-            console.log('open side menu')
-            document.getElementById('open-menu-btn').click();
-        } 
-    }
-    function selectInfo() {
-        document.querySelector('#info-tab').click();
-    }
-    openSideMenu();
-    selectInfo();
-</script>
+<script src={% static 'js/openSideMenu.js' %}></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initMap&libraries=places&v=weekly"></script>
+<script src={% static 'js/placesAutocomplete.js' %}></script>
+
 {% endblock %}

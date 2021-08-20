@@ -35,7 +35,17 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [] if env('DEBUG') else ALLOWED_HOSTS
+
+print('Allowed hosts', ALLOWED_HOSTS)
+
+#GOOGLE MAPS API KEY
+GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+
+#OPEN WEATHER MAPS API KEY
+OPEN_WEATHER_MAPS_API_KEY = env('OPEN_WEATHER_MAPS_API_KEY')
 
 # Application definition
 
@@ -54,14 +64,22 @@ INSTALLED_APPS = [
     'webpack_loader',    
 ]
 
+# Show crontab logs in output
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+
 #Automated scripting for every 5min, 10 min, 30min and 23 hour
+#CRONJOBS = [
+#     ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather', '>> ' + os.path.join(BASE_DIR,'log/debug_current_weather.log')),
+#     ('*/5 * * * *', 'scrapper.cron.realtime_traffic', '>> ' + os.path.join(BASE_DIR,'log/debug_realtime_traffic.log')),
+#     ('0 */23 * * *', 'scrapper.cron.covid_data', '>> ' + os.path.join(BASE_DIR,'log/debug_covid_data.log')),
+#     ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather', '>> ' + os.path.join(BASE_DIR,'log/debug_scheduling_forecast_weather.log')),
+# ]
 CRONJOBS = [
+    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
     ('*/5 * * * *', 'scrapper.cron.realtime_traffic'),
     ('0 */23 * * *', 'scrapper.cron.covid_data'),
     ('*/30 * * * *', 'scrapper.cron.scheduling_forecast_weather'),
-    ('*/10 * * * *', 'scrapper.cron.scheduling_curr_weather'),
 ]
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
@@ -183,10 +201,12 @@ POSTMARK = {
     'VERBOSITY': 0,
 }
 
+DEFAULT_FROM_EMAIL = "info@odalaighdesign.com"
+
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.github.GithubOAuth2",
 ]
 
-SOCIAL_AUTH_GITHUB_KEY = os.environ.get("SOCIAL_AUTH_GITHUB_KEY")
-SOCIAL_AUTH_GITHUB_SECRET = os.environ.get("SOCIAL_AUTH_GITHUB_SECRET")
+SOCIAL_AUTH_GITHUB_KEY = env("SOCIAL_AUTH_GITHUB_KEY")
+SOCIAL_AUTH_GITHUB_SECRET = env("SOCIAL_AUTH_GITHUB_SECRET")

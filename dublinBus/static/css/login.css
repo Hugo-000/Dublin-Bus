@@ -71,8 +71,9 @@ p #id_password{
 .btn-log{
   display:block !important;
   border-radius:.25rem !important;
-  margin:10px;
   color: white;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 /*Mobile responsive */

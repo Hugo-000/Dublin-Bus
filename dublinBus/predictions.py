@@ -17,7 +17,7 @@ def getBusStepInfo(request_body):
     busStepInfo = {}
     for i in range(len(journeySteps)):
         step = journeySteps[i]
-        if 'transit' in step:
+        if 'transit' in step and step['travel_mode']=="TRANSIT":
             transit = step['transit']
             routeNumber = (transit['line']['short_name'])
             headsign = (transit['headsign'])
@@ -29,7 +29,25 @@ def getBusStepInfo(request_body):
                 routeDirection = getRouteDirection(routeNumber, headsign)
                 path = getPath(routeNumber, routeDirection)
             googleDirectionString = journeySteps[i]['duration']['text']
-            googleDirection = [int(character) for character in googleDirectionString.split() if character.isdigit()]
+            tempHr = 0
+            tempMin = 0
+            temp = 0
+            for character in googleDirectionString.split():
+                if temp == 0 and character.isdigit():
+                    temp = int(character)
+                elif temp !=0 and character.isdigit():
+                    temp *= 10
+                    temp += int(character)
+                elif temp !=0 and character == "hour":
+                    tempHr = temp * 60
+                    temp = 0
+                elif temp !=0 and character == "mins":
+                    tempMin = temp
+                    temp == 0
+                else:
+                    None
+            googleDirection = tempHr + tempMin
+            # googleDirection = [int(character) for character in googleDirectionString.split() if character.isdigit()]
             busStepInfo[busNumber] = {
                 'routeNumber':routeNumber, 
                 'headsign':headsign, 
@@ -38,7 +56,7 @@ def getBusStepInfo(request_body):
                 'departureStop':(transit['departure_stop']['name']),
                 'routeDirection': routeDirection,
                 'path': path,
-                'googleDuration': googleDirection[0],
+                'googleDuration': googleDirection,
                 'agency':agency,
                 }
             busNumber += 1
@@ -243,6 +261,7 @@ def getBusStepTimes(busStepInfo, inputValues):
         print('model', model)
         if 'Error' in model or 'Error' in arrivalPercentDone or 'Error' in departurePercentDone or 'Error' in inputValues or 'Error' in routeDirection:
             googleEstimatedTime = busStepInfo[i]['googleDuration']
+            print("bus step info",busStepInfo[i], busStepInfo[i]['googleDuration'])
             busStepTimes[i] = {'type':'google', 'time':googleEstimatedTime}
         else:
             routeTime = getRouteTime(model['ok'], inputValues)

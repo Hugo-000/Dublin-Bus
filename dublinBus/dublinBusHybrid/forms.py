@@ -4,6 +4,32 @@ import datetime
 from scrapper.models import Stops
 
 class JourneyPlannerForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(JourneyPlannerForm, self).__init__(*args, **kwargs)
+
+        self.today = datetime.date.today()
+        self.todayString = self.today.strftime('%Y-%m-%d')
+        self.datedelta = datetime.timedelta(days=4)
+        self.maxDate = self.today + self.datedelta
+        self.maxDateString = self.maxDate.strftime('%Y-%m-%d')
+
+        self.fields['travel_date'] = forms.DateField(
+            label='Date',
+            widget=forms.TextInput(
+                attrs={
+                    'placeholder': 'Date', 
+                    'class': 'form-control form-control-fw', 
+                    'type':'date', 
+                    'name':"trip-start",
+                    'value': self.todayString,
+                    'min': self.maxDateString, 
+                    'max': self.maxDateString,
+                }
+            ),
+            required = False
+        ) 
+
     origin_location = forms.CharField(
         label = 'Origin',
         max_length = 150,
@@ -26,26 +52,7 @@ class JourneyPlannerForm(forms.Form):
         )
     )
     
-    today = datetime.date.today()
-    todayString = today.strftime('%Y-%m-%d')
-    datedelta = datetime.timedelta(days=4)
-    maxDate = today + datedelta
-    maxDateString = maxDate.strftime('%Y-%m-%d')
-    travel_date = forms.DateField(
-        label='Date',
-        widget=forms.TextInput(
-            attrs={
-                'placeholder': 'Date', 
-                'class': 'form-control form-control-fw', 
-                'type':'date', 
-                'name':"trip-start",
-                'value':todayString,
-                'min':todayString, 
-                'max':maxDateString,
-            }
-        ),
-        required = False
-    ) 
+    travel_date = forms.DateField() 
     
     travel_time = forms.TimeField(
         label='Time',
